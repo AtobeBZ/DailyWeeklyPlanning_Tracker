@@ -1,0 +1,27 @@
+# IDE
+.idea/
+*.iml
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# Claude Code
+.claude/
+
+# Playwright
+.playwright-mcp/
+
+# OS
+.DS_Store
+Thumbs.db
+nul
+
+# Logs
+*.log
+
+# Dependencies
+node_modules/

@@ -1,0 +1,92 @@
+{
+  "dayTypes": ["Full Workday", "Half Day", "Family Day", "School Holiday"],
+  "currentDayType": "Full Workday",
+  "currentView": "activities",
+  "currentMainView": "daily",
+  "activities": {
+    "Full Workday": [
+      { "id": 1, "name": "Sleep", "startTime": "22:30", "endTime": "06:00", "category": "myself" },
+      { "id": 2, "name": "Wake Up & Exercise", "startTime": "06:00", "endTime": "06:45", "category": "goal1" },
+      { "id": 3, "name": "Shower & Dress", "startTime": "06:45", "endTime": "07:15", "category": "myself" },
+      { "id": 4, "name": "Kids Breakfast & School Prep", "startTime": "07:15", "endTime": "08:00", "category": "family" },
+      { "id": 5, "name": "School Drop-off", "startTime": "08:00", "endTime": "08:30", "category": "family" },
+      { "id": 6, "name": "Client Project A", "startTime": "08:30", "endTime": "11:00", "category": "work" },
+      { "id": 7, "name": "Client Calls", "startTime": "11:00", "endTime": "12:00", "category": "work" },
+      { "id": 8, "name": "Lunch & Admin", "startTime": "12:00", "endTime": "13:00", "category": "admin" },
+      { "id": 9, "name": "Client Project B", "startTime": "13:00", "endTime": "15:30", "category": "work" },
+      { "id": 10, "name": "School Pick-up", "startTime": "15:30", "endTime": "16:00", "category": "family" },
+      { "id": 11, "name": "Kids Activities / Homework", "startTime": "16:00", "endTime": "17:30", "category": "family" },
+      { "id": 12, "name": "Family Dinner Prep", "startTime": "17:30", "endTime": "18:30", "category": "family" },
+      { "id": 13, "name": "Family Dinner", "startTime": "18:30", "endTime": "19:15", "category": "family" },
+      { "id": 14, "name": "Kids Bedtime Routine", "startTime": "19:15", "endTime": "20:00", "category": "family" },
+      { "id": 15, "name": "Evening Work Block", "startTime": "20:00", "endTime": "21:30", "category": "work" },
+      { "id": 16, "name": "Couple Time / TV", "startTime": "21:30", "endTime": "22:30", "category": "family" }
+    ],
+    "Half Day": [
+      { "id": 101, "name": "Sleep", "startTime": "22:30", "endTime": "06:30", "category": "myself" },
+      { "id": 102, "name": "Morning Routine", "startTime": "06:30", "endTime": "07:15", "category": "myself" },
+      { "id": 103, "name": "Kids Breakfast", "startTime": "07:15", "endTime": "08:00", "category": "family" },
+      { "id": 104, "name": "School Drop-off", "startTime": "08:00", "endTime": "08:30", "category": "family" },
+      { "id": 105, "name": "Focused Client Work", "startTime": "08:30", "endTime": "12:00", "category": "work" },
+      { "id": 106, "name": "Lunch", "startTime": "12:00", "endTime": "12:30", "category": "myself" },
+      { "id": 107, "name": "Personal Project (App)", "startTime": "12:30", "endTime": "14:00", "category": "goal2" },
+      { "id": 108, "name": "Errands & Admin", "startTime": "14:00", "endTime": "15:30", "category": "admin" },
+      { "id": 109, "name": "School Pick-up", "startTime": "15:30", "endTime": "16:00", "category": "family" },
+      { "id": 110, "name": "Park / Kids Activities", "startTime": "16:00", "endTime": "18:00", "category": "family" },
+      { "id": 111, "name": "Dinner Together", "startTime": "18:00", "endTime": "19:00", "category": "family" },
+      { "id": 112, "name": "Family Game Night", "startTime": "19:00", "endTime": "20:00", "category": "family" },
+      { "id": 113, "name": "Kids Bedtime", "startTime": "20:00", "endTime": "20:30", "category": "family" },
+      { "id": 114, "name": "Reading / Learning", "startTime": "20:30", "endTime": "22:00", "category": "goal3" },
+      { "id": 115, "name": "Wind Down", "startTime": "22:00", "endTime": "22:30", "category": "myself" }
+    ],
+    "Family Day": [
+      { "id": 201, "name": "Sleep", "startTime": "22:30", "endTime": "07:30", "category": "myself" },
+      { "id": 202, "name": "Lazy Family Morning", "startTime": "07:30", "endTime": "09:00", "category": "family" },
+      { "id": 203, "name": "Big Breakfast Together", "startTime": "09:00", "endTime": "10:00", "category": "family" },
+      { "id": 204, "name": "Family Outing / Activity", "startTime": "10:00", "endTime": "13:00", "category": "family" },
+      { "id": 205, "name": "Lunch Out", "startTime": "13:00", "endTime": "14:30", "category": "family" },
+      { "id": 206, "name": "Afternoon Adventure", "startTime": "14:30", "endTime": "17:00", "category": "family" },
+      { "id": 207, "name": "Quick Workout", "startTime": "17:00", "endTime": "17:45", "category": "goal1" },
+      { "id": 208, "name": "Dinner Prep Together", "startTime": "17:45", "endTime": "18:30", "category": "family" },
+      { "id": 209, "name": "Family Dinner", "startTime": "18:30", "endTime": "19:15", "category": "family" },
+      { "id": 210, "name": "Movie Night", "startTime": "19:15", "endTime": "21:30", "category": "family" },
+      { "id": 211, "name": "Kids to Bed", "startTime": "21:30", "endTime": "22:00", "category": "family" },
+      { "id": 212, "name": "Adult Time", "startTime": "22:00", "endTime": "22:30", "category": "family" }
+    ],
+    "School Holiday": [
+      { "id": 301, "name": "Sleep", "startTime": "22:30", "endTime": "07:00", "category": "myself" },
+      { "id": 302, "name": "Morning Routine", "startTime": "07:00", "endTime": "07:30", "category": "myself" },
+      { "id": 303, "name": "Breakfast with Kids", "startTime": "07:30", "endTime": "08:30", "category": "family" },
+      { "id": 304, "name": "Work Block (Kids Play)", "startTime": "08:30", "endTime": "10:30", "category": "work" },
+      { "id": 305, "name": "Kid Activity / Craft", "startTime": "10:30", "endTime": "12:00", "category": "family" },
+      { "id": 306, "name": "Lunch", "startTime": "12:00", "endTime": "13:00", "category": "family" },
+      { "id": 307, "name": "Quiet Time / Work", "startTime": "13:00", "endTime": "15:00", "category": "work" },
+      { "id": 308, "name": "Outdoor Play", "startTime": "15:00", "endTime": "17:00", "category": "family" },
+      { "id": 309, "name": "Screen Time for Kids", "startTime": "17:00", "endTime": "18:00", "category": "else" },
+      { "id": 310, "name": "Quick Email Check", "startTime": "17:00", "endTime": "17:30", "category": "work" },
+      { "id": 311, "name": "Dinner", "startTime": "18:00", "endTime": "19:00", "category": "family" },
+      { "id": 312, "name": "Evening Family Time", "startTime": "19:00", "endTime": "20:30", "category": "family" },
+      { "id": 313, "name": "Kids Bedtime", "startTime": "20:30", "endTime": "21:00", "category": "family" },
+      { "id": 314, "name": "Personal Time", "startTime": "21:00", "endTime": "22:30", "category": "myself" }
+    ]
+  },
+  "weekAssignments": {
+    "Monday": "Full Workday",
+    "Tuesday": "Full Workday",
+    "Wednesday": "Half Day",
+    "Thursday": "Full Workday",
+    "Friday": "Half Day",
+    "Saturday": "Family Day",
+    "Sunday": "Family Day"
+  },
+  "categoryColors": {
+    "work": "#e74c3c",
+    "family": "#2ecc71",
+    "admin": "#f1c40f",
+    "myself": "#3498db",
+    "goal1": "#e67e22",
+    "goal2": "#9b59b6",
+    "goal3": "#1abc9c",
+    "else": "#7f8c8d"
+  }
+}

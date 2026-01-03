@@ -1,0 +1,84 @@
+{
+  "dayTypes": ["Class Day", "Study Day", "Part-Time Work", "Weekend"],
+  "currentDayType": "Class Day",
+  "currentView": "activities",
+  "currentMainView": "daily",
+  "activities": {
+    "Class Day": [
+      { "id": 1, "name": "Sleep", "startTime": "00:00", "endTime": "07:30", "category": "myself" },
+      { "id": 2, "name": "Morning Routine", "startTime": "07:30", "endTime": "08:00", "category": "myself" },
+      { "id": 3, "name": "Breakfast & Commute", "startTime": "08:00", "endTime": "08:45", "category": "else" },
+      { "id": 4, "name": "Lecture: Computer Science", "startTime": "09:00", "endTime": "10:30", "category": "work" },
+      { "id": 5, "name": "Break / Coffee", "startTime": "10:30", "endTime": "11:00", "category": "myself" },
+      { "id": 6, "name": "Lecture: Mathematics", "startTime": "11:00", "endTime": "12:30", "category": "work" },
+      { "id": 7, "name": "Lunch with Friends", "startTime": "12:30", "endTime": "13:30", "category": "family" },
+      { "id": 8, "name": "Lab Session", "startTime": "14:00", "endTime": "16:00", "category": "work" },
+      { "id": 9, "name": "Library Study", "startTime": "16:00", "endTime": "18:00", "category": "goal1" },
+      { "id": 10, "name": "Commute Home", "startTime": "18:00", "endTime": "18:30", "category": "else" },
+      { "id": 11, "name": "Gym", "startTime": "18:30", "endTime": "19:30", "category": "goal2" },
+      { "id": 12, "name": "Dinner", "startTime": "19:30", "endTime": "20:15", "category": "myself" },
+      { "id": 13, "name": "Assignment Work", "startTime": "20:15", "endTime": "22:00", "category": "goal1" },
+      { "id": 14, "name": "Gaming / Relaxation", "startTime": "22:00", "endTime": "23:30", "category": "myself" },
+      { "id": 15, "name": "Wind Down", "startTime": "23:30", "endTime": "00:00", "category": "myself" }
+    ],
+    "Study Day": [
+      { "id": 101, "name": "Sleep", "startTime": "00:30", "endTime": "08:00", "category": "myself" },
+      { "id": 102, "name": "Morning Routine", "startTime": "08:00", "endTime": "08:30", "category": "myself" },
+      { "id": 103, "name": "Breakfast", "startTime": "08:30", "endTime": "09:00", "category": "myself" },
+      { "id": 104, "name": "Study Block 1 (Focus)", "startTime": "09:00", "endTime": "11:30", "category": "goal1" },
+      { "id": 105, "name": "Break & Snack", "startTime": "11:30", "endTime": "12:00", "category": "myself" },
+      { "id": 106, "name": "Study Block 2", "startTime": "12:00", "endTime": "14:00", "category": "goal1" },
+      { "id": 107, "name": "Lunch", "startTime": "14:00", "endTime": "14:45", "category": "myself" },
+      { "id": 108, "name": "Online Lecture Review", "startTime": "14:45", "endTime": "16:00", "category": "work" },
+      { "id": 109, "name": "Study Group (Discord)", "startTime": "16:00", "endTime": "17:30", "category": "family" },
+      { "id": 110, "name": "Gym", "startTime": "17:30", "endTime": "18:45", "category": "goal2" },
+      { "id": 111, "name": "Dinner", "startTime": "19:00", "endTime": "19:45", "category": "myself" },
+      { "id": 112, "name": "Side Project (Coding)", "startTime": "19:45", "endTime": "21:30", "category": "goal3" },
+      { "id": 113, "name": "Social Media / YouTube", "startTime": "21:30", "endTime": "23:00", "category": "else" },
+      { "id": 114, "name": "Read Before Bed", "startTime": "23:00", "endTime": "00:00", "category": "myself" }
+    ],
+    "Part-Time Work": [
+      { "id": 201, "name": "Sleep", "startTime": "01:00", "endTime": "09:00", "category": "myself" },
+      { "id": 202, "name": "Morning Routine", "startTime": "09:00", "endTime": "09:30", "category": "myself" },
+      { "id": 203, "name": "Quick Study Review", "startTime": "09:30", "endTime": "11:00", "category": "goal1" },
+      { "id": 204, "name": "Lunch", "startTime": "11:00", "endTime": "11:30", "category": "myself" },
+      { "id": 205, "name": "Commute to Work", "startTime": "11:30", "endTime": "12:00", "category": "else" },
+      { "id": 206, "name": "Cafe Job (Shift)", "startTime": "12:00", "endTime": "18:00", "category": "work" },
+      { "id": 207, "name": "Commute Home", "startTime": "18:00", "endTime": "18:30", "category": "else" },
+      { "id": 208, "name": "Dinner", "startTime": "18:30", "endTime": "19:15", "category": "myself" },
+      { "id": 209, "name": "Quick Homework", "startTime": "19:15", "endTime": "21:00", "category": "goal1" },
+      { "id": 210, "name": "Social / Friends Online", "startTime": "21:00", "endTime": "23:00", "category": "family" },
+      { "id": 211, "name": "Chill / Gaming", "startTime": "23:00", "endTime": "01:00", "category": "myself" }
+    ],
+    "Weekend": [
+      { "id": 301, "name": "Sleep In", "startTime": "02:00", "endTime": "10:30", "category": "myself" },
+      { "id": 302, "name": "Brunch", "startTime": "10:30", "endTime": "11:30", "category": "myself" },
+      { "id": 303, "name": "Chores / Laundry", "startTime": "11:30", "endTime": "12:30", "category": "admin" },
+      { "id": 304, "name": "Study Catch-up", "startTime": "12:30", "endTime": "14:30", "category": "goal1" },
+      { "id": 305, "name": "Lunch", "startTime": "14:30", "endTime": "15:00", "category": "myself" },
+      { "id": 306, "name": "Hang Out with Friends", "startTime": "15:00", "endTime": "19:00", "category": "family" },
+      { "id": 307, "name": "Dinner", "startTime": "19:00", "endTime": "20:00", "category": "family" },
+      { "id": 308, "name": "Party / Social Event", "startTime": "20:00", "endTime": "01:00", "category": "family" },
+      { "id": 309, "name": "Wind Down", "startTime": "01:00", "endTime": "02:00", "category": "myself" }
+    ]
+  },
+  "weekAssignments": {
+    "Monday": "Class Day",
+    "Tuesday": "Class Day",
+    "Wednesday": "Study Day",
+    "Thursday": "Class Day",
+    "Friday": "Part-Time Work",
+    "Saturday": "Weekend",
+    "Sunday": "Study Day"
+  },
+  "categoryColors": {
+    "work": "#8e44ad",
+    "family": "#3498db",
+    "admin": "#f39c12",
+    "myself": "#27ae60",
+    "goal1": "#e74c3c",
+    "goal2": "#1abc9c",
+    "goal3": "#e91e63",
+    "else": "#95a5a6"
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "dayTypes": ["Work Day", "Remote Day", "Off Day"],
+  "currentDayType": "Work Day",
+  "currentView": "activities",
+  "currentMainView": "daily",
+  "activities": {
+    "Work Day": [
+      { "id": 1, "name": "Sleep", "startTime": "23:00", "endTime": "06:30", "category": "myself" },
+      { "id": 2, "name": "Morning Yoga", "startTime": "06:30", "endTime": "07:00", "category": "myself" },
+      { "id": 3, "name": "Shower & Get Ready", "startTime": "07:00", "endTime": "07:30", "category": "myself" },
+      { "id": 4, "name": "Breakfast & News", "startTime": "07:30", "endTime": "08:00", "category": "myself" },
+      { "id": 5, "name": "Commute to Office", "startTime": "08:00", "endTime": "08:45", "category": "else" },
+      { "id": 6, "name": "Deep Coding Session", "startTime": "08:45", "endTime": "12:00", "category": "work" },
+      { "id": 7, "name": "Lunch with Team", "startTime": "12:00", "endTime": "13:00", "category": "work" },
+      { "id": 8, "name": "Code Reviews & Meetings", "startTime": "13:00", "endTime": "15:00", "category": "work" },
+      { "id": 9, "name": "Feature Development", "startTime": "15:00", "endTime": "17:30", "category": "work" },
+      { "id": 10, "name": "Commute Home", "startTime": "17:30", "endTime": "18:15", "category": "else" },
+      { "id": 11, "name": "Gym Workout", "startTime": "18:15", "endTime": "19:30", "category": "goal1" },
+      { "id": 12, "name": "Dinner & Cooking", "startTime": "19:30", "endTime": "20:30", "category": "myself" },
+      { "id": 13, "name": "Side Project (Rust Learning)", "startTime": "20:30", "endTime": "21:30", "category": "goal2" },
+      { "id": 14, "name": "Reading & Relaxation", "startTime": "21:30", "endTime": "23:00", "category": "myself" }
+    ],
+    "Remote Day": [
+      { "id": 101, "name": "Sleep", "startTime": "23:00", "endTime": "07:00", "category": "myself" },
+      { "id": 102, "name": "Morning Yoga", "startTime": "07:00", "endTime": "07:30", "category": "myself" },
+      { "id": 103, "name": "Breakfast & Coffee", "startTime": "07:30", "endTime": "08:00", "category": "myself" },
+      { "id": 104, "name": "Stand-up & Planning", "startTime": "08:00", "endTime": "08:30", "category": "work" },
+      { "id": 105, "name": "Focused Coding", "startTime": "08:30", "endTime": "12:30", "category": "work" },
+      { "id": 106, "name": "Lunch Break", "startTime": "12:30", "endTime": "13:30", "category": "myself" },
+      { "id": 107, "name": "Video Meetings", "startTime": "13:30", "endTime": "15:00", "category": "work" },
+      { "id": 108, "name": "Code Reviews", "startTime": "15:00", "endTime": "16:00", "category": "work" },
+      { "id": 109, "name": "Documentation", "startTime": "16:00", "endTime": "17:00", "category": "work" },
+      { "id": 110, "name": "Online Course (AWS)", "startTime": "17:00", "endTime": "18:00", "category": "goal3" },
+      { "id": 111, "name": "Home Workout", "startTime": "18:00", "endTime": "19:00", "category": "goal1" },
+      { "id": 112, "name": "Dinner", "startTime": "19:00", "endTime": "20:00", "category": "myself" },
+      { "id": 113, "name": "Side Project", "startTime": "20:00", "endTime": "21:30", "category": "goal2" },
+      { "id": 114, "name": "Gaming / Netflix", "startTime": "21:30", "endTime": "23:00", "category": "myself" }
+    ],
+    "Off Day": [
+      { "id": 201, "name": "Sleep In", "startTime": "00:00", "endTime": "09:00", "category": "myself" },
+      { "id": 202, "name": "Lazy Morning & Coffee", "startTime": "09:00", "endTime": "10:00", "category": "myself" },
+      { "id": 203, "name": "Brunch", "startTime": "10:00", "endTime": "11:00", "category": "myself" },
+      { "id": 204, "name": "Household Chores", "startTime": "11:00", "endTime": "12:30", "category": "admin" },
+      { "id": 205, "name": "Hackathon Project", "startTime": "12:30", "endTime": "15:00", "category": "goal2" },
+      { "id": 206, "name": "Social Time / Friends", "startTime": "15:00", "endTime": "18:00", "category": "family" },
+      { "id": 207, "name": "Gym Session", "startTime": "18:00", "endTime": "19:30", "category": "goal1" },
+      { "id": 208, "name": "Dinner Out", "startTime": "19:30", "endTime": "21:00", "category": "family" },
+      { "id": 209, "name": "Tech Podcast / Videos", "startTime": "21:00", "endTime": "22:30", "category": "goal3" },
+      { "id": 210, "name": "Wind Down", "startTime": "22:30", "endTime": "00:00", "category": "myself" }
+    ]
+  },
+  "weekAssignments": {
+    "Monday": "Work Day",
+    "Tuesday": "Remote Day",
+    "Wednesday": "Work Day",
+    "Thursday": "Remote Day",
+    "Friday": "Work Day",
+    "Saturday": "Off Day",
+    "Sunday": "Off Day"
+  },
+  "categoryColors": {
+    "work": "#3498db",
+    "family": "#27ae60",
+    "admin": "#f39c12",
+    "myself": "#9b59b6",
+    "goal1": "#e74c3c",
+    "goal2": "#1abc9c",
+    "goal3": "#e91e63",
+    "else": "#95a5a6"
+  }
+}
