@@ -174,6 +174,33 @@
             color: var(--text-primary);
         }
 
+        .weekday-edit-indicator {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, var(--accent), #c4956a);
+            color: white;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .weekday-back-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .weekday-back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
         .view-toggle {
             display: flex;
             gap: 8px;
@@ -1768,6 +1795,207 @@
             gap: 10px;
         }
 
+        /* ==================== WEEKLY ACTIVITY EDIT MODAL ==================== */
+        .weekly-edit-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(74, 55, 40, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s;
+        }
+
+        .weekly-edit-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .weekly-edit-modal {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 24px;
+            min-width: 400px;
+            max-width: 500px;
+            border: 2px solid var(--border);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            transform: scale(0.9);
+            transition: transform 0.2s;
+        }
+
+        .weekly-edit-overlay.active .weekly-edit-modal {
+            transform: scale(1);
+        }
+
+        .weekly-edit-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .weekly-edit-activity-info {
+            flex: 1;
+        }
+
+        .weekly-edit-activity-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .weekly-edit-activity-time {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .weekly-edit-activity-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-top: 8px;
+        }
+
+        .weekly-edit-close {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-left: 15px;
+        }
+
+        .weekly-edit-close:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        .weekly-edit-section-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .weekly-edit-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .weekly-edit-option {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: var(--bg-tertiary);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .weekly-edit-option:hover {
+            border-color: var(--accent);
+            transform: translateX(4px);
+        }
+
+        .weekly-edit-option-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .weekly-edit-option-icon.weekday {
+            background: #d6eaf8;
+            color: #2980b9;
+        }
+
+        .weekly-edit-option-icon.template {
+            background: #d5f5e3;
+            color: #27ae60;
+        }
+
+        .weekly-edit-option-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .weekly-edit-option-content {
+            flex: 1;
+        }
+
+        .weekly-edit-option-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 3px;
+        }
+
+        .weekly-edit-option-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .weekly-edit-option-arrow {
+            color: var(--text-secondary);
+        }
+
+        .weekly-edit-option-arrow svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .weekly-edit-custom-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            background: #fef9e7;
+            border: 1px solid #f39c12;
+            color: #b7950b;
+            font-size: 0.7rem;
+            font-weight: 600;
+            border-radius: 10px;
+            margin-left: 8px;
+        }
+
+        .weekly-activity.has-custom {
+            box-shadow: inset 0 0 0 2px #f39c12;
+        }
+
+        .weekly-activity.clickable {
+            cursor: pointer;
+        }
+
+        .weekly-activity.clickable:hover {
+            filter: brightness(1.1);
+            transform: scale(1.02);
+        }
+
         /* New day type colors */
         .day-cell.vacation {
             background: #d6eaf8;
@@ -2119,6 +2347,74 @@
             <div class="day-selector-options" id="daySelectorOptions"></div>
             <div class="day-selector-actions">
                 <button class="btn btn-secondary btn-sm" onclick="clearDayOverride()">Reset to Default</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Weekly Activity Edit Modal -->
+    <div class="weekly-edit-overlay" id="weeklyEditOverlay" onclick="closeWeeklyEditModal(event)">
+        <div class="weekly-edit-modal" onclick="event.stopPropagation()">
+            <div class="weekly-edit-header">
+                <div class="weekly-edit-activity-info">
+                    <div class="weekly-edit-activity-name" id="weeklyEditActivityName">Activity Name</div>
+                    <div class="weekly-edit-activity-time" id="weeklyEditActivityTime">08:00 - 12:00</div>
+                    <span class="weekly-edit-activity-badge" id="weeklyEditActivityBadge">Work</span>
+                </div>
+                <button class="weekly-edit-close" onclick="closeWeeklyEditModal()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 6L6 18M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="weekly-edit-section-title">How would you like to edit this activity?</div>
+
+            <div class="weekly-edit-options">
+                <div class="weekly-edit-option" id="weeklyEditWeekdayOption" onclick="editForWeekday()">
+                    <div class="weekly-edit-option-icon weekday">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                    </div>
+                    <div class="weekly-edit-option-content">
+                        <div class="weekly-edit-option-title" id="weeklyEditWeekdayTitle">Edit for all Tuesdays</div>
+                        <div class="weekly-edit-option-desc">Changes will apply only to this weekday. Other days remain unchanged.</div>
+                    </div>
+                    <div class="weekly-edit-option-arrow">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 18l6-6-6-6"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="weekly-edit-option" onclick="editBaseTemplate()">
+                    <div class="weekly-edit-option-icon template">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="12" y1="18" x2="12" y2="12"></line>
+                            <line x1="9" y1="15" x2="15" y2="15"></line>
+                        </svg>
+                    </div>
+                    <div class="weekly-edit-option-content">
+                        <div class="weekly-edit-option-title" id="weeklyEditTemplateTitle">Edit Work Day template</div>
+                        <div class="weekly-edit-option-desc">Changes will apply to all weekdays using this template.</div>
+                    </div>
+                    <div class="weekly-edit-option-arrow">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 18l6-6-6-6"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div id="weeklyEditCustomInfo" style="display: none; padding: 10px; background: #fef9e7; border: 1px solid #f39c12; border-radius: 8px; margin-bottom: 15px;">
+                <div style="font-size: 0.85rem; color: #b7950b;">
+                    <strong>Note:</strong> <span id="weeklyEditCustomInfoText">Tuesday has custom activities.</span>
+                </div>
             </div>
         </div>
     </div>
@@ -2641,7 +2937,13 @@
             svg += `<circle cx="${cx}" cy="${cy}" r="${outerRadius}" class="clock-face"/>`;
             
             // 2. Draw activity arcs FIRST (so they're behind everything else)
-            const activities = state.templates[state.currentDayType] || [];
+            // Get activities from weekday-specific template if editing, otherwise from base template
+            let activities;
+            if (editingWeekday && state.weekdayTemplates[editingWeekday]?.custom) {
+                activities = state.weekdayTemplates[editingWeekday].custom;
+            } else {
+                activities = state.templates[state.currentDayType] || [];
+            }
             if (state.currentView === 'categories') {
                 const categorySegments = {};
                 activities.forEach(activity => {
@@ -2706,10 +3008,11 @@
             weekDays.forEach((day, dayIndex) => {
                 const isWeekend = dayIndex >= 5;
                 const dayType = getWeekdayBaseType(day);
-                const activities = state.templates[dayType] || [];
+                const hasCustom = state.weekdayTemplates?.[day]?.custom !== null;
+                const activities = hasCustom ? state.weekdayTemplates[day].custom : (state.templates[dayType] || []);
 
                 html += `<div class="day-column ${isWeekend ? 'weekend' : ''}">`;
-                html += `<div class="day-column-header"><div class="day-name">${day}</div>`;
+                html += `<div class="day-column-header"><div class="day-name">${day}${hasCustom ? '<span class="weekly-edit-custom-badge">Custom</span>' : ''}</div>`;
                 html += `<select class="day-type-select" onchange="setWeekDayType('${day}', this.value)">`;
                 state.dayTypes.forEach(type => html += `<option value="${type}" ${type === dayType ? 'selected' : ''}>${type}</option>`);
                 html += '</select></div><div class="day-slots">';
@@ -2723,7 +3026,8 @@
                     getWeeklyActivitySegments(activity).forEach(segment => {
                         const top = (segment.start / 60) * 40;
                         const height = Math.max(((segment.end - segment.start) / 60) * 40, 20);
-                        html += `<div class="weekly-activity" style="top: ${top}px; height: ${height}px; background: ${getCategoryColor(activity.category)};" data-activity='${JSON.stringify(activity)}' data-day="${day}" onmouseenter="showWeeklyTooltip(event)" onmouseleave="hideTooltip()" onmousemove="moveTooltip(event)">`;
+                        const customClass = hasCustom ? ' has-custom' : '';
+                        html += `<div class="weekly-activity clickable${customClass}" style="top: ${top}px; height: ${height}px; background: ${getCategoryColor(activity.category)};" data-activity='${JSON.stringify(activity)}' data-day="${day}" data-daytype="${dayType}" onclick="openWeeklyEditModal(event)" onmouseenter="showWeeklyTooltip(event)" onmouseleave="hideTooltip()" onmousemove="moveTooltip(event)">`;
                         html += `<div class="weekly-activity-name">${activity.name}</div>`;
                         if (height > 25) html += `<div class="weekly-activity-time">${activity.startTime} - ${activity.endTime}</div>`;
                         html += '</div>';
@@ -3091,6 +3395,136 @@
             closeDaySelector();
         }
 
+        // ==================== WEEKLY EDIT MODAL ====================
+        let weeklyEditContext = null;  // { activity, day, dayType }
+
+        function openWeeklyEditModal(event) {
+            event.stopPropagation();
+            const el = event.target.closest('.weekly-activity');
+            if (!el) return;
+
+            const activity = JSON.parse(el.dataset.activity);
+            const day = el.dataset.day;
+            const dayType = el.dataset.daytype;
+            const hasCustom = state.weekdayTemplates?.[day]?.custom !== null;
+
+            // Store context for editing
+            weeklyEditContext = { activity, day, dayType };
+
+            // Update modal content
+            document.getElementById('weeklyEditActivityName').textContent = activity.name;
+            document.getElementById('weeklyEditActivityTime').textContent = `${activity.startTime} - ${activity.endTime}`;
+
+            const badge = document.getElementById('weeklyEditActivityBadge');
+            badge.textContent = categoryLabels[activity.category] || activity.category;
+            badge.style.background = getCategoryColor(activity.category) + '20';
+            badge.style.color = getCategoryColor(activity.category);
+
+            // Update option titles
+            document.getElementById('weeklyEditWeekdayTitle').textContent = `Edit for all ${day}s`;
+            document.getElementById('weeklyEditTemplateTitle').textContent = `Edit ${dayType} template`;
+
+            // Show custom info if applicable
+            const customInfo = document.getElementById('weeklyEditCustomInfo');
+            if (hasCustom) {
+                customInfo.style.display = 'block';
+                document.getElementById('weeklyEditCustomInfoText').textContent =
+                    `${day} has custom activities that differ from the base ${dayType} template.`;
+            } else {
+                customInfo.style.display = 'none';
+            }
+
+            // Show overlay
+            document.getElementById('weeklyEditOverlay').classList.add('active');
+        }
+
+        function closeWeeklyEditModal(event) {
+            if (event && event.target !== event.currentTarget) return;
+            document.getElementById('weeklyEditOverlay').classList.remove('active');
+            weeklyEditContext = null;
+        }
+
+        function editForWeekday() {
+            if (!weeklyEditContext) return;
+            const { activity, day, dayType } = weeklyEditContext;
+
+            // If no custom template for this weekday yet, create one by copying base template
+            if (!state.weekdayTemplates[day].custom) {
+                state.weekdayTemplates[day].custom = JSON.parse(JSON.stringify(state.templates[dayType] || []));
+            }
+
+            // Find and load the activity for editing in daily view
+            const customActivities = state.weekdayTemplates[day].custom;
+            const activityToEdit = customActivities.find(a => a.id === activity.id);
+
+            if (activityToEdit) {
+                // Switch to daily view and load activity for editing
+                state.currentDayType = dayType;
+                closeWeeklyEditModal();
+                setMainView('daily');
+
+                // Populate form with activity data
+                document.getElementById('activityName').value = activityToEdit.name;
+                document.getElementById('startTime').value = activityToEdit.startTime;
+                document.getElementById('endTime').value = activityToEdit.endTime;
+                document.getElementById('category').value = activityToEdit.category;
+                document.getElementById('activityColor').value = activityToEdit.color || getCategoryColor(activityToEdit.category);
+
+                // Set editing mode - we need special handling for weekday templates
+                editingActivityId = activityToEdit.id;
+                editingWeekday = day;  // New flag to track weekday-specific editing
+                document.querySelector('.btn-primary').innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Update ${day}`;
+                document.getElementById('cancelEditBtn').style.display = 'inline-flex';
+
+                // Render views with weekday-specific data
+                renderDayTypeSelector();
+                renderClocks();
+                renderActivitiesList();
+                renderSummaryStats();
+                renderLegend();
+            }
+
+            saveToStorage();
+            renderWeeklyView();
+        }
+
+        function editBaseTemplate() {
+            if (!weeklyEditContext) return;
+            const { activity, dayType } = weeklyEditContext;
+
+            // Switch to daily view with base template
+            state.currentDayType = dayType;
+            closeWeeklyEditModal();
+            setMainView('daily');
+
+            // Find activity in base template
+            const templateActivities = state.templates[dayType] || [];
+            const activityToEdit = templateActivities.find(a => a.id === activity.id);
+
+            if (activityToEdit) {
+                // Populate form with activity data
+                document.getElementById('activityName').value = activityToEdit.name;
+                document.getElementById('startTime').value = activityToEdit.startTime;
+                document.getElementById('endTime').value = activityToEdit.endTime;
+                document.getElementById('category').value = activityToEdit.category;
+                document.getElementById('activityColor').value = activityToEdit.color || getCategoryColor(activityToEdit.category);
+
+                // Set editing mode - base template editing
+                editingActivityId = activityToEdit.id;
+                editingWeekday = null;  // Not editing a specific weekday
+                document.querySelector('.btn-primary').innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Update Template`;
+            }
+
+            renderDayTypeSelector();
+            renderClocks();
+            renderActivitiesList();
+            renderLegend();
+            renderSummaryStats();
+        }
+
+        // Variable to track weekday-specific editing
+        let editingWeekday = null;
+
         function showWeeklyTooltip(event) {
             const el = event.target.closest('.weekly-activity');
             const activity = JSON.parse(el.dataset.activity);
@@ -3129,15 +3563,33 @@
         function hideTooltip() { document.getElementById('tooltip').style.display = 'none'; }
 
         function renderDayTypeSelector() {
-            document.getElementById('dayTypeSelector').innerHTML = state.dayTypes.map(type =>
-                `<button class="day-type-btn ${type === state.currentDayType ? 'active' : ''}" onclick="selectDayType('${type}')">${type}</button>`
-            ).join('');
+            // Show weekday-specific editing indicator or normal day type selector
+            if (editingWeekday) {
+                document.getElementById('dayTypeSelector').innerHTML = `
+                    <span class="weekday-edit-indicator">
+                        Editing: ${editingWeekday} (Custom)
+                        <button class="btn btn-sm weekday-back-btn" onclick="exitWeekdayEditing()">Back to Weekly</button>
+                    </span>
+                `;
+            } else {
+                document.getElementById('dayTypeSelector').innerHTML = state.dayTypes.map(type =>
+                    `<button class="day-type-btn ${type === state.currentDayType ? 'active' : ''}" onclick="selectDayType('${type}')">${type}</button>`
+                ).join('');
+            }
+        }
+
+        function exitWeekdayEditing() {
+            editingWeekday = null;
+            if (editingActivityId) cancelEdit();
+            setMainView('weekly');
+            renderDayTypeSelector();
         }
 
         function selectDayType(type) {
             state.currentDayType = type;
             // Cancel any editing in progress
             if (editingActivityId) cancelEdit();
+            editingWeekday = null; // Clear weekday editing when switching day types
             renderDayTypeSelector();
             renderClocks();
             renderActivitiesList();
@@ -3166,7 +3618,13 @@
         }
 
         function renderActivitiesList() {
-            const activities = state.templates[state.currentDayType] || [];
+            // Get activities from weekday-specific template if editing, otherwise from base template
+            let activities;
+            if (editingWeekday && state.weekdayTemplates[editingWeekday]?.custom) {
+                activities = state.weekdayTemplates[editingWeekday].custom;
+            } else {
+                activities = state.templates[state.currentDayType] || [];
+            }
             if (activities.length === 0) {
                 document.getElementById('activitiesList').innerHTML = `<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><p>No activities yet. Add your first one above!</p></div>`;
                 return;
@@ -3224,6 +3682,7 @@
 
         function cancelEdit() {
             editingActivityId = null;
+            editingWeekday = null;
             document.getElementById('activityForm').reset();
             document.getElementById('activityColor').value = getCategoryColor('work');
             document.getElementById('submitBtn').innerHTML = `
@@ -3248,13 +3707,20 @@
             // Auto-detect: if color differs from category color, it's custom
             const customColor = (selectedColor.toLowerCase() !== categoryColor.toLowerCase()) ? selectedColor : null;
 
-            if (!state.templates[state.currentDayType]) state.templates[state.currentDayType] = [];
+            // Determine target array based on whether we're editing weekday-specific or base template
+            let targetArray;
+            if (editingWeekday && state.weekdayTemplates[editingWeekday]?.custom) {
+                targetArray = state.weekdayTemplates[editingWeekday].custom;
+            } else {
+                if (!state.templates[state.currentDayType]) state.templates[state.currentDayType] = [];
+                targetArray = state.templates[state.currentDayType];
+            }
 
             if (editingActivityId) {
                 // Update existing activity
-                const activityIndex = state.templates[state.currentDayType].findIndex(a => a.id === editingActivityId);
+                const activityIndex = targetArray.findIndex(a => a.id === editingActivityId);
                 if (activityIndex !== -1) {
-                    state.templates[state.currentDayType][activityIndex] = {
+                    targetArray[activityIndex] = {
                         id: editingActivityId,
                         name,
                         startTime,
@@ -3263,7 +3729,12 @@
                         color: customColor
                     };
                 }
+
+                // Store if this was a weekday edit before clearing
+                const wasWeekdayEdit = editingWeekday !== null;
+
                 editingActivityId = null;
+                editingWeekday = null;  // Clear weekday editing flag
                 document.getElementById('submitBtn').innerHTML = `
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M12 5v14M5 12h14"/>
@@ -3271,9 +3742,20 @@
                     Add Activity
                 `;
                 document.getElementById('cancelEditBtn').style.display = 'none';
+
+                // If this was a weekday edit, switch back to weekly view
+                if (wasWeekdayEdit) {
+                    targetArray.sort((a, b) => timeToMinutes(a.startTime) - timeToMinutes(b.startTime));
+                    document.getElementById('activityForm').reset();
+                    document.getElementById('activityColor').value = getCategoryColor('work');
+                    renderDayTypeSelector();
+                    setMainView('weekly');
+                    saveToStorage();
+                    return;
+                }
             } else {
                 // Add new activity
-                state.templates[state.currentDayType].push({
+                targetArray.push({
                     id: Date.now(),
                     name,
                     startTime,
@@ -3283,7 +3765,7 @@
                 });
             }
 
-            state.templates[state.currentDayType].sort((a, b) => timeToMinutes(a.startTime) - timeToMinutes(b.startTime));
+            targetArray.sort((a, b) => timeToMinutes(a.startTime) - timeToMinutes(b.startTime));
             document.getElementById('activityForm').reset();
             document.getElementById('activityColor').value = getCategoryColor('work');
             renderClocks(); renderActivitiesList(); renderSummaryStats(); renderLegend(); renderWeeklyView(); saveToStorage();
@@ -3300,7 +3782,12 @@
 
             // Wait for animation then remove
             setTimeout(() => {
-                state.templates[state.currentDayType] = state.templates[state.currentDayType].filter(a => a.id !== id);
+                // Determine target array based on whether we're editing weekday-specific or base template
+                if (editingWeekday && state.weekdayTemplates[editingWeekday]?.custom) {
+                    state.weekdayTemplates[editingWeekday].custom = state.weekdayTemplates[editingWeekday].custom.filter(a => a.id !== id);
+                } else {
+                    state.templates[state.currentDayType] = state.templates[state.currentDayType].filter(a => a.id !== id);
+                }
                 renderClocks(); renderActivitiesList(); renderSummaryStats(); renderLegend(); renderWeeklyView(); saveToStorage();
             }, 250);
         }
@@ -3312,7 +3799,13 @@
                     `<div class="legend-item"><div class="legend-color" style="background: ${value.color}"></div><span>${value.label}</span></div>`
                 ).join('');
             } else {
-                const activities = state.templates[state.currentDayType] || [];
+                // Get activities from weekday-specific template if editing, otherwise from base template
+                let activities;
+                if (editingWeekday && state.weekdayTemplates[editingWeekday]?.custom) {
+                    activities = state.weekdayTemplates[editingWeekday].custom;
+                } else {
+                    activities = state.templates[state.currentDayType] || [];
+                }
                 document.getElementById('legend').innerHTML = activities.map((activity, index) =>
                     `<div class="legend-item"><div class="legend-color" style="background: ${getActivityColor(activity, index)}"></div><span>${activity.name}</span></div>`
                 ).join('');
@@ -3320,7 +3813,13 @@
         }
 
         function renderSummaryStats() {
-            const activities = state.templates[state.currentDayType] || [];
+            // Get activities from weekday-specific template if editing, otherwise from base template
+            let activities;
+            if (editingWeekday && state.weekdayTemplates[editingWeekday]?.custom) {
+                activities = state.weekdayTemplates[editingWeekday].custom;
+            } else {
+                activities = state.templates[state.currentDayType] || [];
+            }
             const categoryMinutes = {};
             Object.keys(categories).forEach(cat => categoryMinutes[cat] = 0);
             activities.forEach(activity => {
