@@ -2252,28 +2252,202 @@
             });
         }
 
+        // V3 Day Type Classification
+        const DAY_TYPE_CLASSIFICATION = {
+            'Work Day': 'work-like',
+            'Remote Day': 'work-like',
+            'Off Day': 'off-like',
+            'Weekend': 'off-like',
+            'Public Holiday': 'off-like',
+            'Vacation': 'off-like',
+            'Sick Day': 'off-like',
+            'Holiday': 'off-like'  // Legacy support
+        };
+
+        function isWorkLike(dayType) {
+            return DAY_TYPE_CLASSIFICATION[dayType] === 'work-like';
+        }
+
+        function isOffLike(dayType) {
+            return DAY_TYPE_CLASSIFICATION[dayType] === 'off-like';
+        }
+
+        // V3 State Migration: Convert V2 structure to V3
+        function migrateV2toV3(oldState) {
+            // Detect if already V3 (has templates property)
+            if (oldState.templates) {
+                return oldState;
+            }
+
+            // Convert V2 activities to V3 templates
+            const templates = {};
+            if (oldState.activities) {
+                Object.keys(oldState.activities).forEach(dayType => {
+                    templates[dayType] = oldState.activities[dayType] || [];
+                });
+            }
+            // Ensure Work Day and Off Day templates exist
+            if (!templates['Work Day']) templates['Work Day'] = [];
+            if (!templates['Off Day']) templates['Off Day'] = oldState.activities?.['Holiday'] || [];
+
+            // Build weekdayTemplates from old weekAssignments
+            const weekdayTemplates = {};
+            const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+            const oldAssignments = oldState.weekAssignments || {
+                'Monday': 'Work Day', 'Tuesday': 'Work Day', 'Wednesday': 'Work Day',
+                'Thursday': 'Work Day', 'Friday': 'Work Day', 'Saturday': 'Off Day', 'Sunday': 'Off Day'
+            };
+
+            weekDays.forEach(day => {
+                weekdayTemplates[day] = {
+                    baseType: oldAssignments[day] || 'Work Day',
+                    custom: null  // No weekday customizations in V2
+                };
+            });
+
+            return {
+                // V3 structure
+                version: 3,
+                templates: templates,
+                weekdayTemplates: weekdayTemplates,
+                dayOverrides: oldState.dayOverrides || {},
+
+                // Keep legacy properties for backward compatibility
+                dayTypes: oldState.dayTypes || ['Work Day', 'Off Day', 'Holiday'],
+                currentDayType: oldState.currentDayType || 'Work Day',
+                currentView: oldState.currentView || 'activities',
+                currentMainView: oldState.currentMainView || 'daily',
+                categoryColors: oldState.categoryColors || { ...defaultCategoryColors }
+            };
+        }
+
+        // V3 Activity Resolution: Get activities for a specific date
+        function getActivitiesForDate(date) {
+            const effectiveDayType = getEffectiveDayTypeForDate(date);
+            const weekday = getWeekdayName(date);
+
+            // Work-like days use weekday templates
+            if (isWorkLike(effectiveDayType)) {
+                const weekdayTemplate = state.weekdayTemplates?.[weekday];
+                if (weekdayTemplate && weekdayTemplate.custom) {
+                    return weekdayTemplate.custom;
+                }
+                // Fall back to base template
+                return state.templates?.['Work Day'] || [];
+            }
+
+            // Off-like days ignore weekday customizations
+            return state.templates?.['Off Day'] || [];
+        }
+
+        function getEffectiveDayTypeForDate(date) {
+            const year = date.getFullYear();
+            const month = date.getMonth();
+            const day = date.getDate();
+            const dateString = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+
+            // Priority 1: Explicit date override
+            if (state.dayOverrides && state.dayOverrides[dateString]) {
+                return state.dayOverrides[dateString];
+            }
+
+            // Priority 2: Default weekday assignment
+            const weekday = getWeekdayName(date);
+            const weekdayTemplate = state.weekdayTemplates?.[weekday];
+            if (weekdayTemplate) {
+                return weekdayTemplate.baseType;
+            }
+
+            // Fallback for weekends
+            const dayOfWeek = date.getDay();
+            if (dayOfWeek === 0 || dayOfWeek === 6) {
+                return 'Off Day';
+            }
+            return 'Work Day';
+        }
+
+        function getWeekdayName(date) {
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            return days[date.getDay()];
+        }
+
+        // Helper to get the base day type for a weekday (V3 compatible)
+        function getWeekdayBaseType(day) {
+            if (state.weekdayTemplates && state.weekdayTemplates[day]) {
+                return state.weekdayTemplates[day].baseType;
+            }
+            // Default
+            return (day === 'Saturday' || day === 'Sunday') ? 'Off Day' : 'Work Day';
+        }
+
+        // Helper to set the base day type for a weekday (V3 compatible)
+        function setWeekdayBaseType(day, dayType) {
+            if (!state.weekdayTemplates) {
+                state.weekdayTemplates = {};
+            }
+            if (!state.weekdayTemplates[day]) {
+                state.weekdayTemplates[day] = { baseType: dayType, custom: null };
+            } else {
+                state.weekdayTemplates[day].baseType = dayType;
+            }
+        }
+
         let state = {
+            // V3 Data Model
+            version: 3,
+
+            // TIER 1: Day Type Templates (Base Patterns)
+            templates: { 'Work Day': [], 'Off Day': [], 'Holiday': [] },
+
+            // TIER 2: Weekday Templates (Per-Weekday Customizations)
+            weekdayTemplates: {
+                'Monday':    { baseType: 'Work Day', custom: null },
+                'Tuesday':   { baseType: 'Work Day', custom: null },
+                'Wednesday': { baseType: 'Work Day', custom: null },
+                'Thursday':  { baseType: 'Work Day', custom: null },
+                'Friday':    { baseType: 'Work Day', custom: null },
+                'Saturday':  { baseType: 'Off Day', custom: null },
+                'Sunday':    { baseType: 'Off Day', custom: null }
+            },
+
+            // TIER 3: Year View Overrides (Date-Specific)
+            dayOverrides: {},
+
+            // Legacy/UI properties
             dayTypes: ['Work Day', 'Off Day', 'Holiday'],
             currentDayType: 'Work Day',
             currentView: 'activities',
             currentMainView: 'daily',
-            activities: { 'Work Day': [], 'Off Day': [], 'Holiday': [] },
-            weekAssignments: {
-                'Monday': 'Work Day', 'Tuesday': 'Work Day', 'Wednesday': 'Work Day',
-                'Thursday': 'Work Day', 'Friday': 'Work Day', 'Saturday': 'Off Day', 'Sunday': 'Off Day'
-            },
-            categoryColors: { ...defaultCategoryColors },
-            dayOverrides: {} // Format: { "2026-01-15": "vacation", "2026-12-25": "holiday" }
+            categoryColors: { ...defaultCategoryColors }
         };
 
         function initExampleData() {
             const saved = localStorage.getItem('dailyPlannerStateLight');
             if (saved) {
-                state = JSON.parse(saved);
-                if (!state.weekAssignments) {
-                    state.weekAssignments = {
-                        'Monday': 'Work Day', 'Tuesday': 'Work Day', 'Wednesday': 'Work Day',
-                        'Thursday': 'Work Day', 'Friday': 'Work Day', 'Saturday': 'Off Day', 'Sunday': 'Off Day'
+                let loadedState = JSON.parse(saved);
+
+                // Migrate V2 to V3 if needed
+                if (!loadedState.version || loadedState.version < 3) {
+                    console.log('Migrating state from V2 to V3...');
+                    loadedState = migrateV2toV3(loadedState);
+                    // Save migrated state
+                    localStorage.setItem('dailyPlannerStateLight', JSON.stringify(loadedState));
+                    console.log('Migration complete.');
+                }
+
+                state = loadedState;
+
+                // Ensure required properties exist
+                if (!state.templates) state.templates = { 'Work Day': [], 'Off Day': [], 'Holiday': [] };
+                if (!state.weekdayTemplates) {
+                    state.weekdayTemplates = {
+                        'Monday':    { baseType: 'Work Day', custom: null },
+                        'Tuesday':   { baseType: 'Work Day', custom: null },
+                        'Wednesday': { baseType: 'Work Day', custom: null },
+                        'Thursday':  { baseType: 'Work Day', custom: null },
+                        'Friday':    { baseType: 'Work Day', custom: null },
+                        'Saturday':  { baseType: 'Off Day', custom: null },
+                        'Sunday':    { baseType: 'Off Day', custom: null }
                     };
                 }
                 if (!state.categoryColors) {
@@ -2282,21 +2456,28 @@
                 if (!state.dayOverrides) {
                     state.dayOverrides = {};
                 }
+
                 // Load Geneva holidays for current year view
                 loadGenevaHolidays(new Date().getFullYear());
                 updateCategories();
                 return;
             }
 
-            // No saved data - load example data for new users
+            // No saved data - load example data for new users with V3 structure
+            state.version = 3;
             state.categoryColors = { ...defaultCategoryColors };
-            state.weekAssignments = {
-                'Monday': 'Work Day', 'Tuesday': 'Work Day', 'Wednesday': 'Work Day',
-                'Thursday': 'Work Day', 'Friday': 'Work Day', 'Saturday': 'Off Day', 'Sunday': 'Off Day'
+            state.weekdayTemplates = {
+                'Monday':    { baseType: 'Work Day', custom: null },
+                'Tuesday':   { baseType: 'Work Day', custom: null },
+                'Wednesday': { baseType: 'Work Day', custom: null },
+                'Thursday':  { baseType: 'Work Day', custom: null },
+                'Friday':    { baseType: 'Work Day', custom: null },
+                'Saturday':  { baseType: 'Off Day', custom: null },
+                'Sunday':    { baseType: 'Off Day', custom: null }
             };
 
-            // Example Work Day
-            state.activities['Work Day'] = [
+            // Example Work Day Template
+            state.templates['Work Day'] = [
                 { id: 1, name: 'Sleep', startTime: '22:30', endTime: '06:30', category: 'myself' },
                 { id: 2, name: 'Morning Routine', startTime: '06:30', endTime: '07:15', category: 'myself' },
                 { id: 3, name: 'Breakfast with Family', startTime: '07:15', endTime: '07:45', category: 'family' },
@@ -2312,8 +2493,8 @@
                 { id: 13, name: 'Reading & Wind Down', startTime: '21:00', endTime: '22:30', category: 'myself' }
             ];
 
-            // Example Off Day
-            state.activities['Off Day'] = [
+            // Example Off Day Template
+            state.templates['Off Day'] = [
                 { id: 101, name: 'Sleep In', startTime: '23:00', endTime: '08:00', category: 'myself' },
                 { id: 102, name: 'Lazy Morning', startTime: '08:00', endTime: '09:30', category: 'myself' },
                 { id: 103, name: 'Brunch', startTime: '09:30', endTime: '10:30', category: 'family' },
@@ -2325,8 +2506,8 @@
                 { id: 109, name: 'Movie Night', startTime: '21:00', endTime: '23:00', category: 'family' }
             ];
 
-            // Example Holiday
-            state.activities['Holiday'] = [
+            // Example Holiday Template
+            state.templates['Holiday'] = [
                 { id: 201, name: 'Sleep', startTime: '00:00', endTime: '09:00', category: 'myself' },
                 { id: 202, name: 'Breakfast', startTime: '09:00', endTime: '10:00', category: 'family' },
                 { id: 203, name: 'Exploration', startTime: '10:00', endTime: '13:00', category: 'family' },
@@ -2460,7 +2641,7 @@
             svg += `<circle cx="${cx}" cy="${cy}" r="${outerRadius}" class="clock-face"/>`;
             
             // 2. Draw activity arcs FIRST (so they're behind everything else)
-            const activities = state.activities[state.currentDayType] || [];
+            const activities = state.templates[state.currentDayType] || [];
             if (state.currentView === 'categories') {
                 const categorySegments = {};
                 activities.forEach(activity => {
@@ -2524,8 +2705,8 @@
 
             weekDays.forEach((day, dayIndex) => {
                 const isWeekend = dayIndex >= 5;
-                const dayType = state.weekAssignments[day];
-                const activities = state.activities[dayType] || [];
+                const dayType = getWeekdayBaseType(day);
+                const activities = state.templates[dayType] || [];
 
                 html += `<div class="day-column ${isWeekend ? 'weekend' : ''}">`;
                 html += `<div class="day-column-header"><div class="day-name">${day}</div>`;
@@ -2568,7 +2749,7 @@
         }
 
         function setWeekDayType(day, dayType) {
-            state.weekAssignments[day] = dayType;
+            setWeekdayBaseType(day, dayType);
             renderWeeklyView();
             saveToStorage();
         }
@@ -2584,7 +2765,7 @@
             Object.keys(categories).forEach(cat => weeklyTotals[cat] = 0);
 
             weekDays.forEach(day => {
-                const activities = state.activities[state.weekAssignments[day]] || [];
+                const activities = state.templates[getWeekdayBaseType(day)] || [];
                 activities.forEach(activity => {
                     let duration = timeToMinutes(activity.endTime) - timeToMinutes(activity.startTime);
                     if (duration < 0) duration += 1440;
@@ -2638,11 +2819,11 @@
             if (state.dayOverrides && state.dayOverrides[dateString]) {
                 return state.dayOverrides[dateString];
             }
-            // Fall back to week pattern
+            // Fall back to week pattern using V3 weekdayTemplates
             const date = new Date(year, month, day);
             const dayOfWeek = date.getDay();
             const dayName = weekDays[dayOfWeek === 0 ? 6 : dayOfWeek - 1];
-            return state.weekAssignments[dayName] || 'Work Day';
+            return getWeekdayBaseType(dayName);
         }
 
         function isWeekend(year, month, day) {
@@ -2920,7 +3101,7 @@
                 <div class="tooltip-name">${activity.name}</div>
                 <div class="tooltip-time">${activity.startTime} - ${activity.endTime} (${formatDuration(duration)})</div>
                 <span class="tooltip-category" style="background: ${getCategoryColor(activity.category)}20; color: ${getCategoryColor(activity.category)}">${categoryLabels[activity.category]}</span>
-                <div class="tooltip-day">${day} • ${state.weekAssignments[day]}</div>
+                <div class="tooltip-day">${day} • ${getWeekdayBaseType(day)}</div>
             `;
             document.getElementById('tooltip').style.display = 'block';
             moveTooltip(event);
@@ -2985,7 +3166,7 @@
         }
 
         function renderActivitiesList() {
-            const activities = state.activities[state.currentDayType] || [];
+            const activities = state.templates[state.currentDayType] || [];
             if (activities.length === 0) {
                 document.getElementById('activitiesList').innerHTML = `<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><p>No activities yet. Add your first one above!</p></div>`;
                 return;
@@ -3010,7 +3191,7 @@
         }
 
         function editActivity(id) {
-            const activity = state.activities[state.currentDayType].find(a => a.id === id);
+            const activity = state.templates[state.currentDayType].find(a => a.id === id);
             if (!activity) return;
             
             editingActivityId = id;
@@ -3067,13 +3248,13 @@
             // Auto-detect: if color differs from category color, it's custom
             const customColor = (selectedColor.toLowerCase() !== categoryColor.toLowerCase()) ? selectedColor : null;
 
-            if (!state.activities[state.currentDayType]) state.activities[state.currentDayType] = [];
+            if (!state.templates[state.currentDayType]) state.templates[state.currentDayType] = [];
 
             if (editingActivityId) {
                 // Update existing activity
-                const activityIndex = state.activities[state.currentDayType].findIndex(a => a.id === editingActivityId);
+                const activityIndex = state.templates[state.currentDayType].findIndex(a => a.id === editingActivityId);
                 if (activityIndex !== -1) {
-                    state.activities[state.currentDayType][activityIndex] = {
+                    state.templates[state.currentDayType][activityIndex] = {
                         id: editingActivityId,
                         name,
                         startTime,
@@ -3092,7 +3273,7 @@
                 document.getElementById('cancelEditBtn').style.display = 'none';
             } else {
                 // Add new activity
-                state.activities[state.currentDayType].push({
+                state.templates[state.currentDayType].push({
                     id: Date.now(),
                     name,
                     startTime,
@@ -3102,7 +3283,7 @@
                 });
             }
 
-            state.activities[state.currentDayType].sort((a, b) => timeToMinutes(a.startTime) - timeToMinutes(b.startTime));
+            state.templates[state.currentDayType].sort((a, b) => timeToMinutes(a.startTime) - timeToMinutes(b.startTime));
             document.getElementById('activityForm').reset();
             document.getElementById('activityColor').value = getCategoryColor('work');
             renderClocks(); renderActivitiesList(); renderSummaryStats(); renderLegend(); renderWeeklyView(); saveToStorage();
@@ -3119,7 +3300,7 @@
 
             // Wait for animation then remove
             setTimeout(() => {
-                state.activities[state.currentDayType] = state.activities[state.currentDayType].filter(a => a.id !== id);
+                state.templates[state.currentDayType] = state.templates[state.currentDayType].filter(a => a.id !== id);
                 renderClocks(); renderActivitiesList(); renderSummaryStats(); renderLegend(); renderWeeklyView(); saveToStorage();
             }, 250);
         }
@@ -3131,7 +3312,7 @@
                     `<div class="legend-item"><div class="legend-color" style="background: ${value.color}"></div><span>${value.label}</span></div>`
                 ).join('');
             } else {
-                const activities = state.activities[state.currentDayType] || [];
+                const activities = state.templates[state.currentDayType] || [];
                 document.getElementById('legend').innerHTML = activities.map((activity, index) =>
                     `<div class="legend-item"><div class="legend-color" style="background: ${getActivityColor(activity, index)}"></div><span>${activity.name}</span></div>`
                 ).join('');
@@ -3139,7 +3320,7 @@
         }
 
         function renderSummaryStats() {
-            const activities = state.activities[state.currentDayType] || [];
+            const activities = state.templates[state.currentDayType] || [];
             const categoryMinutes = {};
             Object.keys(categories).forEach(cat => categoryMinutes[cat] = 0);
             activities.forEach(activity => {
@@ -3232,7 +3413,7 @@
             const name = document.getElementById('newDayTypeName').value.trim();
             if (name && !state.dayTypes.includes(name)) {
                 state.dayTypes.push(name);
-                state.activities[name] = [];
+                state.templates[name] = [];
                 document.getElementById('newDayTypeName').value = '';
                 renderDayTypeList(); renderDayTypeSelector(); renderWeeklyView(); saveToStorage();
             }
@@ -3241,8 +3422,8 @@
         function removeDayType(type) {
             if (state.dayTypes.length > 1) {
                 state.dayTypes = state.dayTypes.filter(t => t !== type);
-                delete state.activities[type];
-                weekDays.forEach(day => { if (state.weekAssignments[day] === type) state.weekAssignments[day] = state.dayTypes[0]; });
+                delete state.templates[type];
+                weekDays.forEach(day => { if (getWeekdayBaseType(day) === type) setWeekdayBaseType(day, state.dayTypes[0]); });
                 if (state.currentDayType === type) state.currentDayType = state.dayTypes[0];
                 renderDayTypeList(); renderDayTypeSelector(); renderClocks(); renderActivitiesList(); renderSummaryStats(); renderWeeklyView(); saveToStorage();
             }
@@ -3264,8 +3445,12 @@
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     try {
-                        state = JSON.parse(e.target.result);
-                        if (!state.weekAssignments) state.weekAssignments = { 'Monday': 'Work Day', 'Tuesday': 'Work Day', 'Wednesday': 'Work Day', 'Thursday': 'Work Day', 'Friday': 'Work Day', 'Saturday': 'Off Day', 'Sunday': 'Off Day' };
+                        let imported = JSON.parse(e.target.result);
+                        // Migrate imported data to V3 if needed
+                        if (!imported.version || imported.version < 3) {
+                            imported = migrateV2toV3(imported);
+                        }
+                        state = imported;
                         saveToStorage(); init();
                     } catch (err) { alert('Invalid file format'); }
                 };
@@ -3275,25 +3460,33 @@
 
         function clearCurrentDay() {
             if (confirm(`Clear all activities for "${state.currentDayType}"?`)) {
-                state.activities[state.currentDayType] = [];
+                state.templates[state.currentDayType] = [];
                 renderClocks(); renderActivitiesList(); renderSummaryStats(); renderWeeklyView(); saveToStorage();
             }
         }
 
         function loadExampleData() {
             if (!confirm('This will replace all current data with example data. Continue?')) return;
-            
-            // Reset state
+
+            // Reset state with V3 structure
+            state.version = 3;
             state.dayTypes = ['Work Day', 'Off Day', 'Holiday'];
             state.currentDayType = 'Work Day';
             state.categoryColors = { ...defaultCategoryColors };
-            state.weekAssignments = {
-                'Monday': 'Work Day', 'Tuesday': 'Work Day', 'Wednesday': 'Work Day',
-                'Thursday': 'Work Day', 'Friday': 'Work Day', 'Saturday': 'Off Day', 'Sunday': 'Off Day'
+            state.weekdayTemplates = {
+                'Monday':    { baseType: 'Work Day', custom: null },
+                'Tuesday':   { baseType: 'Work Day', custom: null },
+                'Wednesday': { baseType: 'Work Day', custom: null },
+                'Thursday':  { baseType: 'Work Day', custom: null },
+                'Friday':    { baseType: 'Work Day', custom: null },
+                'Saturday':  { baseType: 'Off Day', custom: null },
+                'Sunday':    { baseType: 'Off Day', custom: null }
             };
+            state.dayOverrides = {};
+            loadGenevaHolidays(2026);
 
             // Example Work Day
-            state.activities['Work Day'] = [
+            state.templates['Work Day'] = [
                 { id: 1, name: 'Sleep', startTime: '22:30', endTime: '06:30', category: 'myself' },
                 { id: 2, name: 'Morning Routine', startTime: '06:30', endTime: '07:15', category: 'myself' },
                 { id: 3, name: 'Breakfast with Family', startTime: '07:15', endTime: '07:45', category: 'family' },
@@ -3310,7 +3503,7 @@
             ];
 
             // Example Off Day
-            state.activities['Off Day'] = [
+            state.templates['Off Day'] = [
                 { id: 101, name: 'Sleep In', startTime: '23:00', endTime: '08:00', category: 'myself' },
                 { id: 102, name: 'Lazy Morning', startTime: '08:00', endTime: '09:30', category: 'myself' },
                 { id: 103, name: 'Brunch', startTime: '09:30', endTime: '10:30', category: 'family' },
@@ -3323,7 +3516,7 @@
             ];
 
             // Example Holiday
-            state.activities['Holiday'] = [
+            state.templates['Holiday'] = [
                 { id: 201, name: 'Sleep', startTime: '00:00', endTime: '09:00', category: 'myself' },
                 { id: 202, name: 'Breakfast', startTime: '09:00', endTime: '10:00', category: 'family' },
                 { id: 203, name: 'Exploration', startTime: '10:00', endTime: '13:00', category: 'family' },
@@ -3363,41 +3556,41 @@
         function getWeeklyDataByDay() {
             const data = {};
             Object.keys(categories).forEach(cat => data[cat] = []);
-            
+
             weekDays.forEach(day => {
-                const dayType = state.weekAssignments[day];
-                const acts = state.activities[dayType] || [];
+                const dayType = getWeekdayBaseType(day);
+                const acts = state.templates[dayType] || [];
                 const dayTotals = {};
                 Object.keys(categories).forEach(cat => dayTotals[cat] = 0);
-                
+
                 acts.forEach(activity => {
                     let duration = timeToMinutes(activity.endTime) - timeToMinutes(activity.startTime);
                     if (duration < 0) duration += 1440;
                     dayTotals[activity.category] += duration;
                 });
-                
+
                 Object.keys(categories).forEach(cat => {
                     data[cat].push(dayTotals[cat] / 60); // Convert to hours
                 });
             });
-            
+
             return data;
         }
 
         function getWeeklyTotals() {
             const totals = {};
             Object.keys(categories).forEach(cat => totals[cat] = 0);
-            
+
             weekDays.forEach(day => {
-                const dayType = state.weekAssignments[day];
-                const acts = state.activities[dayType] || [];
+                const dayType = getWeekdayBaseType(day);
+                const acts = state.templates[dayType] || [];
                 acts.forEach(activity => {
                     let duration = timeToMinutes(activity.endTime) - timeToMinutes(activity.startTime);
                     if (duration < 0) duration += 1440;
                     totals[activity.category] += duration;
                 });
             });
-            
+
             return totals;
         }
 
@@ -3407,7 +3600,7 @@
                 result[dayType] = {};
                 Object.keys(categories).forEach(cat => result[dayType][cat] = 0);
                 
-                const acts = state.activities[dayType] || [];
+                const acts = state.templates[dayType] || [];
                 acts.forEach(activity => {
                     let duration = timeToMinutes(activity.endTime) - timeToMinutes(activity.startTime);
                     if (duration < 0) duration += 1440;
