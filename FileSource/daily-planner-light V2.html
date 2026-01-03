@@ -1416,8 +1416,16 @@
             color: #27ae60;
         }
 
-        .year-stat-value.off-days {
-            color: #e74c3c;
+        .year-stat-value.holiday {
+            color: #f39c12;
+        }
+
+        .year-stat-value.vacation {
+            color: #3498db;
+        }
+
+        .year-stat-value.weekend {
+            color: #9b59b6;
         }
 
         .year-stat-label {
@@ -2173,6 +2181,77 @@
             'sick': { label: 'Sick Day', class: 'sick', color: '#f5eef8' }
         };
 
+        // Geneva (Switzerland) Official Public Holidays 2023-2027
+        const genevaHolidays = {
+            2023: [
+                { date: '2023-01-01', name: 'Nouvel An' },
+                { date: '2023-04-07', name: 'Vendredi-Saint' },
+                { date: '2023-04-10', name: 'Lundi de Paques' },
+                { date: '2023-05-18', name: 'Jeudi de l\'Ascension' },
+                { date: '2023-05-29', name: 'Lundi de Pentecote' },
+                { date: '2023-08-01', name: 'Fete nationale' },
+                { date: '2023-09-07', name: 'Jeune genevois' },
+                { date: '2023-12-25', name: 'Noel' },
+                { date: '2023-12-31', name: 'Restauration de la Republique' }
+            ],
+            2024: [
+                { date: '2024-01-01', name: 'Nouvel An' },
+                { date: '2024-03-29', name: 'Vendredi-Saint' },
+                { date: '2024-04-01', name: 'Lundi de Paques' },
+                { date: '2024-05-09', name: 'Jeudi de l\'Ascension' },
+                { date: '2024-05-20', name: 'Lundi de Pentecote' },
+                { date: '2024-08-01', name: 'Fete nationale' },
+                { date: '2024-09-05', name: 'Jeune genevois' },
+                { date: '2024-12-25', name: 'Noel' },
+                { date: '2024-12-31', name: 'Restauration de la Republique' }
+            ],
+            2025: [
+                { date: '2025-01-01', name: 'Nouvel An' },
+                { date: '2025-04-18', name: 'Vendredi-Saint' },
+                { date: '2025-04-21', name: 'Lundi de Paques' },
+                { date: '2025-05-29', name: 'Jeudi de l\'Ascension' },
+                { date: '2025-06-09', name: 'Lundi de Pentecote' },
+                { date: '2025-08-01', name: 'Fete nationale' },
+                { date: '2025-09-11', name: 'Jeune genevois' },
+                { date: '2025-12-25', name: 'Noel' },
+                { date: '2025-12-31', name: 'Restauration de la Republique' }
+            ],
+            2026: [
+                { date: '2026-01-01', name: 'Nouvel An' },
+                { date: '2026-04-03', name: 'Vendredi-Saint' },
+                { date: '2026-04-06', name: 'Lundi de Paques' },
+                { date: '2026-05-14', name: 'Jeudi de l\'Ascension' },
+                { date: '2026-05-25', name: 'Lundi de Pentecote' },
+                { date: '2026-08-01', name: 'Fete nationale' },
+                { date: '2026-09-10', name: 'Jeune genevois' },
+                { date: '2026-12-25', name: 'Noel' },
+                { date: '2026-12-31', name: 'Restauration de la Republique' }
+            ],
+            2027: [
+                { date: '2027-01-01', name: 'Nouvel An' },
+                { date: '2027-03-26', name: 'Vendredi-Saint' },
+                { date: '2027-03-29', name: 'Lundi de Paques' },
+                { date: '2027-05-06', name: 'Jeudi de l\'Ascension' },
+                { date: '2027-05-17', name: 'Lundi de Pentecote' },
+                { date: '2027-08-01', name: 'Fete nationale' },
+                { date: '2027-09-09', name: 'Jeune genevois' },
+                { date: '2027-12-25', name: 'Noel' },
+                { date: '2027-12-31', name: 'Restauration de la Republique' }
+            ]
+        };
+
+        // Function to load Geneva holidays for a given year
+        function loadGenevaHolidays(year) {
+            const holidays = genevaHolidays[year];
+            if (!holidays) return;
+
+            holidays.forEach(h => {
+                if (!state.dayOverrides[h.date]) {
+                    state.dayOverrides[h.date] = 'Public Holiday';
+                }
+            });
+        }
+
         let state = {
             dayTypes: ['Work Day', 'Off Day', 'Holiday'],
             currentDayType: 'Work Day',
@@ -2203,6 +2282,8 @@
                 if (!state.dayOverrides) {
                     state.dayOverrides = {};
                 }
+                // Load Geneva holidays for current year view
+                loadGenevaHolidays(new Date().getFullYear());
                 updateCategories();
                 return;
             }
@@ -2256,6 +2337,10 @@
                 { id: 208, name: 'Evening Walk', startTime: '22:00', endTime: '23:00', category: 'myself' },
                 { id: 209, name: 'Sleep', startTime: '23:00', endTime: '24:00', category: 'myself' }
             ];
+
+            // Initialize dayOverrides and load Geneva holidays
+            state.dayOverrides = {};
+            loadGenevaHolidays(2026); // Load 2026 holidays for new users
 
             updateCategories();
         }
@@ -2527,6 +2612,9 @@
 
         function changeYear(delta) {
             currentYear += delta;
+            // Load Geneva holidays for the new year
+            loadGenevaHolidays(currentYear);
+            saveToStorage();
             renderYearView();
         }
 
@@ -2572,7 +2660,9 @@
 
         function calculateYearStats(year) {
             let workDays = 0;
-            let daysOff = 0; // All non-work days combined
+            let publicHolidays = 0;
+            let daysOffTaken = 0; // Vacation + Sick
+            let weekends = 0;
             const monthlyStats = [];
 
             for (let month = 0; month < 12; month++) {
@@ -2583,27 +2673,23 @@
                 for (let day = 1; day <= daysInMonth; day++) {
                     const dayType = getDayType(year, month, day);
                     const weekend = isWeekend(year, month, day);
-                    const dateString = getDateString(year, month, day);
-                    const hasOverride = state.dayOverrides && state.dayOverrides[dateString];
 
-                    // Determine if it's a work day or off day
-                    let isWorkDay = false;
-                    if (hasOverride) {
-                        isWorkDay = (dayType === 'work');
-                    } else if (weekend) {
-                        isWorkDay = false;
-                    } else if (dayType === 'Holiday' || dayType === 'Off Day') {
-                        isWorkDay = false;
+                    // Count by category
+                    if (dayType === 'Public Holiday') {
+                        publicHolidays++;
+                        monthOff++;
+                    } else if (dayType === 'Vacation' || dayType === 'Sick Day') {
+                        daysOffTaken++;
+                        monthOff++;
+                    } else if (dayType === 'Weekend' || weekend) {
+                        weekends++;
+                        monthOff++;
+                    } else if (dayType === 'Off Day') {
+                        monthOff++;
                     } else {
-                        isWorkDay = true; // Work Day, Remote Day, etc.
-                    }
-
-                    if (isWorkDay) {
+                        // Work Day, Remote Day, etc.
                         workDays++;
                         monthWork++;
-                    } else {
-                        daysOff++;
-                        monthOff++;
                     }
                 }
 
@@ -2614,32 +2700,42 @@
                 });
             }
 
-            const totalDays = workDays + daysOff;
+            const totalDays = 365 + (isLeapYear(year) ? 1 : 0);
             return {
                 workDays,
-                daysOff,
+                publicHolidays,
+                daysOffTaken,
+                weekends,
                 totalDays,
-                workPercent: ((workDays / totalDays) * 100).toFixed(1),
-                offPercent: ((daysOff / totalDays) * 100).toFixed(1),
                 monthlyStats
             };
+        }
+
+        function isLeapYear(year) {
+            return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
         }
 
         function renderYearView() {
             document.getElementById('yearTitle').textContent = currentYear;
             const stats = calculateYearStats(currentYear);
 
-            // Render year stats summary (simplified: Work vs Off)
+            // Render year stats summary with detailed KPIs
             document.getElementById('yearStatsSummary').innerHTML = `
                 <div class="year-stat-box">
                     <div class="year-stat-value work-days">${stats.workDays}</div>
                     <div class="year-stat-label">Work Days</div>
-                    <div class="year-stat-percent">${stats.workPercent}%</div>
                 </div>
                 <div class="year-stat-box">
-                    <div class="year-stat-value off-days">${stats.daysOff}</div>
-                    <div class="year-stat-label">Days Off</div>
-                    <div class="year-stat-percent">${stats.offPercent}%</div>
+                    <div class="year-stat-value holiday">${stats.publicHolidays}</div>
+                    <div class="year-stat-label">Public Holidays</div>
+                </div>
+                <div class="year-stat-box">
+                    <div class="year-stat-value vacation">${stats.daysOffTaken}</div>
+                    <div class="year-stat-label">Days Off Taken</div>
+                </div>
+                <div class="year-stat-box">
+                    <div class="year-stat-value weekend">${stats.weekends}</div>
+                    <div class="year-stat-label">Weekends</div>
                 </div>
                 <div class="year-stat-box">
                     <div class="year-stat-value">${stats.totalDays}</div>
