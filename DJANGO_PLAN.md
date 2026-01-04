@@ -1502,5 +1502,854 @@ python-dotenv>=1.0
 
 ---
 
-*Document Version: 1.0*
+## 11. Strategic Planning Module (New Feature)
+
+### 11.1 Concept: Purpose-to-Action Hierarchy
+
+Transform the app from a time planner into a **life management system** by linking daily activities to higher-level purpose:
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                        VISION / MISSION / VALUES                        │
+│                            (Why I exist)                                │
+│                                                                         │
+│  Vision:  "Become a recognized expert in AI and build impactful tools" │
+│  Mission: "Help people make better use of their time through software" │
+│  Values:  [Excellence] [Family First] [Continuous Learning] [Health]   │
+└─────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                          STRATEGIC PILLARS                              │
+│           (Where I choose to play & How I will win)                     │
+│                                                                         │
+│  1. "Build a SaaS product and launch it"                               │
+│  2. "Maintain work-life balance (max 45h/week work)"                   │
+│  3. "Improve health through consistent exercise"                        │
+│  4. "Spend quality time with family every weekend"                      │
+└─────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                      PORTFOLIOS / LIFE AREAS                            │
+│                   (Buckets that group related work)                     │
+│                                                                         │
+│  [Career]        [Health]        [Family]        [Personal Growth]     │
+│   └─ Pillar 1     └─ Pillar 3     └─ Pillar 4     └─ Pillar 2          │
+│   └─ Pillar 2                                                           │
+└─────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         PROJECTS / GOALS                                │
+│                    (Specific initiatives with deadlines)                │
+│                                                                         │
+│  Career Portfolio:                                                      │
+│   ├─ Project: "Launch Daily Planner SaaS" (Q1 2026)                    │
+│   │    └─ Goal: "Get 100 paying users by March"                        │
+│   └─ Project: "Learn Django" (ongoing)                                 │
+│        └─ Goal: "Complete tutorial by Jan 15"                          │
+│                                                                         │
+│  Health Portfolio:                                                      │
+│   └─ Project: "Gym routine" (ongoing)                                  │
+│        └─ Goal: "Exercise 3x per week"                                 │
+└─────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                            ACTIVITIES                                   │
+│                      (Daily time blocks) ← Already built                │
+│                                                                         │
+│  Monday 08:00-12:00: "Deep Work - Planner Feature"                     │
+│       └─ Linked to: Project "Launch Daily Planner SaaS"                │
+│       └─ Category: Work                                                 │
+│       └─ Contributes to: Pillar 1, Portfolio: Career                   │
+│                                                                         │
+│  Monday 18:00-19:00: "Gym"                                             │
+│       └─ Linked to: Project "Gym routine"                              │
+│       └─ Category: Myself                                              │
+│       └─ Contributes to: Pillar 3, Portfolio: Health                   │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+### 11.2 Data Models
+
+```python
+# apps/strategy/models.py
+
+from django.db import models
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
+
+class PersonalFoundation(models.Model):
+    """User's vision, mission, and core values - the 'Why'"""
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='foundation')
+
+    vision = models.TextField(
+        blank=True,
+        help_text="Long-term vision: What does your ideal future look like?"
+    )
+    mission = models.TextField(
+        blank=True,
+        help_text="Personal mission: What is your purpose? How do you create value?"
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Foundation for {self.user.username}"
+
+
+class Value(models.Model):
+    """Core values that guide decisions"""
+    foundation = models.ForeignKey(
+        PersonalFoundation,
+        on_delete=models.CASCADE,
+        related_name='values'
+    )
+    name = models.CharField(max_length=50)  # "Excellence", "Family", "Health"
+    description = models.TextField(blank=True)
+    icon = models.CharField(max_length=50, blank=True)  # Icon name or emoji
+    sort_order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['sort_order', 'name']
+
+    def __str__(self):
+        return self.name
+
+
+class StrategicPillar(models.Model):
+    """
+    Strategic pillars - based on 'Playing to Win' framework by A.G. Lafley & Roger Martin.
+
+    Each pillar answers:
+    - WHERE TO PLAY: Which arena/battlefield have you chosen?
+    - HOW TO WIN: What is your competitive advantage in that arena?
+
+    See also: Good Strategy Bad Strategy, Blue Ocean Strategy, Competitive Strategy
+    """
+    TIMEFRAME_CHOICES = [
+        ('year', 'This Year'),
+        ('quarter', 'This Quarter'),
+        ('custom', 'Custom Period'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='strategic_pillars')
+
+    title = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+
+    # Playing to Win framework fields
+    where_to_play = models.TextField(
+        blank=True,
+        help_text="Which arena/market/battlefield have you chosen to compete in?"
+    )
+    how_to_win = models.TextField(
+        blank=True,
+        help_text="What is your competitive advantage? How will you win in this arena?"
+    )
+
+    timeframe = models.CharField(max_length=10, choices=TIMEFRAME_CHOICES, default='year')
+    start_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
+
+    # Link to values this pillar supports
+    values = models.ManyToManyField(Value, blank=True, related_name='pillars')
+
+    is_active = models.BooleanField(default=True)
+    sort_order = models.PositiveIntegerField(default=0)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['sort_order', '-created_at']
+
+    def __str__(self):
+        return self.title
+
+
+class Portfolio(models.Model):
+    """Life areas / portfolios that group related work"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='portfolios')
+
+    name = models.CharField(max_length=100)  # "Career", "Health", "Family"
+    description = models.TextField(blank=True)
+    color = models.CharField(max_length=7, default='#3498db')  # Hex color
+    icon = models.CharField(max_length=50, blank=True)
+
+    # Link to strategic pillars this portfolio supports
+    pillars = models.ManyToManyField(
+        StrategicPillar,
+        blank=True,
+        related_name='portfolios'
+    )
+
+    # Link to category (for automatic activity association)
+    default_category = models.ForeignKey(
+        'planner.Category',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        help_text="Activities with this category auto-link to this portfolio"
+    )
+
+    is_active = models.BooleanField(default=True)
+    sort_order = models.PositiveIntegerField(default=0)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['sort_order', 'name']
+
+    def __str__(self):
+        return self.name
+
+
+class Project(models.Model):
+    """Specific initiatives within a portfolio"""
+    STATUS_CHOICES = [
+        ('planning', 'Planning'),
+        ('active', 'Active'),
+        ('on_hold', 'On Hold'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled'),
+    ]
+
+    portfolio = models.ForeignKey(
+        Portfolio,
+        on_delete=models.CASCADE,
+        related_name='projects'
+    )
+
+    name = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='planning')
+
+    start_date = models.DateField(null=True, blank=True)
+    target_end_date = models.DateField(null=True, blank=True)
+    actual_end_date = models.DateField(null=True, blank=True)
+
+    # Progress tracking
+    progress_percent = models.PositiveIntegerField(default=0)
+
+    # Link to strategic pillars
+    pillars = models.ManyToManyField(
+        StrategicPillar,
+        blank=True,
+        related_name='projects'
+    )
+
+    color = models.CharField(max_length=7, blank=True)  # Override portfolio color
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.portfolio.name} / {self.name}"
+
+    @property
+    def is_overdue(self):
+        from django.utils import timezone
+        if self.target_end_date and self.status == 'active':
+            return timezone.now().date() > self.target_end_date
+        return False
+
+
+class Goal(models.Model):
+    """Measurable goals within a project"""
+    TYPE_CHOICES = [
+        ('outcome', 'Outcome Goal'),  # "Get 100 users"
+        ('habit', 'Habit Goal'),       # "Exercise 3x/week"
+        ('milestone', 'Milestone'),    # "Complete phase 1"
+    ]
+
+    project = models.ForeignKey(
+        Project,
+        on_delete=models.CASCADE,
+        related_name='goals'
+    )
+
+    title = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+
+    goal_type = models.CharField(max_length=20, choices=TYPE_CHOICES, default='outcome')
+
+    # For measurable goals
+    target_value = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    current_value = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    unit = models.CharField(max_length=50, blank=True)  # "users", "hours", "kg"
+
+    # For habit goals
+    frequency = models.CharField(max_length=50, blank=True)  # "3x per week"
+
+    target_date = models.DateField(null=True, blank=True)
+    is_completed = models.BooleanField(default=False)
+    completed_at = models.DateTimeField(null=True, blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['target_date', '-created_at']
+
+    def __str__(self):
+        return self.title
+
+    @property
+    def progress_percent(self):
+        if self.target_value and self.current_value:
+            return min(100, int((self.current_value / self.target_value) * 100))
+        return 0 if not self.is_completed else 100
+
+
+class Roadmap(models.Model):
+    """High-level roadmap / timeline view"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='roadmaps')
+
+    name = models.CharField(max_length=200)  # "2026 Roadmap"
+    year = models.PositiveIntegerField()
+
+    description = models.TextField(blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ['user', 'year']
+
+    def __str__(self):
+        return self.name
+
+
+class RoadmapMilestone(models.Model):
+    """Milestones on the roadmap"""
+    QUARTER_CHOICES = [
+        (1, 'Q1'),
+        (2, 'Q2'),
+        (3, 'Q3'),
+        (4, 'Q4'),
+    ]
+
+    roadmap = models.ForeignKey(
+        Roadmap,
+        on_delete=models.CASCADE,
+        related_name='milestones'
+    )
+
+    title = models.CharField(max_length=200)
+    quarter = models.PositiveIntegerField(choices=QUARTER_CHOICES)
+
+    # Link to project/goal
+    project = models.ForeignKey(
+        Project,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
+    goal = models.ForeignKey(
+        Goal,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
+
+    is_completed = models.BooleanField(default=False)
+
+    sort_order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['quarter', 'sort_order']
+
+    def __str__(self):
+        return f"Q{self.quarter}: {self.title}"
+```
+
+### 11.3 Link Activities to Projects
+
+Update the Activity model to link to projects:
+
+```python
+# Update apps/planner/models.py
+
+class Activity(models.Model):
+    template = models.ForeignKey(DayTemplate, on_delete=models.CASCADE, related_name='activities')
+    name = models.CharField(max_length=100)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+    color = models.CharField(max_length=7, blank=True)
+    sort_order = models.PositiveIntegerField(default=0)
+
+    # NEW: Link to project (optional)
+    project = models.ForeignKey(
+        'strategy.Project',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='activities',
+        help_text="Link this activity to a project for tracking"
+    )
+
+    # ... rest of model
+
+
+class WeekdayActivity(models.Model):
+    # ... existing fields ...
+
+    # NEW: Link to project (optional)
+    project = models.ForeignKey(
+        'strategy.Project',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='weekday_activities'
+    )
+```
+
+### 11.4 Updated Project Structure
+
+```
+dailyplanner/
+├── apps/
+│   ├── accounts/           # User management
+│   ├── planner/            # Time planning (existing)
+│   │   ├── models.py       # Activity, DayTemplate, etc.
+│   │   └── ...
+│   │
+│   └── strategy/           # NEW: Strategic planning
+│       ├── __init__.py
+│       ├── models.py       # Foundation, Strategy, Portfolio, Project, Goal
+│       ├── views.py        # Strategy views
+│       ├── urls.py
+│       ├── forms.py
+│       ├── api.py          # HTMX endpoints
+│       ├── services.py     # Business logic (alignment calculations)
+│       └── templates/
+│           └── strategy/
+│               ├── dashboard.html      # Strategy overview
+│               ├── foundation.html     # Vision/Mission/Values editor
+│               ├── pillars.html        # Strategic pillars list
+│               ├── portfolios.html     # Portfolio management
+│               ├── projects.html       # Projects list
+│               ├── project_detail.html # Single project view
+│               ├── goals.html          # Goals tracking
+│               ├── roadmap.html        # Timeline view
+│               └── partials/
+│                   ├── _pillar_card.html
+│                   ├── _portfolio_card.html
+│                   ├── _project_card.html
+│                   ├── _goal_item.html
+│                   ├── _roadmap_quarter.html
+│                   └── _alignment_chart.html
+```
+
+### 11.5 URL Routes for Strategy Module
+
+```python
+# apps/strategy/urls.py
+
+from django.urls import path
+from . import views, api
+
+app_name = 'strategy'
+
+urlpatterns = [
+    # Main views
+    path('', views.StrategyDashboardView.as_view(), name='dashboard'),
+    path('foundation/', views.FoundationView.as_view(), name='foundation'),
+    path('pillars/', views.PillarsView.as_view(), name='pillars'),
+    path('portfolios/', views.PortfoliosView.as_view(), name='portfolios'),
+    path('projects/', views.ProjectsView.as_view(), name='projects'),
+    path('projects/<int:pk>/', views.ProjectDetailView.as_view(), name='project_detail'),
+    path('goals/', views.GoalsView.as_view(), name='goals'),
+    path('roadmap/', views.RoadmapView.as_view(), name='roadmap'),
+    path('roadmap/<int:year>/', views.RoadmapView.as_view(), name='roadmap_year'),
+
+    # HTMX API endpoints
+    path('api/foundation/save/', api.save_foundation, name='api_save_foundation'),
+    path('api/value/create/', api.create_value, name='api_create_value'),
+    path('api/value/<int:pk>/delete/', api.delete_value, name='api_delete_value'),
+
+    path('api/pillar/create/', api.create_pillar, name='api_create_pillar'),
+    path('api/pillar/<int:pk>/update/', api.update_pillar, name='api_update_pillar'),
+    path('api/pillar/<int:pk>/delete/', api.delete_pillar, name='api_delete_pillar'),
+
+    path('api/portfolio/create/', api.create_portfolio, name='api_create_portfolio'),
+    path('api/portfolio/<int:pk>/update/', api.update_portfolio, name='api_update_portfolio'),
+    path('api/portfolio/<int:pk>/delete/', api.delete_portfolio, name='api_delete_portfolio'),
+
+    path('api/project/create/', api.create_project, name='api_create_project'),
+    path('api/project/<int:pk>/update/', api.update_project, name='api_update_project'),
+    path('api/project/<int:pk>/delete/', api.delete_project, name='api_delete_project'),
+    path('api/project/<int:pk>/progress/', api.update_project_progress, name='api_project_progress'),
+
+    path('api/goal/create/', api.create_goal, name='api_create_goal'),
+    path('api/goal/<int:pk>/update/', api.update_goal, name='api_update_goal'),
+    path('api/goal/<int:pk>/toggle/', api.toggle_goal, name='api_toggle_goal'),
+    path('api/goal/<int:pk>/delete/', api.delete_goal, name='api_delete_goal'),
+
+    path('api/roadmap/milestone/create/', api.create_milestone, name='api_create_milestone'),
+    path('api/roadmap/milestone/<int:pk>/toggle/', api.toggle_milestone, name='api_toggle_milestone'),
+
+    # Analytics
+    path('api/alignment/', api.get_alignment_data, name='api_alignment'),
+    path('api/time-by-portfolio/', api.get_time_by_portfolio, name='api_time_by_portfolio'),
+    path('api/time-by-pillar/', api.get_time_by_pillar, name='api_time_by_pillar'),
+]
+```
+
+### 11.6 Strategy Service Layer
+
+```python
+# apps/strategy/services.py
+
+from datetime import timedelta
+from django.db.models import Sum
+from django.utils import timezone
+from .models import Portfolio, Project, StrategicPillar
+from apps.planner.models import Activity, WeekdayActivity
+
+
+class AlignmentAnalyzer:
+    """
+    Analyzes how well daily activities align with strategic priorities.
+    """
+
+    def __init__(self, user):
+        self.user = user
+
+    def get_weekly_time_by_portfolio(self):
+        """
+        Calculate total weekly time spent on each portfolio.
+        Returns dict: {portfolio_id: minutes}
+        """
+        portfolios = Portfolio.objects.filter(user=self.user, is_active=True)
+        result = {}
+
+        for portfolio in portfolios:
+            # Get time from activities linked to this portfolio's projects
+            project_ids = portfolio.projects.values_list('id', flat=True)
+
+            # Sum from template activities
+            template_time = Activity.objects.filter(
+                project_id__in=project_ids
+            ).aggregate(
+                total=Sum('duration_minutes')
+            )['total'] or 0
+
+            # Sum from weekday activities
+            weekday_time = WeekdayActivity.objects.filter(
+                project_id__in=project_ids
+            ).aggregate(
+                total=Sum('duration_minutes')
+            )['total'] or 0
+
+            # Also count activities by category if portfolio has default_category
+            if portfolio.default_category:
+                category_time = self._get_time_by_category(portfolio.default_category)
+                result[portfolio.id] = template_time + weekday_time + category_time
+            else:
+                result[portfolio.id] = template_time + weekday_time
+
+        return result
+
+    def get_weekly_time_by_pillar(self):
+        """
+        Calculate weekly time allocated to each strategic pillar.
+        """
+        pillars = StrategicPillar.objects.filter(user=self.user, is_active=True)
+        result = {}
+
+        for pillar in pillars:
+            total_time = 0
+
+            # Get all projects linked to this pillar
+            for project in pillar.projects.all():
+                total_time += self._get_project_weekly_time(project)
+
+            # Get all portfolios linked to this pillar
+            for portfolio in pillar.portfolios.all():
+                total_time += self._get_portfolio_weekly_time(portfolio)
+
+            result[pillar.id] = total_time
+
+        return result
+
+    def get_alignment_score(self):
+        """
+        Calculate overall alignment score (0-100).
+        Measures how much of your planned time goes to strategic pillars.
+        """
+        total_weekly_time = self._get_total_weekly_planned_time()
+        pillar_time = sum(self.get_weekly_time_by_pillar().values())
+
+        if total_weekly_time == 0:
+            return 0
+
+        return min(100, int((pillar_time / total_weekly_time) * 100))
+
+    def get_portfolio_balance(self):
+        """
+        Analyze balance across portfolios.
+        Returns insights about over/under-invested areas.
+        """
+        time_by_portfolio = self.get_weekly_time_by_portfolio()
+        total_time = sum(time_by_portfolio.values())
+
+        if total_time == 0:
+            return []
+
+        result = []
+        for portfolio in Portfolio.objects.filter(user=self.user, is_active=True):
+            time = time_by_portfolio.get(portfolio.id, 0)
+            percent = int((time / total_time) * 100) if total_time > 0 else 0
+
+            result.append({
+                'portfolio': portfolio,
+                'minutes': time,
+                'hours': time / 60,
+                'percent': percent,
+            })
+
+        return sorted(result, key=lambda x: -x['minutes'])
+
+    def _get_total_weekly_planned_time(self):
+        """Get total weekly planned time in minutes"""
+        # Sum all activities across the week
+        # This would use the planner service
+        from apps.planner.services import ActivityResolver
+        resolver = ActivityResolver(self.user)
+
+        total = 0
+        for day_data in resolver.get_weekly_data():
+            for activity in day_data['activities']:
+                total += activity.duration_minutes
+
+        return total
+
+    def _get_project_weekly_time(self, project):
+        """Get weekly time for a specific project"""
+        template_time = Activity.objects.filter(project=project).aggregate(
+            total=Sum('duration_minutes')
+        )['total'] or 0
+
+        weekday_time = WeekdayActivity.objects.filter(project=project).aggregate(
+            total=Sum('duration_minutes')
+        )['total'] or 0
+
+        return template_time + weekday_time
+
+    def _get_portfolio_weekly_time(self, portfolio):
+        """Get weekly time for a portfolio"""
+        total = 0
+        for project in portfolio.projects.filter(status='active'):
+            total += self._get_project_weekly_time(project)
+        return total
+
+    def _get_time_by_category(self, category):
+        """Get weekly time for activities with this category (not linked to project)"""
+        # Only count activities without explicit project link
+        template_time = Activity.objects.filter(
+            category=category,
+            project__isnull=True
+        ).aggregate(total=Sum('duration_minutes'))['total'] or 0
+
+        weekday_time = WeekdayActivity.objects.filter(
+            category=category,
+            project__isnull=True
+        ).aggregate(total=Sum('duration_minutes'))['total'] or 0
+
+        return template_time + weekday_time
+```
+
+### 11.7 UI Pages
+
+#### Strategy Dashboard
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│  Strategy Dashboard                              [Foundation] [Roadmap] │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐                  │
+│  │ Alignment    │  │ Active       │  │ Goals        │                  │
+│  │ Score        │  │ Projects     │  │ Progress     │                  │
+│  │    73%       │  │     5        │  │   12/18      │                  │
+│  └──────────────┘  └──────────────┘  └──────────────┘                  │
+│                                                                         │
+│  STRATEGIC PILLARS (2026)                                    [+ Add]   │
+│  ┌─────────────────────────────────────────────────────────────────┐   │
+│  │ 1. Build a SaaS product          [Career] [Personal Growth]     │   │
+│  │    Where: B2C productivity market | How: Visual time planning   │   │
+│  │    └─ 3 projects, 2 goals                           32h/week    │   │
+│  ├─────────────────────────────────────────────────────────────────┤   │
+│  │ 2. Maintain work-life balance    [Family] [Health]              │   │
+│  │    Where: Home life | How: Strict boundaries + quality time     │   │
+│  │    └─ 2 projects, 4 goals                           15h/week    │   │
+│  └─────────────────────────────────────────────────────────────────┘   │
+│                                                                         │
+│  PORTFOLIO BALANCE                                                      │
+│  ┌─────────────────────────────────────────────────────────────────┐   │
+│  │ Career      ████████████████████░░░░░░░  45%   (32h)            │   │
+│  │ Health      ██████░░░░░░░░░░░░░░░░░░░░░  12%   (8h)             │   │
+│  │ Family      █████████░░░░░░░░░░░░░░░░░░  18%   (12h)            │   │
+│  │ Personal    ███████░░░░░░░░░░░░░░░░░░░░  15%   (10h)            │   │
+│  │ Unallocated ████░░░░░░░░░░░░░░░░░░░░░░░  10%   (7h)             │   │
+│  └─────────────────────────────────────────────────────────────────┘   │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+#### Foundation Page
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│  Vision, Mission & Values                                     [Save]   │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  VISION                                                                 │
+│  ┌─────────────────────────────────────────────────────────────────┐   │
+│  │ What does your ideal future look like in 5-10 years?            │   │
+│  │                                                                  │   │
+│  │ Become a recognized expert in AI-powered productivity tools,    │   │
+│  │ running a profitable SaaS business while maintaining a healthy  │   │
+│  │ work-life balance and being present for my family.              │   │
+│  └─────────────────────────────────────────────────────────────────┘   │
+│                                                                         │
+│  MISSION                                                                │
+│  ┌─────────────────────────────────────────────────────────────────┐   │
+│  │ What is your purpose? How do you create value?                  │   │
+│  │                                                                  │   │
+│  │ Help people make better use of their time through intuitive     │   │
+│  │ software that transforms planning from a chore into insight.    │   │
+│  └─────────────────────────────────────────────────────────────────┘   │
+│                                                                         │
+│  CORE VALUES                                                   [+ Add] │
+│  ┌────────────┐ ┌────────────┐ ┌────────────┐ ┌────────────┐          │
+│  │ Excellence │ │ Family     │ │ Learning   │ │ Health     │          │
+│  │            │ │ First      │ │            │ │            │          │
+│  │ [Edit] [x] │ │ [Edit] [x] │ │ [Edit] [x] │ │ [Edit] [x] │          │
+│  └────────────┘ └────────────┘ └────────────┘ └────────────┘          │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+#### Roadmap Page
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│  2026 Roadmap                           [< 2025]  [2026]  [2027 >]     │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│      Q1 (Jan-Mar)         Q2 (Apr-Jun)         Q3 (Jul-Sep)            │
+│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐         │
+│  │ [x] Launch MVP  │  │ [ ] 500 users   │  │ [ ] Mobile app  │         │
+│  │     Jan 31      │  │     Jun 15      │  │     Sep 30      │         │
+│  │                 │  │                 │  │                 │         │
+│  │ [ ] 100 users   │  │ [ ] Hire VA     │  │ [ ] $5k MRR     │         │
+│  │     Mar 15      │  │     May 01      │  │                 │         │
+│  │                 │  │                 │  │                 │         │
+│  │ [x] Django      │  │ [ ] Marketing   │  │                 │         │
+│  │     tutorial    │  │     campaign    │  │                 │         │
+│  └─────────────────┘  └─────────────────┘  └─────────────────┘         │
+│                                                                         │
+│                            Q4 (Oct-Dec)                                 │
+│                        ┌─────────────────┐                              │
+│                        │ [ ] 1000 users  │                              │
+│                        │                 │                              │
+│                        │ [ ] Team of 2   │                              │
+│                        │                 │                              │
+│                        └─────────────────┘                              │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+### 11.8 Integration with Weekly View
+
+Update the activity modal to allow linking to projects:
+
+```html
+<!-- In _activity_modal.html -->
+<div class="weekly-edit-form-row">
+    <div class="weekly-edit-form-group weekly-edit-form-grow">
+        <label for="weeklyEditProject">Link to Project (optional)</label>
+        <select id="weeklyEditProject" name="project">
+            <option value="">-- No project --</option>
+            {% for portfolio in portfolios %}
+            <optgroup label="{{ portfolio.name }}">
+                {% for project in portfolio.projects.all %}
+                <option value="{{ project.id }}"
+                        {% if activity.project_id == project.id %}selected{% endif %}>
+                    {{ project.name }}
+                </option>
+                {% endfor %}
+            </optgroup>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+```
+
+### 11.9 Migration Strategy Update
+
+Add Phase 5 to the migration plan:
+
+```
+### Phase 5: Strategic Planning (Weeks 5-6)
+- [ ] Create strategy app with models
+- [ ] Foundation page (Vision/Mission/Values)
+- [ ] Strategic Pillars CRUD (Where to Play / How to Win)
+- [ ] Portfolio management
+- [ ] Project & Goal tracking
+- [ ] Roadmap view
+- [ ] Link activities to projects
+- [ ] Alignment analytics
+- [ ] Strategy dashboard
+```
+
+### 11.10 Model Relationships Diagram (Updated)
+
+```
+User
+ │
+ ├── PersonalFoundation (1:1)
+ │    └── Value (1:N)
+ │
+ ├── StrategicPillar (1:N)
+ │    ├── linked to Values (M:N)
+ │    ├── linked to Portfolios (M:N)
+ │    └── linked to Projects (M:N)
+ │
+ ├── Portfolio (1:N)
+ │    ├── linked to Pillars (M:N)
+ │    ├── linked to Category (optional)
+ │    └── Project (1:N)
+ │         ├── linked to Pillars (M:N)
+ │         ├── Goal (1:N)
+ │         ├── Activity (1:N) ← from planner
+ │         └── WeekdayActivity (1:N) ← from planner
+ │
+ ├── Roadmap (1:N by year)
+ │    └── RoadmapMilestone (1:N)
+ │         ├── linked to Project
+ │         └── linked to Goal
+ │
+ └── [Planner models - existing]
+      ├── Category
+      ├── DayType → DayTemplate → Activity (+ project link)
+      ├── WeekdayConfig → WeekdayActivity (+ project link)
+      └── DayOverride
+```
+
+---
+
+*Document Version: 1.2*
 *Created: January 2026*
+*Updated: January 2026 - Renamed Strategic Choices to Strategic Pillars (Playing to Win framework)*
