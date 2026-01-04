@@ -1095,14 +1095,13 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            color: white;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            color: #000000;
         }
 
         .weekly-activity-time {
             font-size: 0.65rem;
             opacity: 0.9;
-            color: white;
+            color: #000000;
             margin-top: 2px;
         }
 
@@ -1677,12 +1676,17 @@
         }
 
         .month-stats .work-count {
-            color: #27ae60;
+            color: var(--text-primary);
             font-weight: 600;
         }
 
         .month-stats .off-count {
             color: #e74c3c;
+            font-weight: 600;
+        }
+
+        .month-stats .work-percent {
+            color: var(--text-primary);
             font-weight: 600;
         }
 
@@ -2306,6 +2310,7 @@
     </style>
 </head>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 <body>
     <div class="container">
         <header>
@@ -3948,7 +3953,8 @@
             let html = `<div class="month-card">`;
             html += `<div class="month-header">`;
             html += `<span class="month-name">${monthNames[month]}</span>`;
-            html += `<span class="month-stats"><span class="work-count">${stats.work} work</span> / <span class="off-count">${stats.off} off</span></span>`;
+            const workPercent = Math.round(stats.work / stats.total * 100);
+            html += `<span class="month-stats"><span class="work-count">${stats.work} work</span> <span class="work-percent">(${workPercent}%)</span> / <span class="off-count">${stats.off} off</span></span>`;
             html += `</div>`;
 
             html += `<div class="month-grid">`;
@@ -4247,8 +4253,8 @@
 
             const badge = document.getElementById('weeklyEditActivityBadge');
             badge.textContent = categoryLabels[activity.category] || activity.category;
-            badge.style.background = getCategoryColor(activity.category) + '20';
-            badge.style.color = getCategoryColor(activity.category);
+            badge.style.background = getCategoryColor(activity.category);
+            badge.style.color = '#000000';
 
             // Update option titles
             document.getElementById('weeklyEditWeekdayTitle').textContent = `Edit for all ${day}s`;
@@ -5031,8 +5037,8 @@
                     datasets: [{
                         data: filteredData.map(d => d.value),
                         backgroundColor: filteredData.map(d => d.color),
-                        borderColor: '#fff8f0',
-                        borderWidth: 3,
+                        borderColor: '#000000',
+                        borderWidth: 2,
                         hoverOffset: 8
                     }]
                 },
@@ -5089,8 +5095,8 @@
                 .map(([key, value]) => ({
                     label: value.label,
                     data: dayTypeLabels.map(dt => dayTypeTotals[dt][key] / 60),
-                    backgroundColor: value.color + 'CC',
-                    borderColor: value.color,
+                    backgroundColor: value.color,
+                    borderColor: '#000000',
                     borderWidth: 1,
                     borderRadius: 4
                 }));
@@ -5101,10 +5107,20 @@
                     labels: dayTypeLabels,
                     datasets: datasets
                 },
+                plugins: [ChartDataLabels],
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
+                        datalabels: {
+                            color: '#000000',
+                            font: { weight: 'bold', size: 10 },
+                            anchor: 'center',
+                            align: 'center',
+                            formatter: function(value) {
+                                return value >= 0.5 ? value.toFixed(1) + 'h' : '';
+                            }
+                        },
                         legend: {
                             position: 'bottom',
                             labels: {
