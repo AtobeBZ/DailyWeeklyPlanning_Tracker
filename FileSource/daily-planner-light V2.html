@@ -1052,6 +1052,20 @@
             height: calc(24 * 40px);
         }
 
+        .day-slots-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            cursor: pointer;
+            z-index: 0;
+        }
+
+        .day-slots-bg:hover {
+            background: rgba(212, 165, 116, 0.1);
+        }
+
         .hour-line {
             position: absolute;
             left: 0;
@@ -2205,81 +2219,177 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-bottom: 12px;
+            margin-top: 15px;
         }
 
-        .weekly-edit-options {
+        /* Weekly Edit Form Styles */
+        .weekly-edit-form-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .weekly-edit-form-group {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 4px;
         }
 
-        .weekly-edit-option {
+        .weekly-edit-form-group label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        .weekly-edit-form-group input[type="text"],
+        .weekly-edit-form-group input[type="time"],
+        .weekly-edit-form-group select {
+            padding: 8px 10px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .weekly-edit-form-group input[type="color"] {
+            width: 40px;
+            height: 36px;
+            padding: 2px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .weekly-edit-form-grow {
+            flex: 1;
+        }
+
+        /* Scope Selection Radio Buttons */
+        .weekly-edit-scope-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .weekly-edit-scope-option {
             display: flex;
             align-items: center;
-            gap: 15px;
-            padding: 15px;
+            gap: 12px;
+            padding: 12px;
             background: var(--bg-tertiary);
             border: 2px solid transparent;
-            border-radius: 12px;
+            border-radius: 10px;
             cursor: pointer;
             transition: all 0.2s;
         }
 
-        .weekly-edit-option:hover {
+        .weekly-edit-scope-option:hover {
             border-color: var(--accent);
-            transform: translateX(4px);
         }
 
-        .weekly-edit-option-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
+        .weekly-edit-scope-option input[type="radio"] {
+            display: none;
+        }
+
+        .weekly-edit-scope-radio {
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--text-secondary);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
+            transition: all 0.2s;
         }
 
-        .weekly-edit-option-icon.weekday {
-            background: #d6eaf8;
-            color: #2980b9;
+        .weekly-edit-scope-option input[type="radio"]:checked + .weekly-edit-scope-radio {
+            border-color: var(--accent);
+            background: var(--accent);
         }
 
-        .weekly-edit-option-icon.template {
-            background: #fffef8;
-            color: #27ae60;
+        .weekly-edit-scope-option input[type="radio"]:checked + .weekly-edit-scope-radio::after {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: white;
+            border-radius: 50%;
         }
 
-        .weekly-edit-option-icon svg {
-            width: 20px;
-            height: 20px;
-        }
-
-        .weekly-edit-option-content {
+        .weekly-edit-scope-content {
             flex: 1;
         }
 
-        .weekly-edit-option-title {
-            font-size: 0.95rem;
+        .weekly-edit-scope-title {
+            font-size: 0.9rem;
             font-weight: 600;
             color: var(--text-primary);
-            margin-bottom: 3px;
         }
 
-        .weekly-edit-option-desc {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            line-height: 1.4;
-        }
-
-        .weekly-edit-option-arrow {
+        .weekly-edit-scope-desc {
+            font-size: 0.75rem;
             color: var(--text-secondary);
         }
 
-        .weekly-edit-option-arrow svg {
-            width: 16px;
-            height: 16px;
+        /* Action Buttons */
+        .weekly-edit-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+        }
+
+        .weekly-edit-actions-right {
+            display: flex;
+            gap: 10px;
+        }
+
+        .weekly-edit-btn {
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .weekly-edit-btn-save {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .weekly-edit-btn-save:hover {
+            filter: brightness(1.1);
+        }
+
+        .weekly-edit-btn-cancel {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border-color: var(--border);
+        }
+
+        .weekly-edit-btn-cancel:hover {
+            background: var(--bg-secondary);
+        }
+
+        .weekly-edit-btn-delete {
+            background: transparent;
+            color: #e74c3c;
+            border-color: #e74c3c;
+        }
+
+        .weekly-edit-btn-delete:hover {
+            background: #e74c3c;
+            color: white;
         }
 
         .weekly-edit-custom-badge {
@@ -2664,11 +2774,7 @@
     <div class="weekly-edit-overlay" id="weeklyEditOverlay" onclick="closeWeeklyEditModal(event)">
         <div class="weekly-edit-modal" onclick="event.stopPropagation()">
             <div class="weekly-edit-header">
-                <div class="weekly-edit-activity-info">
-                    <div class="weekly-edit-activity-name" id="weeklyEditActivityName">Activity Name</div>
-                    <div class="weekly-edit-activity-time" id="weeklyEditActivityTime">08:00 - 12:00</div>
-                    <span class="weekly-edit-activity-badge" id="weeklyEditActivityBadge">Work</span>
-                </div>
+                <span class="weekly-edit-activity-badge" id="weeklyEditActivityBadge">Work</span>
                 <button class="weekly-edit-close" onclick="closeWeeklyEditModal()">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M18 6L6 18M6 6l12 12"/>
@@ -2676,55 +2782,83 @@
                 </button>
             </div>
 
-            <div class="weekly-edit-section-title">How would you like to edit this activity?</div>
-
-            <div class="weekly-edit-options">
-                <div class="weekly-edit-option" id="weeklyEditWeekdayOption" onclick="editForWeekday()">
-                    <div class="weekly-edit-option-icon weekday">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                            <line x1="16" y1="2" x2="16" y2="6"></line>
-                            <line x1="8" y1="2" x2="8" y2="6"></line>
-                            <line x1="3" y1="10" x2="21" y2="10"></line>
-                        </svg>
-                    </div>
-                    <div class="weekly-edit-option-content">
-                        <div class="weekly-edit-option-title" id="weeklyEditWeekdayTitle">Edit for all Tuesdays</div>
-                        <div class="weekly-edit-option-desc">Changes will apply only to this weekday. Other days remain unchanged.</div>
-                    </div>
-                    <div class="weekly-edit-option-arrow">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M9 18l6-6-6-6"/>
-                        </svg>
+            <form id="weeklyEditForm" onsubmit="saveWeeklyActivity(event)">
+                <div class="weekly-edit-form-row">
+                    <div class="weekly-edit-form-group weekly-edit-form-grow">
+                        <label for="weeklyEditName">Activity</label>
+                        <input type="text" id="weeklyEditName" placeholder="Activity name" required>
                     </div>
                 </div>
 
-                <div class="weekly-edit-option" onclick="editBaseTemplate()">
-                    <div class="weekly-edit-option-icon template">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                            <polyline points="14 2 14 8 20 8"></polyline>
-                            <line x1="12" y1="18" x2="12" y2="12"></line>
-                            <line x1="9" y1="15" x2="15" y2="15"></line>
-                        </svg>
+                <div class="weekly-edit-form-row">
+                    <div class="weekly-edit-form-group">
+                        <label for="weeklyEditStart">Start</label>
+                        <input type="time" id="weeklyEditStart" required>
                     </div>
-                    <div class="weekly-edit-option-content">
-                        <div class="weekly-edit-option-title" id="weeklyEditTemplateTitle">Edit Work Day template</div>
-                        <div class="weekly-edit-option-desc">Changes will apply to all weekdays using this template.</div>
+                    <div class="weekly-edit-form-group">
+                        <label for="weeklyEditEnd">End</label>
+                        <input type="time" id="weeklyEditEnd" required>
                     </div>
-                    <div class="weekly-edit-option-arrow">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M9 18l6-6-6-6"/>
-                        </svg>
+                    <div class="weekly-edit-form-group">
+                        <label for="weeklyEditCategory">Category</label>
+                        <select id="weeklyEditCategory" required onchange="updateWeeklyColorFromCategory()">
+                            <option value="work">Work</option>
+                            <option value="family">Family</option>
+                            <option value="admin">Admin</option>
+                            <option value="myself">Myself</option>
+                            <option value="goal1">Goal 1</option>
+                            <option value="goal2">Goal 2</option>
+                            <option value="goal3">Goal 3</option>
+                            <option value="sleep">Sleep</option>
+                            <option value="else">Else</option>
+                        </select>
+                    </div>
+                    <div class="weekly-edit-form-group">
+                        <label for="weeklyEditColor">Color</label>
+                        <input type="color" id="weeklyEditColor">
                     </div>
                 </div>
-            </div>
 
-            <div id="weeklyEditCustomInfo" style="display: none; padding: 10px; background: #fef9e7; border: 1px solid #f39c12; border-radius: 8px; margin-bottom: 15px;">
-                <div style="font-size: 0.85rem; color: #b7950b;">
-                    <strong>Note:</strong> <span id="weeklyEditCustomInfoText">Tuesday has custom activities.</span>
+                <div class="weekly-edit-section-title">Apply changes to:</div>
+
+                <div class="weekly-edit-scope-options">
+                    <label class="weekly-edit-scope-option">
+                        <input type="radio" name="weeklyEditScope" value="weekday" checked>
+                        <span class="weekly-edit-scope-radio"></span>
+                        <div class="weekly-edit-scope-content">
+                            <div class="weekly-edit-scope-title" id="weeklyEditWeekdayTitle">All Mondays</div>
+                            <div class="weekly-edit-scope-desc">Only this weekday</div>
+                        </div>
+                    </label>
+                    <label class="weekly-edit-scope-option">
+                        <input type="radio" name="weeklyEditScope" value="template">
+                        <span class="weekly-edit-scope-radio"></span>
+                        <div class="weekly-edit-scope-content">
+                            <div class="weekly-edit-scope-title" id="weeklyEditTemplateTitle">Work Day template</div>
+                            <div class="weekly-edit-scope-desc">All days using this template</div>
+                        </div>
+                    </label>
                 </div>
-            </div>
+
+                <div id="weeklyEditCustomInfo" style="display: none; padding: 10px; background: #fef9e7; border: 1px solid #f39c12; border-radius: 8px; margin-top: 15px;">
+                    <div style="font-size: 0.85rem; color: #b7950b;">
+                        <strong>Note:</strong> <span id="weeklyEditCustomInfoText">This weekday has custom activities.</span>
+                    </div>
+                </div>
+
+                <div class="weekly-edit-actions">
+                    <button type="button" class="weekly-edit-btn weekly-edit-btn-delete" onclick="deleteWeeklyActivity()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+                        </svg>
+                        Delete
+                    </button>
+                    <div class="weekly-edit-actions-right">
+                        <button type="button" class="weekly-edit-btn weekly-edit-btn-cancel" onclick="closeWeeklyEditModal()">Cancel</button>
+                        <button type="submit" class="weekly-edit-btn weekly-edit-btn-save">Save</button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -3442,6 +3576,9 @@
                 html += `<select class="day-type-select" onchange="setWeekDayType('${day}', this.value)">`;
                 state.dayTypes.forEach(type => html += `<option value="${type}" ${type === dayType ? 'selected' : ''}>${type}</option>`);
                 html += '</select></div><div class="day-slots">';
+
+                // Clickable background for adding new activities
+                html += `<div class="day-slots-bg" data-day="${day}" data-daytype="${dayType}" onclick="openWeeklyAddModal(event, '${day}', '${dayType}')"></div>`;
 
                 for (let h = 0; h < 24; h++) {
                     html += `<div class="hour-line" style="top: ${h * 40}px;"></div>`;
@@ -4247,18 +4384,25 @@
             // Store context for editing
             weeklyEditContext = { activity, day, dayType };
 
-            // Update modal content
-            document.getElementById('weeklyEditActivityName').textContent = activity.name;
-            document.getElementById('weeklyEditActivityTime').textContent = `${activity.startTime} - ${activity.endTime}`;
+            // Populate form fields
+            document.getElementById('weeklyEditName').value = activity.name;
+            document.getElementById('weeklyEditStart').value = activity.startTime;
+            document.getElementById('weeklyEditEnd').value = activity.endTime;
+            document.getElementById('weeklyEditCategory').value = activity.category;
+            document.getElementById('weeklyEditColor').value = activity.color || getCategoryColor(activity.category);
 
+            // Update category badge
             const badge = document.getElementById('weeklyEditActivityBadge');
             badge.textContent = categoryLabels[activity.category] || activity.category;
             badge.style.background = getCategoryColor(activity.category);
             badge.style.color = '#000000';
 
-            // Update option titles
-            document.getElementById('weeklyEditWeekdayTitle').textContent = `Edit for all ${day}s`;
-            document.getElementById('weeklyEditTemplateTitle').textContent = `Edit ${dayType} template`;
+            // Update scope option titles
+            document.getElementById('weeklyEditWeekdayTitle').textContent = `All ${day}s`;
+            document.getElementById('weeklyEditTemplateTitle').textContent = `${dayType} template`;
+
+            // Reset radio to weekday by default
+            document.querySelector('input[name="weeklyEditScope"][value="weekday"]').checked = true;
 
             // Show custom info if applicable
             const customInfo = document.getElementById('weeklyEditCustomInfo');
@@ -4270,6 +4414,9 @@
                 customInfo.style.display = 'none';
             }
 
+            // Show delete button for existing activities
+            document.querySelector('.weekly-edit-btn-delete').style.display = 'flex';
+
             // Show overlay
             document.getElementById('weeklyEditOverlay').classList.add('active');
         }
@@ -4280,85 +4427,187 @@
             weeklyEditContext = null;
         }
 
-        function editForWeekday() {
+        function updateWeeklyColorFromCategory() {
+            const category = document.getElementById('weeklyEditCategory').value;
+            document.getElementById('weeklyEditColor').value = getCategoryColor(category);
+
+            // Update badge
+            const badge = document.getElementById('weeklyEditActivityBadge');
+            badge.textContent = categoryLabels[category] || category;
+            badge.style.background = getCategoryColor(category);
+        }
+
+        function openWeeklyAddModal(event, day, dayType) {
+            // Don't trigger if clicking on an existing activity
+            if (event.target.closest('.weekly-activity')) return;
+
+            // Calculate time from click position
+            const rect = event.currentTarget.getBoundingClientRect();
+            const clickY = event.clientY - rect.top;
+            const minutes = Math.floor(clickY / 40) * 60 + (clickY % 40 >= 20 ? 30 : 0);
+            const startHour = Math.floor(minutes / 60);
+            const startMin = minutes % 60;
+            const endHour = Math.min(startHour + 1, 23);
+            const endMin = startMin;
+
+            const startTime = `${startHour.toString().padStart(2, '0')}:${startMin.toString().padStart(2, '0')}`;
+            const endTime = `${endHour.toString().padStart(2, '0')}:${endMin.toString().padStart(2, '0')}`;
+
+            // Store context for adding (activity is null to indicate new)
+            weeklyEditContext = { activity: null, day, dayType };
+
+            // Populate form with defaults
+            document.getElementById('weeklyEditName').value = '';
+            document.getElementById('weeklyEditStart').value = startTime;
+            document.getElementById('weeklyEditEnd').value = endTime;
+            document.getElementById('weeklyEditCategory').value = 'work';
+            document.getElementById('weeklyEditColor').value = getCategoryColor('work');
+
+            // Update category badge
+            const badge = document.getElementById('weeklyEditActivityBadge');
+            badge.textContent = 'New Activity';
+            badge.style.background = getCategoryColor('work');
+            badge.style.color = '#000000';
+
+            // Update scope option titles
+            document.getElementById('weeklyEditWeekdayTitle').textContent = `All ${day}s`;
+            document.getElementById('weeklyEditTemplateTitle').textContent = `${dayType} template`;
+
+            // Reset radio to weekday by default
+            document.querySelector('input[name="weeklyEditScope"][value="weekday"]').checked = true;
+
+            // Hide custom info and delete button for new activities
+            document.getElementById('weeklyEditCustomInfo').style.display = 'none';
+            document.querySelector('.weekly-edit-btn-delete').style.display = 'none';
+
+            // Show overlay
+            document.getElementById('weeklyEditOverlay').classList.add('active');
+
+            // Focus on name field
+            setTimeout(() => document.getElementById('weeklyEditName').focus(), 100);
+        }
+
+        function saveWeeklyActivity(event) {
+            event.preventDefault();
             if (!weeklyEditContext) return;
+
             const { activity, day, dayType } = weeklyEditContext;
+            const scope = document.querySelector('input[name="weeklyEditScope"]:checked').value;
+            const isNewActivity = activity === null;
 
-            // If no custom template for this weekday yet, create one by copying base template
-            if (!state.weekdayTemplates[day].custom) {
-                state.weekdayTemplates[day].custom = JSON.parse(JSON.stringify(state.templates[dayType] || []));
-            }
+            // Get form values
+            const name = document.getElementById('weeklyEditName').value.trim();
+            const startTime = document.getElementById('weeklyEditStart').value;
+            const endTime = document.getElementById('weeklyEditEnd').value;
+            const category = document.getElementById('weeklyEditCategory').value;
+            const color = document.getElementById('weeklyEditColor').value;
 
-            // Find and load the activity for editing in daily view
-            const customActivities = state.weekdayTemplates[day].custom;
-            const activityToEdit = customActivities.find(a => a.id === activity.id);
+            if (!name || !startTime || !endTime) return;
 
-            if (activityToEdit) {
-                // Switch to daily view and load activity for editing
-                state.currentDayType = dayType;
-                closeWeeklyEditModal();
-                setMainView('daily');
+            if (scope === 'weekday') {
+                // Edit/Add for this specific weekday only
+                if (!state.weekdayTemplates[day].custom) {
+                    // Create custom template by copying base
+                    state.weekdayTemplates[day].custom = JSON.parse(JSON.stringify(state.templates[dayType] || []));
+                }
 
-                // Populate form with activity data
-                document.getElementById('activityName').value = activityToEdit.name;
-                document.getElementById('startTime').value = activityToEdit.startTime;
-                document.getElementById('endTime').value = activityToEdit.endTime;
-                document.getElementById('category').value = activityToEdit.category;
-                document.getElementById('activityColor').value = activityToEdit.color || getCategoryColor(activityToEdit.category);
+                const customActivities = state.weekdayTemplates[day].custom;
 
-                // Set editing mode - we need special handling for weekday templates
-                editingActivityId = activityToEdit.id;
-                editingWeekday = day;  // New flag to track weekday-specific editing
-                document.querySelector('.btn-primary').innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Update ${day}`;
-                document.getElementById('cancelEditBtn').style.display = 'inline-flex';
+                if (isNewActivity) {
+                    // Add new activity
+                    customActivities.push({
+                        id: Date.now(),
+                        name,
+                        startTime,
+                        endTime,
+                        category,
+                        color
+                    });
+                } else {
+                    // Edit existing activity
+                    const activityToEdit = customActivities.find(a => a.id === activity.id);
+                    if (activityToEdit) {
+                        activityToEdit.name = name;
+                        activityToEdit.startTime = startTime;
+                        activityToEdit.endTime = endTime;
+                        activityToEdit.category = category;
+                        activityToEdit.color = color;
+                    }
+                }
 
-                // Render views with weekday-specific data
-                renderDayTypeSelector();
-                renderClocks();
-                renderActivitiesList();
-                renderSummaryStats();
-                renderLegend();
+                // Sort by start time
+                customActivities.sort((a, b) => timeToMinutes(a.startTime) - timeToMinutes(b.startTime));
+            } else {
+                // Edit/Add to base template (affects all days using this template)
+                if (!state.templates[dayType]) {
+                    state.templates[dayType] = [];
+                }
+                const templateActivities = state.templates[dayType];
+
+                if (isNewActivity) {
+                    // Add new activity to template
+                    templateActivities.push({
+                        id: Date.now(),
+                        name,
+                        startTime,
+                        endTime,
+                        category,
+                        color
+                    });
+                } else {
+                    // Edit existing activity
+                    const activityToEdit = templateActivities.find(a => a.id === activity.id);
+                    if (activityToEdit) {
+                        activityToEdit.name = name;
+                        activityToEdit.startTime = startTime;
+                        activityToEdit.endTime = endTime;
+                        activityToEdit.category = category;
+                        activityToEdit.color = color;
+                    }
+                }
+
+                // Sort by start time
+                templateActivities.sort((a, b) => timeToMinutes(a.startTime) - timeToMinutes(b.startTime));
             }
 
             saveToStorage();
             renderWeeklyView();
+            closeWeeklyEditModal();
         }
 
-        function editBaseTemplate() {
+        function deleteWeeklyActivity() {
             if (!weeklyEditContext) return;
-            const { activity, dayType } = weeklyEditContext;
 
-            // Switch to daily view with base template
-            state.currentDayType = dayType;
-            closeWeeklyEditModal();
-            setMainView('daily');
+            const { activity, day, dayType } = weeklyEditContext;
+            const scope = document.querySelector('input[name="weeklyEditScope"]:checked').value;
 
-            // Find activity in base template
-            const templateActivities = state.templates[dayType] || [];
-            const activityToEdit = templateActivities.find(a => a.id === activity.id);
+            if (scope === 'weekday') {
+                // Delete from this specific weekday only
+                if (!state.weekdayTemplates[day].custom) {
+                    // Create custom template by copying base
+                    state.weekdayTemplates[day].custom = JSON.parse(JSON.stringify(state.templates[dayType] || []));
+                }
 
-            if (activityToEdit) {
-                // Populate form with activity data
-                document.getElementById('activityName').value = activityToEdit.name;
-                document.getElementById('startTime').value = activityToEdit.startTime;
-                document.getElementById('endTime').value = activityToEdit.endTime;
-                document.getElementById('category').value = activityToEdit.category;
-                document.getElementById('activityColor').value = activityToEdit.color || getCategoryColor(activityToEdit.category);
-
-                // Set editing mode - base template editing
-                editingActivityId = activityToEdit.id;
-                editingWeekday = null;  // Not editing a specific weekday
-                document.querySelector('.btn-primary').innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Update Template`;
+                const customActivities = state.weekdayTemplates[day].custom;
+                const index = customActivities.findIndex(a => a.id === activity.id);
+                if (index !== -1) {
+                    customActivities.splice(index, 1);
+                }
+            } else {
+                // Delete from base template (affects all days using this template)
+                const templateActivities = state.templates[dayType] || [];
+                const index = templateActivities.findIndex(a => a.id === activity.id);
+                if (index !== -1) {
+                    templateActivities.splice(index, 1);
+                }
             }
 
-            renderDayTypeSelector();
-            renderClocks();
-            renderActivitiesList();
-            renderLegend();
-            renderSummaryStats();
+            saveToStorage();
+            renderWeeklyView();
+            closeWeeklyEditModal();
         }
 
-        // Variable to track weekday-specific editing
+        // Variable to track weekday-specific editing (kept for daily view compatibility)
         let editingWeekday = null;
 
         function showWeeklyTooltip(event) {
