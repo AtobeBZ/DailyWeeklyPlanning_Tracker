@@ -2417,6 +2417,807 @@
             transform: scale(1.02);
         }
 
+        /* ==================== STRATEGY VIEW ==================== */
+        .strategy-view {
+            display: none;
+        }
+
+        .strategy-view.active {
+            display: block;
+        }
+
+        .strategy-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Section Cards */
+        .strategy-section {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 2px solid var(--border);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .strategy-section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--bg-tertiary);
+        }
+
+        .strategy-section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .strategy-section-title svg {
+            width: 22px;
+            height: 22px;
+            color: var(--accent);
+        }
+
+        .strategy-section-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            margin-left: 32px;
+        }
+
+        /* Foundation Section */
+        .foundation-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .foundation-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .foundation-card {
+            background: var(--bg-primary);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid var(--bg-tertiary);
+        }
+
+        .foundation-card-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .foundation-textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 12px;
+            border: 1px solid var(--bg-tertiary);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            color: var(--text-primary);
+            background: white;
+            resize: vertical;
+            line-height: 1.5;
+        }
+
+        .foundation-textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.2);
+        }
+
+        .foundation-textarea::placeholder {
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        /* Values Section */
+        .values-container {
+            grid-column: 1 / -1;
+        }
+
+        .values-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .value-chip {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: var(--bg-primary);
+            border: 2px solid var(--accent);
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .value-chip:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        .value-chip .delete-value {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .value-chip:hover .delete-value {
+            color: white;
+        }
+
+        .add-value-form {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .add-value-input {
+            flex: 1;
+            max-width: 200px;
+            padding: 8px 14px;
+            border: 1px solid var(--bg-tertiary);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            background: white;
+        }
+
+        .add-value-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        /* Strategic Pillars */
+        .pillars-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .pillar-card {
+            background: var(--bg-primary);
+            border-radius: 12px;
+            padding: 20px;
+            border: 2px solid var(--bg-tertiary);
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .pillar-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .pillar-card.editing {
+            border-color: var(--accent);
+        }
+
+        .pillar-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .pillar-number {
+            width: 28px;
+            height: 28px;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .pillar-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .pillar-action-btn {
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: var(--bg-tertiary);
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+
+        .pillar-action-btn:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        .pillar-action-btn.delete:hover {
+            background: #e74c3c;
+        }
+
+        .pillar-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            margin-top: 10px;
+        }
+
+        .pillar-title-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--bg-tertiary);
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            margin-top: 10px;
+        }
+
+        .pillar-description {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .pillar-framework {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            padding-top: 12px;
+            border-top: 1px solid var(--bg-tertiary);
+        }
+
+        .pillar-framework-item {
+            background: var(--bg-secondary);
+            padding: 10px 12px;
+            border-radius: 8px;
+        }
+
+        .pillar-framework-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .pillar-framework-value {
+            font-size: 0.8rem;
+            color: var(--text-primary);
+            line-height: 1.4;
+        }
+
+        .pillar-framework-input {
+            width: 100%;
+            padding: 6px 8px;
+            border: 1px solid var(--bg-tertiary);
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        .add-pillar-card {
+            background: var(--bg-primary);
+            border-radius: 12px;
+            padding: 40px 20px;
+            border: 2px dashed var(--bg-tertiary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-height: 200px;
+        }
+
+        .add-pillar-card:hover {
+            border-color: var(--accent);
+            background: var(--bg-secondary);
+        }
+
+        .add-pillar-card svg {
+            width: 40px;
+            height: 40px;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+
+        .add-pillar-card span {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Portfolios Section */
+        .portfolios-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .portfolio-card {
+            background: var(--bg-primary);
+            border-radius: 12px;
+            border: 2px solid var(--bg-tertiary);
+            overflow: hidden;
+        }
+
+        .portfolio-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .portfolio-header:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .portfolio-header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .portfolio-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+
+        .portfolio-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .portfolio-stats {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-left: 10px;
+        }
+
+        .portfolio-header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .portfolio-time {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .portfolio-expand {
+            width: 24px;
+            height: 24px;
+            color: var(--text-secondary);
+            transition: transform 0.2s;
+        }
+
+        .portfolio-card.expanded .portfolio-expand {
+            transform: rotate(180deg);
+        }
+
+        .portfolio-content {
+            display: none;
+            padding: 0 20px 20px;
+            border-top: 1px solid var(--bg-tertiary);
+        }
+
+        .portfolio-card.expanded .portfolio-content {
+            display: block;
+        }
+
+        /* Projects */
+        .projects-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .project-card {
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            padding: 16px;
+            border: 1px solid var(--bg-tertiary);
+        }
+
+        .project-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .project-name {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .project-status {
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .project-status.active {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .project-status.planning {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .project-status.on_hold {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .project-status.completed {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .project-progress {
+            margin-bottom: 12px;
+        }
+
+        .project-progress-bar {
+            height: 8px;
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .project-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #27ae60);
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+
+        .project-progress-text {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 6px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* Goals */
+        .goals-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px dashed var(--bg-tertiary);
+        }
+
+        .goal-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            background: var(--bg-primary);
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+
+        .goal-checkbox {
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--accent);
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .goal-checkbox.completed {
+            background: var(--accent);
+        }
+
+        .goal-checkbox.completed svg {
+            color: white;
+        }
+
+        .goal-text {
+            flex: 1;
+            color: var(--text-primary);
+        }
+
+        .goal-text.completed {
+            text-decoration: line-through;
+            color: var(--text-secondary);
+        }
+
+        .goal-target {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            background: var(--bg-tertiary);
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        /* Alignment Section */
+        .alignment-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 900px) {
+            .alignment-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .alignment-score-card {
+            background: var(--bg-primary);
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            border: 1px solid var(--bg-tertiary);
+        }
+
+        .alignment-score-value {
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--accent);
+            line-height: 1;
+        }
+
+        .alignment-score-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+
+        .alignment-score-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 12px;
+            line-height: 1.4;
+        }
+
+        .alignment-chart-container {
+            background: var(--bg-primary);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid var(--bg-tertiary);
+        }
+
+        .alignment-chart-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+        }
+
+        /* Add Button */
+        .add-btn {
+            padding: 8px 16px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .add-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        .add-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Small add button for inline use */
+        .add-btn-sm {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state svg {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+
+        .empty-state p {
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+        }
+
+        /* Pillar tags on portfolios/projects */
+        .pillar-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .pillar-tag {
+            padding: 2px 8px;
+            background: rgba(212, 165, 116, 0.2);
+            color: var(--accent);
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        /* Modal for editing */
+        .strategy-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .strategy-modal.active {
+            display: flex;
+        }
+
+        .strategy-modal-content {
+            background: var(--bg-primary);
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 2px solid var(--border);
+        }
+
+        .strategy-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .strategy-modal-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .strategy-modal-close {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+        }
+
+        .strategy-modal-close:hover {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .strategy-form-group {
+            margin-bottom: 16px;
+        }
+
+        .strategy-form-label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+        }
+
+        .strategy-form-input,
+        .strategy-form-select,
+        .strategy-form-textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--bg-tertiary);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            background: white;
+        }
+
+        .strategy-form-textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .strategy-form-input:focus,
+        .strategy-form-select:focus,
+        .strategy-form-textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .strategy-modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 24px;
+            padding-top: 16px;
+            border-top: 1px solid var(--bg-tertiary);
+        }
+
     </style>
 </head>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
@@ -2452,6 +3253,17 @@
                             <line x1="3" y1="16" x2="21" y2="16"/>
                         </svg>
                         Year
+                    </button>
+                    <button class="main-view-btn" data-mainview="strategy" onclick="setMainView('strategy')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="5" r="3"/>
+                            <line x1="12" y1="8" x2="12" y2="12"/>
+                            <circle cx="6" cy="17" r="3"/>
+                            <circle cx="18" cy="17" r="3"/>
+                            <line x1="12" y1="12" x2="6" y2="14"/>
+                            <line x1="12" y1="12" x2="18" y2="14"/>
+                        </svg>
+                        Strategy
                     </button>
                 </div>
             </div>
@@ -2686,6 +3498,136 @@
                 <div class="year-calendar" id="yearCalendar"></div>
             </div>
         </div>
+
+        <!-- ==================== STRATEGY VIEW ==================== -->
+        <div class="strategy-view" id="strategyView">
+            <div class="strategy-container">
+
+                <!-- SECTION 1: Foundation (Vision, Mission, Values) -->
+                <section class="strategy-section" id="foundationSection">
+                    <div class="strategy-section-header">
+                        <div>
+                            <h2 class="strategy-section-title">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <circle cx="12" cy="12" r="6"/>
+                                    <circle cx="12" cy="12" r="2"/>
+                                </svg>
+                                Purpose & Foundation
+                            </h2>
+                            <p class="strategy-section-subtitle">Define your why - what drives you and guides your decisions</p>
+                        </div>
+                    </div>
+
+                    <div class="foundation-grid">
+                        <div class="foundation-card">
+                            <div class="foundation-card-label">Vision</div>
+                            <textarea class="foundation-textarea" id="visionTextarea"
+                                placeholder="What does your ideal future look like in 5-10 years? What legacy do you want to leave?"
+                                onchange="saveFoundation()"></textarea>
+                        </div>
+                        <div class="foundation-card">
+                            <div class="foundation-card-label">Mission</div>
+                            <textarea class="foundation-textarea" id="missionTextarea"
+                                placeholder="What is your purpose? How do you create value for yourself and others?"
+                                onchange="saveFoundation()"></textarea>
+                        </div>
+                        <div class="foundation-card values-container">
+                            <div class="foundation-card-label">Core Values</div>
+                            <div class="values-list" id="valuesList"></div>
+                            <div class="add-value-form">
+                                <input type="text" class="add-value-input" id="newValueInput"
+                                    placeholder="Add a value..."
+                                    onkeypress="if(event.key==='Enter') addValue()">
+                                <button class="add-btn add-btn-sm" onclick="addValue()">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M12 5v14M5 12h14"/>
+                                    </svg>
+                                    Add
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECTION 2: Strategic Pillars -->
+                <section class="strategy-section" id="pillarsSection">
+                    <div class="strategy-section-header">
+                        <div>
+                            <h2 class="strategy-section-title">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                                    <path d="M2 17l10 5 10-5"/>
+                                    <path d="M2 12l10 5 10-5"/>
+                                </svg>
+                                Strategic Pillars
+                            </h2>
+                            <p class="strategy-section-subtitle">Where to Play & How to Win - your strategic battlefields (Playing to Win)</p>
+                        </div>
+                        <button class="add-btn" onclick="openPillarModal()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 5v14M5 12h14"/>
+                            </svg>
+                            Add Pillar
+                        </button>
+                    </div>
+                    <div class="pillars-grid" id="pillarsGrid"></div>
+                </section>
+
+                <!-- SECTION 3: Portfolios & Projects -->
+                <section class="strategy-section" id="portfoliosSection">
+                    <div class="strategy-section-header">
+                        <div>
+                            <h2 class="strategy-section-title">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                                    <line x1="8" y1="21" x2="16" y2="21"/>
+                                    <line x1="12" y1="17" x2="12" y2="21"/>
+                                </svg>
+                                Portfolios & Projects
+                            </h2>
+                            <p class="strategy-section-subtitle">Life areas and the initiatives within them</p>
+                        </div>
+                        <button class="add-btn" onclick="openPortfolioModal()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 5v14M5 12h14"/>
+                            </svg>
+                            Add Portfolio
+                        </button>
+                    </div>
+                    <div class="portfolios-list" id="portfoliosList"></div>
+                </section>
+
+                <!-- SECTION 4: Alignment Dashboard -->
+                <section class="strategy-section" id="alignmentSection">
+                    <div class="strategy-section-header">
+                        <div>
+                            <h2 class="strategy-section-title">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                                </svg>
+                                Alignment Dashboard
+                            </h2>
+                            <p class="strategy-section-subtitle">How well does your time allocation match your strategic priorities?</p>
+                        </div>
+                    </div>
+                    <div class="alignment-grid">
+                        <div class="alignment-score-card">
+                            <div class="alignment-score-value" id="alignmentScoreValue">--</div>
+                            <div class="alignment-score-label">Alignment Score</div>
+                            <div class="alignment-score-desc" id="alignmentScoreDesc">
+                                Link your activities to projects to see how aligned your time is with your strategic pillars.
+                            </div>
+                        </div>
+                        <div class="alignment-chart-container">
+                            <div class="alignment-chart-title">Time Distribution by Portfolio</div>
+                            <canvas id="portfolioChart" height="200"></canvas>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </div>
     </div>
 
     <!-- Tooltip -->
@@ -2857,6 +3799,193 @@
                         <button type="button" class="weekly-edit-btn weekly-edit-btn-cancel" onclick="closeWeeklyEditModal()">Cancel</button>
                         <button type="submit" class="weekly-edit-btn weekly-edit-btn-save">Save</button>
                     </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Strategic Pillar Modal -->
+    <div class="strategy-modal" id="pillarModal">
+        <div class="strategy-modal-content">
+            <div class="strategy-modal-header">
+                <h3 class="strategy-modal-title" id="pillarModalTitle">Add Strategic Pillar</h3>
+                <button class="strategy-modal-close" onclick="closePillarModal()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 6L6 18M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <form id="pillarForm" onsubmit="savePillar(event)">
+                <input type="hidden" id="pillarEditId">
+                <div class="strategy-form-group">
+                    <label class="strategy-form-label">Title</label>
+                    <input type="text" class="strategy-form-input" id="pillarTitle" placeholder="e.g., Build a successful SaaS business" required>
+                </div>
+                <div class="strategy-form-group">
+                    <label class="strategy-form-label">Description</label>
+                    <textarea class="strategy-form-textarea" id="pillarDescription" placeholder="Describe this strategic pillar..."></textarea>
+                </div>
+                <div class="strategy-form-group">
+                    <label class="strategy-form-label">Where to Play</label>
+                    <input type="text" class="strategy-form-input" id="pillarWhereToPlay" placeholder="Which arena/market have you chosen?">
+                </div>
+                <div class="strategy-form-group">
+                    <label class="strategy-form-label">How to Win</label>
+                    <input type="text" class="strategy-form-input" id="pillarHowToWin" placeholder="What is your competitive advantage?">
+                </div>
+                <div class="strategy-form-group">
+                    <label class="strategy-form-label">Timeframe</label>
+                    <select class="strategy-form-select" id="pillarTimeframe">
+                        <option value="year">This Year</option>
+                        <option value="quarter">This Quarter</option>
+                        <option value="ongoing">Ongoing</option>
+                    </select>
+                </div>
+                <div class="strategy-modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closePillarModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Pillar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Portfolio Modal -->
+    <div class="strategy-modal" id="portfolioModal">
+        <div class="strategy-modal-content">
+            <div class="strategy-modal-header">
+                <h3 class="strategy-modal-title" id="portfolioModalTitle">Add Portfolio</h3>
+                <button class="strategy-modal-close" onclick="closePortfolioModal()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 6L6 18M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <form id="portfolioForm" onsubmit="savePortfolio(event)">
+                <input type="hidden" id="portfolioEditId">
+                <div class="strategy-form-group">
+                    <label class="strategy-form-label">Name</label>
+                    <input type="text" class="strategy-form-input" id="portfolioName" placeholder="e.g., Career, Health, Family" required>
+                </div>
+                <div class="strategy-form-group">
+                    <label class="strategy-form-label">Description</label>
+                    <textarea class="strategy-form-textarea" id="portfolioDescription" placeholder="What does this life area encompass?"></textarea>
+                </div>
+                <div class="strategy-form-group">
+                    <label class="strategy-form-label">Color</label>
+                    <input type="color" class="strategy-form-input" id="portfolioColor" value="#3498db" style="height: 44px; padding: 4px;">
+                </div>
+                <div class="strategy-form-group">
+                    <label class="strategy-form-label">Linked Pillars</label>
+                    <div id="portfolioPillarCheckboxes" class="pillar-checkboxes"></div>
+                </div>
+                <div class="strategy-modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closePortfolioModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Portfolio</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Project Modal -->
+    <div class="strategy-modal" id="projectModal">
+        <div class="strategy-modal-content">
+            <div class="strategy-modal-header">
+                <h3 class="strategy-modal-title" id="projectModalTitle">Add Project</h3>
+                <button class="strategy-modal-close" onclick="closeProjectModal()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 6L6 18M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <form id="projectForm" onsubmit="saveProject(event)">
+                <input type="hidden" id="projectEditId">
+                <input type="hidden" id="projectPortfolioId">
+                <div class="strategy-form-group">
+                    <label class="strategy-form-label">Name</label>
+                    <input type="text" class="strategy-form-input" id="projectName" placeholder="e.g., Launch MVP, Learn Django" required>
+                </div>
+                <div class="strategy-form-group">
+                    <label class="strategy-form-label">Description</label>
+                    <textarea class="strategy-form-textarea" id="projectDescription" placeholder="What is this project about?"></textarea>
+                </div>
+                <div class="strategy-form-group">
+                    <label class="strategy-form-label">Status</label>
+                    <select class="strategy-form-select" id="projectStatus">
+                        <option value="planning">Planning</option>
+                        <option value="active">Active</option>
+                        <option value="on_hold">On Hold</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                </div>
+                <div class="strategy-form-group">
+                    <label class="strategy-form-label">Progress (%)</label>
+                    <input type="number" class="strategy-form-input" id="projectProgress" min="0" max="100" value="0">
+                </div>
+                <div class="strategy-form-group">
+                    <label class="strategy-form-label">Target End Date</label>
+                    <input type="date" class="strategy-form-input" id="projectTargetDate">
+                </div>
+                <div class="strategy-modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeProjectModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Project</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Goal Modal -->
+    <div class="strategy-modal" id="goalModal">
+        <div class="strategy-modal-content">
+            <div class="strategy-modal-header">
+                <h3 class="strategy-modal-title" id="goalModalTitle">Add Goal</h3>
+                <button class="strategy-modal-close" onclick="closeGoalModal()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 6L6 18M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <form id="goalForm" onsubmit="saveGoal(event)">
+                <input type="hidden" id="goalEditId">
+                <input type="hidden" id="goalProjectId">
+                <div class="strategy-form-group">
+                    <label class="strategy-form-label">Goal Title</label>
+                    <input type="text" class="strategy-form-input" id="goalTitle" placeholder="e.g., Get 100 users, Exercise 3x/week" required>
+                </div>
+                <div class="strategy-form-group">
+                    <label class="strategy-form-label">Type</label>
+                    <select class="strategy-form-select" id="goalType" onchange="toggleGoalFields()">
+                        <option value="outcome">Outcome Goal (reach a target)</option>
+                        <option value="habit">Habit Goal (recurring)</option>
+                        <option value="milestone">Milestone (checkpoint)</option>
+                    </select>
+                </div>
+                <div id="goalOutcomeFields">
+                    <div class="strategy-form-group">
+                        <label class="strategy-form-label">Target Value</label>
+                        <input type="number" class="strategy-form-input" id="goalTargetValue" placeholder="e.g., 100">
+                    </div>
+                    <div class="strategy-form-group">
+                        <label class="strategy-form-label">Current Value</label>
+                        <input type="number" class="strategy-form-input" id="goalCurrentValue" placeholder="e.g., 25" value="0">
+                    </div>
+                    <div class="strategy-form-group">
+                        <label class="strategy-form-label">Unit</label>
+                        <input type="text" class="strategy-form-input" id="goalUnit" placeholder="e.g., users, hours, kg">
+                    </div>
+                </div>
+                <div id="goalHabitFields" style="display: none;">
+                    <div class="strategy-form-group">
+                        <label class="strategy-form-label">Frequency</label>
+                        <input type="text" class="strategy-form-input" id="goalFrequency" placeholder="e.g., 3x per week">
+                    </div>
+                </div>
+                <div class="strategy-form-group">
+                    <label class="strategy-form-label">Target Date</label>
+                    <input type="date" class="strategy-form-input" id="goalTargetDate">
+                </div>
+                <div class="strategy-modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeGoalModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Goal</button>
                 </div>
             </form>
         </div>
@@ -3111,6 +4240,26 @@
             };
         }
 
+        // Migrate V4 to V5: Add Strategy Module
+        function migrateV4toV5(oldState) {
+            console.log('Migrating V4 to V5 (Strategy Module)...');
+
+            return {
+                ...oldState,
+                version: 5,
+                strategy: oldState.strategy || {
+                    foundation: {
+                        vision: '',
+                        mission: '',
+                        values: []
+                    },
+                    pillars: [],
+                    portfolios: [],
+                    projects: []
+                }
+            };
+        }
+
         // V4 Activity Resolution: Get activities for a specific date
         function getActivitiesForDate(date) {
             const effectiveDayType = getEffectiveDayTypeForDate(date);
@@ -3242,8 +4391,8 @@
         }
 
         let state = {
-            // V4 Data Model (AM/PM granularity)
-            version: 4,
+            // V5 Data Model (Strategy Module)
+            version: 5,
 
             // TIER 1: Day Type Templates (Base Patterns)
             templates: { 'Work Day': [], 'Off Day': [], 'Holiday': [] },
@@ -3268,7 +4417,19 @@
             currentDayType: 'Work Day',
             currentView: 'activities',
             currentMainView: 'daily',
-            categoryColors: { ...defaultCategoryColors }
+            categoryColors: { ...defaultCategoryColors },
+
+            // Strategy Module (V5)
+            strategy: {
+                foundation: {
+                    vision: '',
+                    mission: '',
+                    values: []  // { id, name }
+                },
+                pillars: [],  // { id, title, description, whereToPlay, howToWin, timeframe, isActive }
+                portfolios: [],  // { id, name, description, color, pillarIds, isActive }
+                projects: []  // { id, portfolioId, name, description, status, progress, targetDate, goals }
+            }
         };
 
         function initExampleData() {
@@ -3286,9 +4447,16 @@
                 if (loadedState.version < 4) {
                     console.log('Migrating state from V3 to V4...');
                     loadedState = migrateV3toV4(loadedState);
+                    console.log('Migration to V4 complete.');
+                }
+
+                // Migrate V4 to V5 if needed (Strategy Module)
+                if (loadedState.version < 5) {
+                    console.log('Migrating state from V4 to V5...');
+                    loadedState = migrateV4toV5(loadedState);
                     // Save migrated state
                     localStorage.setItem('dailyPlannerStateLight', JSON.stringify(loadedState));
-                    console.log('Migration to V4 complete.');
+                    console.log('Migration to V5 complete.');
                 }
 
                 state = loadedState;
@@ -3312,6 +4480,15 @@
                 if (!state.dayOverrides) {
                     state.dayOverrides = {};
                 }
+                // Ensure strategy module exists
+                if (!state.strategy) {
+                    state.strategy = {
+                        foundation: { vision: '', mission: '', values: [] },
+                        pillars: [],
+                        portfolios: [],
+                        projects: []
+                    };
+                }
 
                 // Load Geneva holidays for current year view
                 loadGenevaHolidays(new Date().getFullYear());
@@ -3319,8 +4496,8 @@
                 return;
             }
 
-            // No saved data - load example data for new users with V4 structure
-            state.version = 4;
+            // No saved data - load example data for new users with V5 structure
+            state.version = 5;
             state.categoryColors = { ...defaultCategoryColors };
             state.weekdayTemplates = {
                 'Monday':    { am: 'Work Day', pm: 'Work Day', custom: null },
@@ -3446,8 +4623,10 @@
             document.getElementById('dailyView').classList.toggle('active', view === 'daily');
             document.getElementById('weeklyView').classList.toggle('active', view === 'weekly');
             document.getElementById('yearView').classList.toggle('active', view === 'year');
+            document.getElementById('strategyView').classList.toggle('active', view === 'strategy');
             if (view === 'weekly') renderWeeklyView();
             if (view === 'year') renderYearView();
+            if (view === 'strategy') renderStrategyView();
         }
 
         function renderClocks() {
@@ -5421,6 +6600,686 @@
             originalRenderWeeklyView();
             setTimeout(renderCharts, 100);
         };
+
+        // ==================== STRATEGY MODULE ====================
+
+        let portfolioChart = null;
+
+        function renderStrategyView() {
+            renderFoundation();
+            renderPillars();
+            renderPortfolios();
+            renderAlignmentDashboard();
+        }
+
+        // ==================== FOUNDATION ====================
+
+        function renderFoundation() {
+            const foundation = state.strategy?.foundation || { vision: '', mission: '', values: [] };
+            document.getElementById('visionTextarea').value = foundation.vision || '';
+            document.getElementById('missionTextarea').value = foundation.mission || '';
+            renderValues();
+        }
+
+        function saveFoundation() {
+            if (!state.strategy) state.strategy = { foundation: { vision: '', mission: '', values: [] }, pillars: [], portfolios: [], projects: [] };
+            if (!state.strategy.foundation) state.strategy.foundation = { vision: '', mission: '', values: [] };
+
+            state.strategy.foundation.vision = document.getElementById('visionTextarea').value;
+            state.strategy.foundation.mission = document.getElementById('missionTextarea').value;
+            saveToStorage();
+        }
+
+        function renderValues() {
+            const values = state.strategy?.foundation?.values || [];
+            const container = document.getElementById('valuesList');
+
+            if (values.length === 0) {
+                container.innerHTML = '<span style="color: var(--text-secondary); font-style: italic;">No values defined yet</span>';
+                return;
+            }
+
+            container.innerHTML = values.map(v => `
+                <div class="value-chip">
+                    <span>${v.name}</span>
+                    <button class="delete-value" onclick="removeValue(${v.id})" title="Remove">x</button>
+                </div>
+            `).join('');
+        }
+
+        function addValue() {
+            const input = document.getElementById('newValueInput');
+            const name = input.value.trim();
+            if (!name) return;
+
+            if (!state.strategy) state.strategy = { foundation: { vision: '', mission: '', values: [] }, pillars: [], portfolios: [], projects: [] };
+            if (!state.strategy.foundation) state.strategy.foundation = { vision: '', mission: '', values: [] };
+            if (!state.strategy.foundation.values) state.strategy.foundation.values = [];
+
+            const newId = state.strategy.foundation.values.length > 0
+                ? Math.max(...state.strategy.foundation.values.map(v => v.id)) + 1
+                : 1;
+
+            state.strategy.foundation.values.push({ id: newId, name });
+            input.value = '';
+            renderValues();
+            saveToStorage();
+        }
+
+        function removeValue(id) {
+            if (!state.strategy?.foundation?.values) return;
+            state.strategy.foundation.values = state.strategy.foundation.values.filter(v => v.id !== id);
+            renderValues();
+            saveToStorage();
+        }
+
+        // ==================== STRATEGIC PILLARS ====================
+
+        function renderPillars() {
+            const pillars = state.strategy?.pillars || [];
+            const grid = document.getElementById('pillarsGrid');
+
+            let html = pillars.map((p, index) => `
+                <div class="pillar-card" data-id="${p.id}">
+                    <div class="pillar-header">
+                        <div class="pillar-number">${index + 1}</div>
+                        <div class="pillar-actions">
+                            <button class="pillar-action-btn" onclick="editPillar(${p.id})" title="Edit">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+                                    <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                                </svg>
+                            </button>
+                            <button class="pillar-action-btn delete" onclick="deletePillar(${p.id})" title="Delete">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="pillar-title">${p.title}</div>
+                    ${p.description ? `<div class="pillar-description">${p.description}</div>` : ''}
+                    <div class="pillar-framework">
+                        <div class="pillar-framework-item">
+                            <div class="pillar-framework-label">Where to Play</div>
+                            <div class="pillar-framework-value">${p.whereToPlay || 'Not defined'}</div>
+                        </div>
+                        <div class="pillar-framework-item">
+                            <div class="pillar-framework-label">How to Win</div>
+                            <div class="pillar-framework-value">${p.howToWin || 'Not defined'}</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Add the "Add Pillar" card
+            html += `
+                <div class="add-pillar-card" onclick="openPillarModal()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 5v14M5 12h14"/>
+                    </svg>
+                    <span>Add Strategic Pillar</span>
+                </div>
+            `;
+
+            grid.innerHTML = html;
+        }
+
+        function openPillarModal(id = null) {
+            document.getElementById('pillarEditId').value = id || '';
+            document.getElementById('pillarModalTitle').textContent = id ? 'Edit Strategic Pillar' : 'Add Strategic Pillar';
+
+            if (id) {
+                const pillar = state.strategy?.pillars?.find(p => p.id === id);
+                if (pillar) {
+                    document.getElementById('pillarTitle').value = pillar.title;
+                    document.getElementById('pillarDescription').value = pillar.description || '';
+                    document.getElementById('pillarWhereToPlay').value = pillar.whereToPlay || '';
+                    document.getElementById('pillarHowToWin').value = pillar.howToWin || '';
+                    document.getElementById('pillarTimeframe').value = pillar.timeframe || 'year';
+                }
+            } else {
+                document.getElementById('pillarForm').reset();
+            }
+
+            document.getElementById('pillarModal').classList.add('active');
+        }
+
+        function closePillarModal() {
+            document.getElementById('pillarModal').classList.remove('active');
+        }
+
+        function savePillar(event) {
+            event.preventDefault();
+
+            const editId = document.getElementById('pillarEditId').value;
+            const pillarData = {
+                title: document.getElementById('pillarTitle').value,
+                description: document.getElementById('pillarDescription').value,
+                whereToPlay: document.getElementById('pillarWhereToPlay').value,
+                howToWin: document.getElementById('pillarHowToWin').value,
+                timeframe: document.getElementById('pillarTimeframe').value,
+                isActive: true
+            };
+
+            if (!state.strategy) state.strategy = { foundation: { vision: '', mission: '', values: [] }, pillars: [], portfolios: [], projects: [] };
+            if (!state.strategy.pillars) state.strategy.pillars = [];
+
+            if (editId) {
+                // Update existing
+                const index = state.strategy.pillars.findIndex(p => p.id === parseInt(editId));
+                if (index !== -1) {
+                    state.strategy.pillars[index] = { ...state.strategy.pillars[index], ...pillarData };
+                }
+            } else {
+                // Create new
+                const newId = state.strategy.pillars.length > 0
+                    ? Math.max(...state.strategy.pillars.map(p => p.id)) + 1
+                    : 1;
+                state.strategy.pillars.push({ id: newId, ...pillarData });
+            }
+
+            closePillarModal();
+            renderPillars();
+            saveToStorage();
+        }
+
+        function editPillar(id) {
+            openPillarModal(id);
+        }
+
+        function deletePillar(id) {
+            if (!confirm('Delete this strategic pillar?')) return;
+            state.strategy.pillars = state.strategy.pillars.filter(p => p.id !== id);
+            renderPillars();
+            saveToStorage();
+        }
+
+        // ==================== PORTFOLIOS ====================
+
+        function renderPortfolios() {
+            const portfolios = state.strategy?.portfolios || [];
+            const container = document.getElementById('portfoliosList');
+
+            if (portfolios.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                            <line x1="8" y1="21" x2="16" y2="21"/>
+                            <line x1="12" y1="17" x2="12" y2="21"/>
+                        </svg>
+                        <p>No portfolios yet. Add life areas like Career, Health, Family to organize your projects.</p>
+                        <button class="add-btn" onclick="openPortfolioModal()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 5v14M5 12h14"/>
+                            </svg>
+                            Add First Portfolio
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = portfolios.map(p => {
+                const projects = (state.strategy?.projects || []).filter(proj => proj.portfolioId === p.id);
+                const projectCount = projects.length;
+                const activeProjects = projects.filter(proj => proj.status === 'active').length;
+
+                return `
+                    <div class="portfolio-card ${p.expanded ? 'expanded' : ''}" data-id="${p.id}">
+                        <div class="portfolio-header" onclick="togglePortfolio(${p.id})">
+                            <div class="portfolio-header-left">
+                                <div class="portfolio-color" style="background: ${p.color}"></div>
+                                <span class="portfolio-name">${p.name}</span>
+                                <span class="portfolio-stats">${projectCount} projects${activeProjects > 0 ? ` (${activeProjects} active)` : ''}</span>
+                            </div>
+                            <div class="portfolio-header-right">
+                                <button class="pillar-action-btn" onclick="event.stopPropagation(); editPortfolio(${p.id})" title="Edit">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+                                        <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                                    </svg>
+                                </button>
+                                <svg class="portfolio-expand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M6 9l6 6 6-6"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="portfolio-content">
+                            <div class="projects-list">
+                                ${renderProjectsForPortfolio(p.id, projects)}
+                            </div>
+                            <button class="add-btn add-btn-sm" style="margin-top: 12px;" onclick="openProjectModal(${p.id})">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 5v14M5 12h14"/>
+                                </svg>
+                                Add Project
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderProjectsForPortfolio(portfolioId, projects) {
+            if (projects.length === 0) {
+                return '<p style="color: var(--text-secondary); font-size: 0.85rem; padding: 10px 0;">No projects yet</p>';
+            }
+
+            return projects.map(proj => {
+                const goals = proj.goals || [];
+                const completedGoals = goals.filter(g => g.isCompleted).length;
+
+                return `
+                    <div class="project-card" data-id="${proj.id}">
+                        <div class="project-header">
+                            <span class="project-name">${proj.name}</span>
+                            <span class="project-status ${proj.status}">${proj.status.replace('_', ' ')}</span>
+                        </div>
+                        <div class="project-progress">
+                            <div class="project-progress-bar">
+                                <div class="project-progress-fill" style="width: ${proj.progress || 0}%"></div>
+                            </div>
+                            <div class="project-progress-text">
+                                <span>${proj.progress || 0}% complete</span>
+                                ${proj.targetDate ? `<span>Target: ${formatDate(proj.targetDate)}</span>` : ''}
+                            </div>
+                        </div>
+                        ${goals.length > 0 ? `
+                            <div class="goals-list">
+                                ${goals.map(g => `
+                                    <div class="goal-item">
+                                        <div class="goal-checkbox ${g.isCompleted ? 'completed' : ''}" onclick="toggleGoal(${proj.id}, ${g.id})">
+                                            ${g.isCompleted ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>' : ''}
+                                        </div>
+                                        <span class="goal-text ${g.isCompleted ? 'completed' : ''}">${g.title}</span>
+                                        ${g.targetValue ? `<span class="goal-target">${g.currentValue || 0}/${g.targetValue} ${g.unit || ''}</span>` : ''}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                        <div style="display: flex; gap: 8px; margin-top: 10px;">
+                            <button class="add-btn add-btn-sm" onclick="openGoalModal(${proj.id})">+ Goal</button>
+                            <button class="pillar-action-btn" onclick="editProject(${proj.id})" title="Edit Project">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+                                    <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                                </svg>
+                            </button>
+                            <button class="pillar-action-btn delete" onclick="deleteProject(${proj.id})" title="Delete Project">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            const d = new Date(dateStr);
+            return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+        function togglePortfolio(id) {
+            const portfolio = state.strategy?.portfolios?.find(p => p.id === id);
+            if (portfolio) {
+                portfolio.expanded = !portfolio.expanded;
+                renderPortfolios();
+            }
+        }
+
+        function openPortfolioModal(id = null) {
+            document.getElementById('portfolioEditId').value = id || '';
+            document.getElementById('portfolioModalTitle').textContent = id ? 'Edit Portfolio' : 'Add Portfolio';
+
+            // Render pillar checkboxes
+            const pillars = state.strategy?.pillars || [];
+            const checkboxContainer = document.getElementById('portfolioPillarCheckboxes');
+            if (pillars.length === 0) {
+                checkboxContainer.innerHTML = '<span style="color: var(--text-secondary); font-size: 0.85rem;">No pillars defined yet</span>';
+            } else {
+                checkboxContainer.innerHTML = pillars.map(p => `
+                    <label style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                        <input type="checkbox" name="portfolioPillars" value="${p.id}">
+                        <span>${p.title}</span>
+                    </label>
+                `).join('');
+            }
+
+            if (id) {
+                const portfolio = state.strategy?.portfolios?.find(p => p.id === id);
+                if (portfolio) {
+                    document.getElementById('portfolioName').value = portfolio.name;
+                    document.getElementById('portfolioDescription').value = portfolio.description || '';
+                    document.getElementById('portfolioColor').value = portfolio.color || '#3498db';
+                    // Check linked pillars
+                    (portfolio.pillarIds || []).forEach(pid => {
+                        const cb = checkboxContainer.querySelector(`input[value="${pid}"]`);
+                        if (cb) cb.checked = true;
+                    });
+                }
+            } else {
+                document.getElementById('portfolioForm').reset();
+                document.getElementById('portfolioColor').value = '#3498db';
+            }
+
+            document.getElementById('portfolioModal').classList.add('active');
+        }
+
+        function closePortfolioModal() {
+            document.getElementById('portfolioModal').classList.remove('active');
+        }
+
+        function savePortfolio(event) {
+            event.preventDefault();
+
+            const editId = document.getElementById('portfolioEditId').value;
+            const checkedPillars = Array.from(document.querySelectorAll('input[name="portfolioPillars"]:checked')).map(cb => parseInt(cb.value));
+
+            const portfolioData = {
+                name: document.getElementById('portfolioName').value,
+                description: document.getElementById('portfolioDescription').value,
+                color: document.getElementById('portfolioColor').value,
+                pillarIds: checkedPillars,
+                isActive: true,
+                expanded: false
+            };
+
+            if (!state.strategy) state.strategy = { foundation: { vision: '', mission: '', values: [] }, pillars: [], portfolios: [], projects: [] };
+            if (!state.strategy.portfolios) state.strategy.portfolios = [];
+
+            if (editId) {
+                const index = state.strategy.portfolios.findIndex(p => p.id === parseInt(editId));
+                if (index !== -1) {
+                    state.strategy.portfolios[index] = { ...state.strategy.portfolios[index], ...portfolioData };
+                }
+            } else {
+                const newId = state.strategy.portfolios.length > 0
+                    ? Math.max(...state.strategy.portfolios.map(p => p.id)) + 1
+                    : 1;
+                state.strategy.portfolios.push({ id: newId, ...portfolioData });
+            }
+
+            closePortfolioModal();
+            renderPortfolios();
+            renderAlignmentDashboard();
+            saveToStorage();
+        }
+
+        function editPortfolio(id) {
+            openPortfolioModal(id);
+        }
+
+        function deletePortfolio(id) {
+            if (!confirm('Delete this portfolio and all its projects?')) return;
+            state.strategy.portfolios = state.strategy.portfolios.filter(p => p.id !== id);
+            state.strategy.projects = state.strategy.projects.filter(p => p.portfolioId !== id);
+            renderPortfolios();
+            renderAlignmentDashboard();
+            saveToStorage();
+        }
+
+        // ==================== PROJECTS ====================
+
+        function openProjectModal(portfolioId, projectId = null) {
+            document.getElementById('projectEditId').value = projectId || '';
+            document.getElementById('projectPortfolioId').value = portfolioId;
+            document.getElementById('projectModalTitle').textContent = projectId ? 'Edit Project' : 'Add Project';
+
+            if (projectId) {
+                const project = state.strategy?.projects?.find(p => p.id === projectId);
+                if (project) {
+                    document.getElementById('projectName').value = project.name;
+                    document.getElementById('projectDescription').value = project.description || '';
+                    document.getElementById('projectStatus').value = project.status || 'planning';
+                    document.getElementById('projectProgress').value = project.progress || 0;
+                    document.getElementById('projectTargetDate').value = project.targetDate || '';
+                }
+            } else {
+                document.getElementById('projectForm').reset();
+                document.getElementById('projectProgress').value = 0;
+            }
+
+            document.getElementById('projectModal').classList.add('active');
+        }
+
+        function closeProjectModal() {
+            document.getElementById('projectModal').classList.remove('active');
+        }
+
+        function saveProject(event) {
+            event.preventDefault();
+
+            const editId = document.getElementById('projectEditId').value;
+            const portfolioId = parseInt(document.getElementById('projectPortfolioId').value);
+
+            const projectData = {
+                portfolioId,
+                name: document.getElementById('projectName').value,
+                description: document.getElementById('projectDescription').value,
+                status: document.getElementById('projectStatus').value,
+                progress: parseInt(document.getElementById('projectProgress').value) || 0,
+                targetDate: document.getElementById('projectTargetDate').value || null,
+                goals: []
+            };
+
+            if (!state.strategy) state.strategy = { foundation: { vision: '', mission: '', values: [] }, pillars: [], portfolios: [], projects: [] };
+            if (!state.strategy.projects) state.strategy.projects = [];
+
+            if (editId) {
+                const index = state.strategy.projects.findIndex(p => p.id === parseInt(editId));
+                if (index !== -1) {
+                    projectData.goals = state.strategy.projects[index].goals || [];
+                    state.strategy.projects[index] = { ...state.strategy.projects[index], ...projectData };
+                }
+            } else {
+                const newId = state.strategy.projects.length > 0
+                    ? Math.max(...state.strategy.projects.map(p => p.id)) + 1
+                    : 1;
+                state.strategy.projects.push({ id: newId, ...projectData });
+            }
+
+            closeProjectModal();
+            renderPortfolios();
+            saveToStorage();
+        }
+
+        function editProject(id) {
+            const project = state.strategy?.projects?.find(p => p.id === id);
+            if (project) {
+                openProjectModal(project.portfolioId, id);
+            }
+        }
+
+        function deleteProject(id) {
+            if (!confirm('Delete this project and all its goals?')) return;
+            state.strategy.projects = state.strategy.projects.filter(p => p.id !== id);
+            renderPortfolios();
+            saveToStorage();
+        }
+
+        // ==================== GOALS ====================
+
+        function openGoalModal(projectId, goalId = null) {
+            document.getElementById('goalEditId').value = goalId || '';
+            document.getElementById('goalProjectId').value = projectId;
+            document.getElementById('goalModalTitle').textContent = goalId ? 'Edit Goal' : 'Add Goal';
+
+            if (goalId) {
+                const project = state.strategy?.projects?.find(p => p.id === projectId);
+                const goal = project?.goals?.find(g => g.id === goalId);
+                if (goal) {
+                    document.getElementById('goalTitle').value = goal.title;
+                    document.getElementById('goalType').value = goal.type || 'outcome';
+                    document.getElementById('goalTargetValue').value = goal.targetValue || '';
+                    document.getElementById('goalCurrentValue').value = goal.currentValue || 0;
+                    document.getElementById('goalUnit').value = goal.unit || '';
+                    document.getElementById('goalFrequency').value = goal.frequency || '';
+                    document.getElementById('goalTargetDate').value = goal.targetDate || '';
+                    toggleGoalFields();
+                }
+            } else {
+                document.getElementById('goalForm').reset();
+                document.getElementById('goalCurrentValue').value = 0;
+                toggleGoalFields();
+            }
+
+            document.getElementById('goalModal').classList.add('active');
+        }
+
+        function closeGoalModal() {
+            document.getElementById('goalModal').classList.remove('active');
+        }
+
+        function toggleGoalFields() {
+            const type = document.getElementById('goalType').value;
+            document.getElementById('goalOutcomeFields').style.display = type === 'outcome' ? 'block' : 'none';
+            document.getElementById('goalHabitFields').style.display = type === 'habit' ? 'block' : 'none';
+        }
+
+        function saveGoal(event) {
+            event.preventDefault();
+
+            const editId = document.getElementById('goalEditId').value;
+            const projectId = parseInt(document.getElementById('goalProjectId').value);
+
+            const goalData = {
+                title: document.getElementById('goalTitle').value,
+                type: document.getElementById('goalType').value,
+                targetValue: document.getElementById('goalTargetValue').value ? parseInt(document.getElementById('goalTargetValue').value) : null,
+                currentValue: parseInt(document.getElementById('goalCurrentValue').value) || 0,
+                unit: document.getElementById('goalUnit').value,
+                frequency: document.getElementById('goalFrequency').value,
+                targetDate: document.getElementById('goalTargetDate').value || null,
+                isCompleted: false
+            };
+
+            const project = state.strategy?.projects?.find(p => p.id === projectId);
+            if (!project) return;
+            if (!project.goals) project.goals = [];
+
+            if (editId) {
+                const index = project.goals.findIndex(g => g.id === parseInt(editId));
+                if (index !== -1) {
+                    goalData.isCompleted = project.goals[index].isCompleted;
+                    project.goals[index] = { ...project.goals[index], ...goalData };
+                }
+            } else {
+                const newId = project.goals.length > 0
+                    ? Math.max(...project.goals.map(g => g.id)) + 1
+                    : 1;
+                project.goals.push({ id: newId, ...goalData });
+            }
+
+            closeGoalModal();
+            renderPortfolios();
+            saveToStorage();
+        }
+
+        function toggleGoal(projectId, goalId) {
+            const project = state.strategy?.projects?.find(p => p.id === projectId);
+            const goal = project?.goals?.find(g => g.id === goalId);
+            if (goal) {
+                goal.isCompleted = !goal.isCompleted;
+                renderPortfolios();
+                saveToStorage();
+            }
+        }
+
+        // ==================== ALIGNMENT DASHBOARD ====================
+
+        function renderAlignmentDashboard() {
+            const score = calculateAlignmentScore();
+            document.getElementById('alignmentScoreValue').textContent = score + '%';
+
+            const linkedActivities = countLinkedActivities();
+            const totalActivities = countTotalActivities();
+            document.getElementById('alignmentScoreDesc').textContent =
+                `${linkedActivities} of ${totalActivities} activities are linked to projects.`;
+
+            renderPortfolioChart();
+        }
+
+        function calculateAlignmentScore() {
+            // For now, return a placeholder based on portfolio/project setup
+            const portfolios = state.strategy?.portfolios?.length || 0;
+            const projects = state.strategy?.projects?.length || 0;
+            const pillars = state.strategy?.pillars?.length || 0;
+
+            if (portfolios === 0 && projects === 0 && pillars === 0) return 0;
+
+            // Simple heuristic: more structure = higher score (up to 100)
+            return Math.min(100, Math.round((portfolios * 15 + projects * 10 + pillars * 20)));
+        }
+
+        function countLinkedActivities() {
+            // Count activities that have a projectId
+            let count = 0;
+            Object.values(state.templates || {}).forEach(activities => {
+                count += activities.filter(a => a.projectId).length;
+            });
+            return count;
+        }
+
+        function countTotalActivities() {
+            let count = 0;
+            Object.values(state.templates || {}).forEach(activities => {
+                count += activities.length;
+            });
+            return count;
+        }
+
+        function renderPortfolioChart() {
+            const ctx = document.getElementById('portfolioChart');
+            if (!ctx) return;
+
+            const portfolios = state.strategy?.portfolios || [];
+
+            if (portfolioChart) {
+                portfolioChart.destroy();
+            }
+
+            if (portfolios.length === 0) {
+                ctx.parentElement.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-secondary);">Add portfolios to see time distribution</div>';
+                return;
+            }
+
+            // Calculate time per portfolio (placeholder - based on project count)
+            const data = portfolios.map(p => {
+                const projectCount = (state.strategy?.projects || []).filter(proj => proj.portfolioId === p.id).length;
+                return projectCount || 1; // At least 1 for visualization
+            });
+
+            portfolioChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: portfolios.map(p => p.name),
+                    datasets: [{
+                        data: data,
+                        backgroundColor: portfolios.map(p => p.color),
+                        borderColor: '#000000',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                font: { size: 12 },
+                                padding: 15
+                            }
+                        }
+                    }
+                }
+            });
+        }
     </script>
 </body>
 </html>
