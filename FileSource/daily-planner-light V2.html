@@ -113,6 +113,31 @@
             height: 18px;
         }
 
+        /* Header Action Buttons */
+        .header-actions {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .header-actions .btn {
+            padding: 6px 12px;
+            font-size: 0.75rem;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .header-actions .btn svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .header-actions .btn-icon {
+            padding: 6px 8px;
+        }
+
         /* Daily View Styles */
         .daily-view {
             display: none;
@@ -1414,6 +1439,138 @@
             border-color: var(--accent);
         }
 
+        /* Work Schedule Configuration */
+        .work-schedule-config {
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border: 2px solid var(--border);
+        }
+
+        .work-schedule-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .work-schedule-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .work-schedule-presets {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .preset-btn {
+            padding: 5px 12px;
+            font-size: 0.75rem;
+            border: 1px solid var(--border);
+            background: var(--bg-secondary);
+            border-radius: 6px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+
+        .preset-btn:hover {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .preset-btn.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .weekday-toggles {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .weekday-toggle {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .weekday-toggle-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .weekday-toggle-btn {
+            width: 44px;
+            height: 44px;
+            border: 2px solid var(--border);
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+
+        .weekday-toggle-btn:hover {
+            border-color: var(--accent);
+        }
+
+        .weekday-toggle-btn.work {
+            background: #fffef8;
+            border-color: #27ae60;
+            color: #27ae60;
+        }
+
+        .weekday-toggle-btn.work::after {
+            content: '';
+        }
+
+        .weekday-toggle-btn.off {
+            background: #fdebd0;
+            border-color: #9b59b6;
+            color: #9b59b6;
+        }
+
+        .weekday-toggle-btn.am-only {
+            background: linear-gradient(to bottom, #fffef8 50%, #fdebd0 50%);
+            border-color: #27ae60;
+            color: #27ae60;
+        }
+
+        .weekday-toggle-btn.pm-only {
+            background: linear-gradient(to bottom, #fdebd0 50%, #fffef8 50%);
+            border-color: #27ae60;
+            color: #27ae60;
+        }
+
+        .weekday-toggle-btn .toggle-icon {
+            width: 18px;
+            height: 18px;
+        }
+
+        .weekday-toggle-btn .half-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
         .year-stats-summary {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -1532,19 +1689,22 @@
         .month-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 2px;
+            gap: 0;
+            border: 1px solid #a0a0a0;
         }
 
         .day-header {
             font-size: 0.65rem;
-            font-weight: 600;
-            color: var(--text-secondary);
+            font-weight: 500;
+            color: #333;
             text-align: center;
             padding: 4px 0;
+            background: #b4c6e7;
+            border: 1px solid #a0a0a0;
         }
 
         .day-header.weekend {
-            color: var(--accent);
+            color: #333;
         }
 
         .day-cell {
@@ -1553,56 +1713,122 @@
             align-items: center;
             justify-content: center;
             font-size: 0.7rem;
-            border-radius: 4px;
             cursor: pointer;
-            transition: transform 0.15s, box-shadow 0.15s;
-            border: 1px solid transparent;
+            transition: outline 0.1s;
+            border: 1px solid #a0a0a0;
+            color: #000;
+            background: white;
         }
 
         .day-cell:hover {
-            transform: scale(1.15);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            outline: 2px solid #4472c4;
             z-index: 10;
             position: relative;
         }
 
         .day-cell.empty {
-            background: transparent;
+            background: var(--bg-tertiary);
             cursor: default;
+            border-color: #a0a0a0;
         }
 
         .day-cell.empty:hover {
-            transform: none;
-            box-shadow: none;
+            outline: none;
         }
 
         .day-cell.work-day {
-            background: #d5f5e3;
-            color: #1e8449;
-            border-color: #27ae60;
+            background: #fffef8;
+            color: #000;
         }
 
         .day-cell.off-day {
-            background: #fadbd8;
-            color: #943126;
-            border-color: #e74c3c;
+            background: #fdebd0;
+            color: #000;
+        }
+
+        .day-cell.given-day {
+            background: #d5dbf5;
+            color: #000;
         }
 
         .day-cell.holiday {
-            background: #fdebd0;
-            color: #b9770e;
-            border-color: #f39c12;
+            background: repeating-linear-gradient(
+                135deg,
+                white,
+                white 3px,
+                #a6a6a6 3px,
+                #a6a6a6 4px
+            );
+            color: #000;
         }
 
         .day-cell.weekend {
-            background: #e8daef;
-            color: #6c3483;
-            border-color: #9b59b6;
+            background: #fdebd0;
+            color: #000;
+        }
+
+        .day-cell.vacation {
+            background: #5b9bd5;
+            color: #000;
+        }
+
+        .day-cell.sick {
+            background: #f8cbad;
+            color: #000;
         }
 
         .day-cell.today {
             font-weight: 700;
-            box-shadow: 0 0 0 2px var(--accent);
+            box-shadow: inset 0 0 0 2px #c00000;
+        }
+
+        /* Half-day split colors (AM top, PM bottom) */
+        .day-cell.half-day {
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Vertical split: left=AM, right=PM */
+        .day-cell.half-day.am-work-day.pm-off-day,
+        .day-cell.half-day.am-work-day.pm-weekend {
+            background: linear-gradient(to right, #fffef8 50%, #fdebd0 50%);
+        }
+
+        .day-cell.half-day.am-off-day.pm-work-day,
+        .day-cell.half-day.am-weekend.pm-work-day {
+            background: linear-gradient(to right, #fdebd0 50%, #fffef8 50%);
+        }
+
+        .day-cell.half-day.am-work-day.pm-vacation {
+            background: linear-gradient(to right, #fffef8 50%, #5b9bd5 50%);
+        }
+
+        .day-cell.half-day.am-vacation.pm-work-day {
+            background: linear-gradient(to right, #5b9bd5 50%, #fffef8 50%);
+        }
+
+        .day-cell.half-day.am-work-day.pm-holiday {
+            background: linear-gradient(to right, #fffef8 50%, #e0e0e0 50%);
+        }
+
+        .day-cell.half-day.am-holiday.pm-work-day {
+            background: linear-gradient(to right, #e0e0e0 50%, #fffef8 50%);
+        }
+
+        .day-cell.half-day.am-work-day.pm-sick {
+            background: linear-gradient(to right, #fffef8 50%, #f8cbad 50%);
+        }
+
+        .day-cell.half-day.am-sick.pm-work-day {
+            background: linear-gradient(to right, #f8cbad 50%, #fffef8 50%);
+        }
+
+        .day-cell.half-day.am-work-day.pm-given-day {
+            background: linear-gradient(to right, #fffef8 50%, #d5dbf5 50%);
+        }
+
+        .day-cell.half-day.am-given-day.pm-work-day {
+            background: linear-gradient(to right, #d5dbf5 50%, #fffef8 50%);
         }
 
         .year-legend {
@@ -1610,9 +1836,9 @@
             flex-wrap: wrap;
             gap: 20px;
             justify-content: center;
-            margin-top: 25px;
-            padding-top: 20px;
-            border-top: 1px solid var(--border);
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
         }
 
         .year-legend-item {
@@ -1631,23 +1857,45 @@
         }
 
         .year-legend-color.work-day {
-            background: #d5f5e3;
-            border-color: #27ae60;
+            background: #fffef8;
+            border-color: #a0a0a0;
         }
 
-        .year-legend-color.off-day {
-            background: #fadbd8;
-            border-color: #e74c3c;
+        .year-legend-color.off-day,
+        .year-legend-color.weekend-off {
+            background: #fdebd0;
+            border-color: #a0a0a0;
+        }
+
+        .year-legend-color.given-day {
+            background: #d5dbf5;
+            border-color: #a0a0a0;
         }
 
         .year-legend-color.holiday {
-            background: #fdebd0;
-            border-color: #f39c12;
+            background: repeating-linear-gradient(
+                135deg,
+                white,
+                white 3px,
+                #a6a6a6 3px,
+                #a6a6a6 4px
+            );
+            border-color: #a0a0a0;
         }
 
         .year-legend-color.weekend {
-            background: #e8daef;
-            border-color: #9b59b6;
+            background: #fdebd0;
+            border-color: #a0a0a0;
+        }
+
+        .year-legend-color.vacation {
+            background: #5b9bd5;
+            border-color: #a0a0a0;
+        }
+
+        .year-legend-color.sick {
+            background: #f8cbad;
+            border-color: #a0a0a0;
         }
 
         /* ==================== DAY SELECTOR POPUP ==================== */
@@ -1779,9 +2027,9 @@
             font-size: 1rem;
         }
 
-        .day-type-option-color.work { background: #d5f5e3; border-color: #27ae60; }
+        .day-type-option-color.work { background: #fffef8; border-color: #27ae60; }
         .day-type-option-color.off { background: #fadbd8; border-color: #e74c3c; }
-        .day-type-option-color.weekend { background: #e8daef; border-color: #9b59b6; }
+        .day-type-option-color.weekend { background: #fdebd0; border-color: #9b59b6; }
         .day-type-option-color.holiday { background: #fdebd0; border-color: #f39c12; }
         .day-type-option-color.vacation { background: #d6eaf8; border-color: #3498db; }
         .day-type-option-color.sick { background: #f5eef8; border-color: #8e44ad; }
@@ -1793,6 +2041,65 @@
             display: flex;
             justify-content: flex-end;
             gap: 10px;
+        }
+
+        /* Day Selector AM/PM Sections */
+        .day-selector-ampm {
+            display: flex;
+            gap: 20px;
+        }
+
+        .ampm-section {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .ampm-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid var(--accent);
+        }
+
+        .day-selector-options {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        /* Make options more compact for AM/PM layout */
+        .day-selector-ampm .day-type-option {
+            padding: 8px 12px;
+            font-size: 0.8rem;
+        }
+
+        /* Half-day toggle checkbox */
+        .day-selector-toggle {
+            margin: 15px 0;
+            padding: 10px 0;
+            border-top: 1px solid var(--border);
+        }
+
+        .half-day-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .half-day-toggle input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--accent);
+            cursor: pointer;
+        }
+
+        .half-day-toggle:hover {
+            color: var(--text-primary);
         }
 
         /* ==================== WEEKLY ACTIVITY EDIT MODAL ==================== */
@@ -1936,7 +2243,7 @@
         }
 
         .weekly-edit-option-icon.template {
-            background: #d5f5e3;
+            background: #fffef8;
             color: #27ae60;
         }
 
@@ -1996,34 +2303,6 @@
             transform: scale(1.02);
         }
 
-        /* New day type colors */
-        .day-cell.vacation {
-            background: #d6eaf8;
-            color: #1a5276;
-            border-color: #3498db;
-        }
-
-        .day-cell.sick {
-            background: #f5eef8;
-            color: #6c3483;
-            border-color: #8e44ad;
-        }
-
-        .day-cell.public-holiday {
-            background: #fdebd0;
-            color: #b9770e;
-            border-color: #f39c12;
-        }
-
-        .year-legend-color.vacation {
-            background: #d6eaf8;
-            border-color: #3498db;
-        }
-
-        .year-legend-color.sick {
-            background: #f5eef8;
-            border-color: #8e44ad;
-        }
     </style>
 </head>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
@@ -2060,6 +2339,41 @@
                         Year
                     </button>
                 </div>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-secondary" onclick="saveToStorage()" title="Save">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/>
+                        <path d="M17 21v-8H7v8M7 3v5h8"/>
+                    </svg>
+                    Save
+                </button>
+                <button class="btn btn-secondary" onclick="exportData()" title="Export">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                    </svg>
+                    Export
+                </button>
+                <button class="btn btn-secondary" onclick="document.getElementById('importInput').click()" title="Import">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+                    </svg>
+                    Import
+                </button>
+                <button class="btn btn-danger" onclick="clearCurrentDay()" title="Clear">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+                    </svg>
+                    Clear
+                </button>
+                <button class="btn btn-secondary" onclick="loadExampleData()" title="Load Example">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                        <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
+                    </svg>
+                    Example
+                </button>
+                <input type="file" id="importInput" accept=".json" style="display: none;" onchange="importData(event)">
             </div>
         </header>
 
@@ -2180,54 +2494,6 @@
                         </h3>
                         <div class="activities-list" id="activitiesList"></div>
                     </div>
-
-                    <div class="panel-card">
-                        <h3 class="panel-title">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
-                            </svg>
-                            Save & Export
-                        </h3>
-                        <div class="action-buttons">
-                            <button class="btn btn-secondary" onclick="saveToStorage()">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/>
-                                    <path d="M17 21v-8H7v8M7 3v5h8"/>
-                                </svg>
-                                Save
-                            </button>
-                            <button class="btn btn-secondary" onclick="exportData()">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
-                                </svg>
-                                Export
-                            </button>
-                        </div>
-                        <div class="action-buttons" style="margin-top: 10px;">
-                            <button class="btn btn-secondary" onclick="document.getElementById('importInput').click()">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
-                                </svg>
-                                Import
-                            </button>
-                            <button class="btn btn-danger" onclick="clearCurrentDay()">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
-                                </svg>
-                                Clear
-                            </button>
-                        </div>
-                        <div class="action-buttons" style="margin-top: 10px;">
-                            <button class="btn btn-secondary" onclick="loadExampleData()" style="grid-column: 1 / -1;">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
-                                    <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
-                                </svg>
-                                Load Example Week
-                            </button>
-                        </div>
-                        <input type="file" id="importInput" accept=".json" style="display: none;" onchange="importData(event)">
-                    </div>
                 </div>
             </div>
         </div>
@@ -2283,9 +2549,26 @@
                         </svg>
                     </button>
                 </div>
+
+                <!-- Work Schedule Configuration -->
+                <div class="work-schedule-config" id="workScheduleConfig">
+                    <div class="work-schedule-header">
+                        <span class="work-schedule-title">Work Schedule</span>
+                        <div class="work-schedule-presets">
+                            <button class="preset-btn" onclick="applyWorkSchedulePreset('full-time')" title="Monday to Friday">Full-time</button>
+                            <button class="preset-btn" onclick="applyWorkSchedulePreset('90-fri-pm')" title="Friday PM off (90%)">90%</button>
+                            <button class="preset-btn" onclick="applyWorkSchedulePreset('80-mon-thu')" title="Monday to Thursday (80%)">80% Mon-Thu</button>
+                            <button class="preset-btn" onclick="applyWorkSchedulePreset('80-tue-fri')" title="Tuesday to Friday (80%)">80% Tue-Fri</button>
+                        </div>
+                    </div>
+                    <div class="weekday-toggles" id="weekdayToggles">
+                        <!-- Generated by renderWorkScheduleConfig() -->
+                    </div>
+                </div>
+
                 <div class="year-stats-summary" id="yearStatsSummary"></div>
-                <div class="year-calendar" id="yearCalendar"></div>
                 <div class="year-legend" id="yearLegend"></div>
+                <div class="year-calendar" id="yearCalendar"></div>
             </div>
         </div>
     </div>
@@ -2330,7 +2613,7 @@
         </div>
     </div>
 
-    <!-- Day Selector Popup -->
+    <!-- Day Selector Popup (V4 with AM/PM) -->
     <div class="day-selector-overlay" id="daySelectorOverlay" onclick="closeDaySelector(event)">
         <div class="day-selector" onclick="event.stopPropagation()">
             <div class="day-selector-header">
@@ -2344,9 +2627,30 @@
                     </svg>
                 </button>
             </div>
-            <div class="day-selector-options" id="daySelectorOptions"></div>
+            <!-- Full Day Mode (default) -->
+            <div class="day-selector-fullday" id="daySelectorFullDay">
+                <div class="day-selector-options" id="daySelectorOptionsFullDay"></div>
+            </div>
+            <!-- Half Day Toggle -->
+            <div class="day-selector-toggle">
+                <label class="half-day-toggle">
+                    <input type="checkbox" id="halfDayCheckbox" onchange="toggleHalfDayMode()">
+                    <span>Set by half-day (AM/PM)</span>
+                </label>
+            </div>
+            <!-- Half Day Mode (hidden by default) -->
+            <div class="day-selector-ampm" id="daySelectorAMPM" style="display: none;">
+                <div class="ampm-section">
+                    <div class="ampm-label">Morning (AM)</div>
+                    <div class="day-selector-options" id="daySelectorOptionsAM"></div>
+                </div>
+                <div class="ampm-section">
+                    <div class="ampm-label">Afternoon (PM)</div>
+                    <div class="day-selector-options" id="daySelectorOptionsPM"></div>
+                </div>
+            </div>
             <div class="day-selector-actions">
-                <button class="btn btn-secondary btn-sm" onclick="clearDayOverride()">Reset to Default</button>
+                <button class="btn btn-secondary btn-sm" onclick="clearDayOverrideV4()">Reset to Default</button>
             </div>
         </div>
     </div>
@@ -2469,12 +2773,13 @@
 
         // Year view day types (for individual day overrides)
         const yearDayTypes = {
-            'work': { label: 'Work Day', class: 'work-day', color: '#d5f5e3' },
-            'off': { label: 'Off Day', class: 'off-day', color: '#fadbd8' },
-            'weekend': { label: 'Weekend', class: 'weekend', color: '#e8daef' },
+            'work': { label: 'Work Day', class: 'work-day', color: '#fffef8' },
+            'off': { label: 'Off Day', class: 'off-day', color: '#fdebd0' },
+            'weekend': { label: 'Weekend', class: 'weekend', color: '#fdebd0' },
             'holiday': { label: 'Public Holiday', class: 'holiday', color: '#fdebd0' },
             'vacation': { label: 'Vacation', class: 'vacation', color: '#d6eaf8' },
-            'sick': { label: 'Sick Day', class: 'sick', color: '#f5eef8' }
+            'sick': { label: 'Sick Day', class: 'sick', color: '#f5eef8' },
+            'given': { label: 'Given Day', class: 'given-day', color: '#d5dbf5' }
         };
 
         // Geneva (Switzerland) Official Public Holidays 2023-2027
@@ -2536,14 +2841,15 @@
             ]
         };
 
-        // Function to load Geneva holidays for a given year
+        // Function to load Geneva holidays for a given year (V4 format with AM/PM)
         function loadGenevaHolidays(year) {
             const holidays = genevaHolidays[year];
             if (!holidays) return;
 
             holidays.forEach(h => {
                 if (!state.dayOverrides[h.date]) {
-                    state.dayOverrides[h.date] = 'Public Holiday';
+                    // V4 format: full day holiday
+                    state.dayOverrides[h.date] = { am: 'holiday', pm: 'holiday' };
                 }
             });
         }
@@ -2617,7 +2923,56 @@
             };
         }
 
-        // V3 Activity Resolution: Get activities for a specific date
+        // Migrate V3 to V4: Add AM/PM granularity support
+        function migrateV3toV4(oldState) {
+            console.log('Migrating V3 to V4 (AM/PM granularity)...');
+
+            // Convert weekdayTemplates from { baseType: 'Work Day' } to { am: 'Work Day', pm: 'Work Day' }
+            const newWeekdayTemplates = {};
+            const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+            weekDays.forEach(day => {
+                const oldTemplate = oldState.weekdayTemplates?.[day];
+                if (oldTemplate) {
+                    newWeekdayTemplates[day] = {
+                        am: oldTemplate.baseType || 'Work Day',
+                        pm: oldTemplate.baseType || 'Work Day',
+                        custom: oldTemplate.custom || null
+                    };
+                } else {
+                    const isWeekend = day === 'Saturday' || day === 'Sunday';
+                    newWeekdayTemplates[day] = {
+                        am: isWeekend ? 'Off Day' : 'Work Day',
+                        pm: isWeekend ? 'Off Day' : 'Work Day',
+                        custom: null
+                    };
+                }
+            });
+
+            // Convert dayOverrides from string to { am: type, pm: type }
+            const newDayOverrides = {};
+            if (oldState.dayOverrides) {
+                Object.keys(oldState.dayOverrides).forEach(dateStr => {
+                    const oldType = oldState.dayOverrides[dateStr];
+                    if (typeof oldType === 'string') {
+                        // Convert string to AM/PM object
+                        newDayOverrides[dateStr] = { am: oldType, pm: oldType };
+                    } else if (oldType && typeof oldType === 'object') {
+                        // Already in new format
+                        newDayOverrides[dateStr] = oldType;
+                    }
+                });
+            }
+
+            return {
+                ...oldState,
+                version: 4,
+                weekdayTemplates: newWeekdayTemplates,
+                dayOverrides: newDayOverrides
+            };
+        }
+
+        // V4 Activity Resolution: Get activities for a specific date
         function getActivitiesForDate(date) {
             const effectiveDayType = getEffectiveDayTypeForDate(date);
             const weekday = getWeekdayName(date);
@@ -2667,46 +3022,106 @@
             return days[date.getDay()];
         }
 
-        // Helper to get the base day type for a weekday (V3 compatible)
-        function getWeekdayBaseType(day) {
+        // Helper to get the AM/PM day types for a weekday (V4)
+        function getWeekdaySchedule(day) {
             if (state.weekdayTemplates && state.weekdayTemplates[day]) {
-                return state.weekdayTemplates[day].baseType;
+                const template = state.weekdayTemplates[day];
+                // Handle both V3 (baseType) and V4 (am/pm) formats
+                if (template.am !== undefined && template.pm !== undefined) {
+                    return { am: template.am, pm: template.pm };
+                } else if (template.baseType !== undefined) {
+                    // V3 format - convert to V4
+                    return { am: template.baseType, pm: template.baseType };
+                }
             }
             // Default
-            return (day === 'Saturday' || day === 'Sunday') ? 'Off Day' : 'Work Day';
+            const isWeekend = (day === 'Saturday' || day === 'Sunday');
+            return { am: isWeekend ? 'Off Day' : 'Work Day', pm: isWeekend ? 'Off Day' : 'Work Day' };
         }
 
-        // Helper to set the base day type for a weekday (V3 compatible)
-        function setWeekdayBaseType(day, dayType) {
+        // Helper to get the base day type for a weekday (backward compatible)
+        // Returns the "dominant" type - if AM and PM differ, returns the work type
+        function getWeekdayBaseType(day) {
+            const schedule = getWeekdaySchedule(day);
+            // If both are the same, return that type
+            if (schedule.am === schedule.pm) {
+                return schedule.am;
+            }
+            // If mixed, prefer work type for display purposes
+            if (schedule.am === 'Work Day' || schedule.pm === 'Work Day') {
+                return 'Work Day';
+            }
+            return schedule.am;
+        }
+
+        // Helper to set AM/PM day types for a weekday (V4)
+        function setWeekdaySchedule(day, amType, pmType) {
             if (!state.weekdayTemplates) {
                 state.weekdayTemplates = {};
             }
             if (!state.weekdayTemplates[day]) {
-                state.weekdayTemplates[day] = { baseType: dayType, custom: null };
+                state.weekdayTemplates[day] = { am: amType, pm: pmType, custom: null };
             } else {
-                state.weekdayTemplates[day].baseType = dayType;
+                state.weekdayTemplates[day].am = amType;
+                state.weekdayTemplates[day].pm = pmType;
+            }
+        }
+
+        // Helper to set the base day type for a weekday (backward compatible - sets both AM and PM)
+        function setWeekdayBaseType(day, dayType) {
+            setWeekdaySchedule(day, dayType, dayType);
+        }
+
+        // Get schedule state for a weekday: 'full-work', 'am-only', 'pm-only', 'full-off'
+        function getWeekdayScheduleState(day) {
+            const schedule = getWeekdaySchedule(day);
+            const amWork = schedule.am === 'Work Day';
+            const pmWork = schedule.pm === 'Work Day';
+
+            if (amWork && pmWork) return 'full-work';
+            if (amWork && !pmWork) return 'am-only';
+            if (!amWork && pmWork) return 'pm-only';
+            return 'full-off';
+        }
+
+        // Set schedule state for a weekday
+        function setWeekdayScheduleState(day, scheduleState) {
+            switch (scheduleState) {
+                case 'full-work':
+                    setWeekdaySchedule(day, 'Work Day', 'Work Day');
+                    break;
+                case 'am-only':
+                    setWeekdaySchedule(day, 'Work Day', 'Off Day');
+                    break;
+                case 'pm-only':
+                    setWeekdaySchedule(day, 'Off Day', 'Work Day');
+                    break;
+                case 'full-off':
+                    setWeekdaySchedule(day, 'Off Day', 'Off Day');
+                    break;
             }
         }
 
         let state = {
-            // V3 Data Model
-            version: 3,
+            // V4 Data Model (AM/PM granularity)
+            version: 4,
 
             // TIER 1: Day Type Templates (Base Patterns)
             templates: { 'Work Day': [], 'Off Day': [], 'Holiday': [] },
 
-            // TIER 2: Weekday Templates (Per-Weekday Customizations)
+            // TIER 2: Weekday Templates (Per-Weekday Customizations with AM/PM)
             weekdayTemplates: {
-                'Monday':    { baseType: 'Work Day', custom: null },
-                'Tuesday':   { baseType: 'Work Day', custom: null },
-                'Wednesday': { baseType: 'Work Day', custom: null },
-                'Thursday':  { baseType: 'Work Day', custom: null },
-                'Friday':    { baseType: 'Work Day', custom: null },
-                'Saturday':  { baseType: 'Off Day', custom: null },
-                'Sunday':    { baseType: 'Off Day', custom: null }
+                'Monday':    { am: 'Work Day', pm: 'Work Day', custom: null },
+                'Tuesday':   { am: 'Work Day', pm: 'Work Day', custom: null },
+                'Wednesday': { am: 'Work Day', pm: 'Work Day', custom: null },
+                'Thursday':  { am: 'Work Day', pm: 'Work Day', custom: null },
+                'Friday':    { am: 'Work Day', pm: 'Work Day', custom: null },
+                'Saturday':  { am: 'Off Day', pm: 'Off Day', custom: null },
+                'Sunday':    { am: 'Off Day', pm: 'Off Day', custom: null }
             },
 
-            // TIER 3: Year View Overrides (Date-Specific)
+            // TIER 3: Year View Overrides (Date-Specific with AM/PM)
+            // Format: { am: 'holiday', pm: 'holiday' } or { am: 'vacation', pm: 'work' }
             dayOverrides: {},
 
             // Legacy/UI properties
@@ -2726,24 +3141,30 @@
                 if (!loadedState.version || loadedState.version < 3) {
                     console.log('Migrating state from V2 to V3...');
                     loadedState = migrateV2toV3(loadedState);
+                }
+
+                // Migrate V3 to V4 if needed (AM/PM granularity)
+                if (loadedState.version < 4) {
+                    console.log('Migrating state from V3 to V4...');
+                    loadedState = migrateV3toV4(loadedState);
                     // Save migrated state
                     localStorage.setItem('dailyPlannerStateLight', JSON.stringify(loadedState));
-                    console.log('Migration complete.');
+                    console.log('Migration to V4 complete.');
                 }
 
                 state = loadedState;
 
-                // Ensure required properties exist
+                // Ensure required properties exist (V4 format with AM/PM)
                 if (!state.templates) state.templates = { 'Work Day': [], 'Off Day': [], 'Holiday': [] };
                 if (!state.weekdayTemplates) {
                     state.weekdayTemplates = {
-                        'Monday':    { baseType: 'Work Day', custom: null },
-                        'Tuesday':   { baseType: 'Work Day', custom: null },
-                        'Wednesday': { baseType: 'Work Day', custom: null },
-                        'Thursday':  { baseType: 'Work Day', custom: null },
-                        'Friday':    { baseType: 'Work Day', custom: null },
-                        'Saturday':  { baseType: 'Off Day', custom: null },
-                        'Sunday':    { baseType: 'Off Day', custom: null }
+                        'Monday':    { am: 'Work Day', pm: 'Work Day', custom: null },
+                        'Tuesday':   { am: 'Work Day', pm: 'Work Day', custom: null },
+                        'Wednesday': { am: 'Work Day', pm: 'Work Day', custom: null },
+                        'Thursday':  { am: 'Work Day', pm: 'Work Day', custom: null },
+                        'Friday':    { am: 'Work Day', pm: 'Work Day', custom: null },
+                        'Saturday':  { am: 'Off Day', pm: 'Off Day', custom: null },
+                        'Sunday':    { am: 'Off Day', pm: 'Off Day', custom: null }
                     };
                 }
                 if (!state.categoryColors) {
@@ -2759,17 +3180,17 @@
                 return;
             }
 
-            // No saved data - load example data for new users with V3 structure
-            state.version = 3;
+            // No saved data - load example data for new users with V4 structure
+            state.version = 4;
             state.categoryColors = { ...defaultCategoryColors };
             state.weekdayTemplates = {
-                'Monday':    { baseType: 'Work Day', custom: null },
-                'Tuesday':   { baseType: 'Work Day', custom: null },
-                'Wednesday': { baseType: 'Work Day', custom: null },
-                'Thursday':  { baseType: 'Work Day', custom: null },
-                'Friday':    { baseType: 'Work Day', custom: null },
-                'Saturday':  { baseType: 'Off Day', custom: null },
-                'Sunday':    { baseType: 'Off Day', custom: null }
+                'Monday':    { am: 'Work Day', pm: 'Work Day', custom: null },
+                'Tuesday':   { am: 'Work Day', pm: 'Work Day', custom: null },
+                'Wednesday': { am: 'Work Day', pm: 'Work Day', custom: null },
+                'Thursday':  { am: 'Work Day', pm: 'Work Day', custom: null },
+                'Friday':    { am: 'Work Day', pm: 'Work Day', custom: null },
+                'Saturday':  { am: 'Off Day', pm: 'Off Day', custom: null },
+                'Sunday':    { am: 'Off Day', pm: 'Off Day', custom: null }
             };
 
             // Example Work Day Template
@@ -3095,6 +3516,189 @@
                            'July', 'August', 'September', 'October', 'November', 'December'];
         const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
+        // Work Schedule Configuration Functions (V4 with AM/PM support)
+        function renderWorkScheduleConfig() {
+            const togglesContainer = document.getElementById('weekdayToggles');
+            if (!togglesContainer) return;
+
+            let html = '';
+            weekDays.forEach(day => {
+                const schedule = getWeekdaySchedule(day);
+                const scheduleState = getWeekdayScheduleState(day);
+                const shortName = day.substring(0, 3);
+
+                // Determine display state and icons
+                let stateClass, stateIcon, stateLabel;
+                switch (scheduleState) {
+                    case 'full-work':
+                        stateClass = 'work';
+                        stateIcon = '<svg class="toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>';
+                        stateLabel = 'Full Day';
+                        break;
+                    case 'am-only':
+                        stateClass = 'am-only';
+                        stateIcon = '<span class="half-label">AM</span>';
+                        stateLabel = 'AM Only';
+                        break;
+                    case 'pm-only':
+                        stateClass = 'pm-only';
+                        stateIcon = '<span class="half-label">PM</span>';
+                        stateLabel = 'PM Only';
+                        break;
+                    case 'full-off':
+                        stateClass = 'off';
+                        stateIcon = '<svg class="toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>';
+                        stateLabel = 'Off';
+                        break;
+                }
+
+                html += `
+                    <div class="weekday-toggle">
+                        <span class="weekday-toggle-label">${shortName}</span>
+                        <button class="weekday-toggle-btn ${stateClass}"
+                                onclick="cycleWeekdaySchedule('${day}')"
+                                title="${day}: ${stateLabel}">
+                            ${stateIcon}
+                        </button>
+                    </div>
+                `;
+            });
+
+            togglesContainer.innerHTML = html;
+            updatePresetButtonStates();
+        }
+
+        // Cycle through: full-work -> am-only -> pm-only -> full-off -> full-work
+        function cycleWeekdaySchedule(day) {
+            const currentState = getWeekdayScheduleState(day);
+            const states = ['full-work', 'am-only', 'pm-only', 'full-off'];
+            const currentIndex = states.indexOf(currentState);
+            const nextState = states[(currentIndex + 1) % states.length];
+
+            setWeekdayScheduleState(day, nextState);
+            saveToStorage();
+            renderWorkScheduleConfig();
+            renderYearView();
+            // Also update weekly view if visible
+            if (state.currentMainView === 'weekly') {
+                renderWeeklyView();
+            }
+        }
+
+        // Legacy function for backward compatibility
+        function toggleWeekdayWork(day) {
+            cycleWeekdaySchedule(day);
+        }
+
+        function applyWorkSchedulePreset(preset) {
+            // Presets now use V4 format with AM/PM
+            const presets = {
+                'full-time': {
+                    'Monday': { am: 'Work Day', pm: 'Work Day' },
+                    'Tuesday': { am: 'Work Day', pm: 'Work Day' },
+                    'Wednesday': { am: 'Work Day', pm: 'Work Day' },
+                    'Thursday': { am: 'Work Day', pm: 'Work Day' },
+                    'Friday': { am: 'Work Day', pm: 'Work Day' },
+                    'Saturday': { am: 'Off Day', pm: 'Off Day' },
+                    'Sunday': { am: 'Off Day', pm: 'Off Day' }
+                },
+                '90-fri-pm': {
+                    'Monday': { am: 'Work Day', pm: 'Work Day' },
+                    'Tuesday': { am: 'Work Day', pm: 'Work Day' },
+                    'Wednesday': { am: 'Work Day', pm: 'Work Day' },
+                    'Thursday': { am: 'Work Day', pm: 'Work Day' },
+                    'Friday': { am: 'Work Day', pm: 'Off Day' },  // Friday PM off
+                    'Saturday': { am: 'Off Day', pm: 'Off Day' },
+                    'Sunday': { am: 'Off Day', pm: 'Off Day' }
+                },
+                '80-mon-thu': {
+                    'Monday': { am: 'Work Day', pm: 'Work Day' },
+                    'Tuesday': { am: 'Work Day', pm: 'Work Day' },
+                    'Wednesday': { am: 'Work Day', pm: 'Work Day' },
+                    'Thursday': { am: 'Work Day', pm: 'Work Day' },
+                    'Friday': { am: 'Off Day', pm: 'Off Day' },
+                    'Saturday': { am: 'Off Day', pm: 'Off Day' },
+                    'Sunday': { am: 'Off Day', pm: 'Off Day' }
+                },
+                '80-tue-fri': {
+                    'Monday': { am: 'Off Day', pm: 'Off Day' },
+                    'Tuesday': { am: 'Work Day', pm: 'Work Day' },
+                    'Wednesday': { am: 'Work Day', pm: 'Work Day' },
+                    'Thursday': { am: 'Work Day', pm: 'Work Day' },
+                    'Friday': { am: 'Work Day', pm: 'Work Day' },
+                    'Saturday': { am: 'Off Day', pm: 'Off Day' },
+                    'Sunday': { am: 'Off Day', pm: 'Off Day' }
+                }
+            };
+
+            const pattern = presets[preset];
+            if (!pattern) return;
+
+            weekDays.forEach(day => {
+                const dayPattern = pattern[day];
+                setWeekdaySchedule(day, dayPattern.am, dayPattern.pm);
+            });
+
+            saveToStorage();
+            renderWorkScheduleConfig();
+            renderYearView();
+            // Also update weekly view if visible
+            if (state.currentMainView === 'weekly') {
+                renderWeeklyView();
+            }
+        }
+
+        function updatePresetButtonStates() {
+            const presetBtns = document.querySelectorAll('.preset-btn');
+            const currentPattern = getCurrentWorkPattern();
+
+            presetBtns.forEach(btn => {
+                const preset = btn.getAttribute('onclick').match(/'([^']+)'/)?.[1];
+                btn.classList.remove('active');
+
+                if (preset === 'full-time' && currentPattern === 'full-time') {
+                    btn.classList.add('active');
+                } else if (preset === '80-mon-thu' && currentPattern === '80-mon-thu') {
+                    btn.classList.add('active');
+                } else if (preset === '80-tue-fri' && currentPattern === '80-tue-fri') {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        function getCurrentWorkPattern() {
+            const pattern = {};
+            weekDays.forEach(day => {
+                pattern[day] = getWeekdayBaseType(day);
+            });
+
+            // Check if matches full-time
+            if (pattern.Monday === 'Work Day' && pattern.Tuesday === 'Work Day' &&
+                pattern.Wednesday === 'Work Day' && pattern.Thursday === 'Work Day' &&
+                pattern.Friday === 'Work Day' && pattern.Saturday === 'Off Day' &&
+                pattern.Sunday === 'Off Day') {
+                return 'full-time';
+            }
+
+            // Check if matches 80% Mon-Thu
+            if (pattern.Monday === 'Work Day' && pattern.Tuesday === 'Work Day' &&
+                pattern.Wednesday === 'Work Day' && pattern.Thursday === 'Work Day' &&
+                pattern.Friday === 'Off Day' && pattern.Saturday === 'Off Day' &&
+                pattern.Sunday === 'Off Day') {
+                return '80-mon-thu';
+            }
+
+            // Check if matches 80% Tue-Fri
+            if (pattern.Monday === 'Off Day' && pattern.Tuesday === 'Work Day' &&
+                pattern.Wednesday === 'Work Day' && pattern.Thursday === 'Work Day' &&
+                pattern.Friday === 'Work Day' && pattern.Saturday === 'Off Day' &&
+                pattern.Sunday === 'Off Day') {
+                return '80-tue-fri';
+            }
+
+            return 'custom';
+        }
+
         function changeYear(delta) {
             currentYear += delta;
             // Load Geneva holidays for the new year
@@ -3117,17 +3721,59 @@
             return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         }
 
-        function getDayType(year, month, day) {
-            // Check for override first
+        // Get AM/PM schedule for a specific date (V4)
+        function getDaySchedule(year, month, day) {
             const dateString = getDateString(year, month, day);
-            if (state.dayOverrides && state.dayOverrides[dateString]) {
-                return state.dayOverrides[dateString];
-            }
-            // Fall back to week pattern using V3 weekdayTemplates
             const date = new Date(year, month, day);
             const dayOfWeek = date.getDay();
             const dayName = weekDays[dayOfWeek === 0 ? 6 : dayOfWeek - 1];
-            return getWeekdayBaseType(dayName);
+
+            // Check for date override first
+            if (state.dayOverrides && state.dayOverrides[dateString]) {
+                const override = state.dayOverrides[dateString];
+                // Handle both V3 (string) and V4 (object) formats
+                if (typeof override === 'object' && override.am !== undefined) {
+                    return { am: override.am, pm: override.pm, source: 'override' };
+                } else if (typeof override === 'string') {
+                    return { am: override, pm: override, source: 'override' };
+                }
+            }
+
+            // Fall back to weekday schedule
+            const weekdaySchedule = getWeekdaySchedule(dayName);
+            return { am: weekdaySchedule.am, pm: weekdaySchedule.pm, source: 'weekday' };
+        }
+
+        // Get day type (backward compatible - returns the dominant type)
+        function getDayType(year, month, day) {
+            const schedule = getDaySchedule(year, month, day);
+            // If both are the same, return that type
+            if (schedule.am === schedule.pm) {
+                return schedule.am;
+            }
+            // If mixed, return the "work-like" type for backward compatibility
+            if (schedule.am === 'Work Day' || schedule.pm === 'Work Day') {
+                return 'Work Day';
+            }
+            // Return AM type as default
+            return schedule.am;
+        }
+
+        // Set day override with AM/PM (V4)
+        function setDayOverride(year, month, day, amType, pmType) {
+            const dateString = getDateString(year, month, day);
+            if (!state.dayOverrides) {
+                state.dayOverrides = {};
+            }
+            state.dayOverrides[dateString] = { am: amType, pm: pmType };
+        }
+
+        // Clear day override (revert to weekday schedule)
+        function clearDayOverride(year, month, day) {
+            const dateString = getDateString(year, month, day);
+            if (state.dayOverrides && state.dayOverrides[dateString]) {
+                delete state.dayOverrides[dateString];
+            }
         }
 
         function isWeekend(year, month, day) {
@@ -3143,6 +3789,37 @@
                    today.getDate() === day;
         }
 
+        // Helper to count a half-day (AM or PM) for stats
+        function countHalfDay(halfType, isActualWeekend, stats) {
+            // halfType can be: 'Work Day', 'Off Day', 'holiday', 'vacation', 'sick', 'weekend', 'work', 'off'
+            const normalizedType = halfType.toLowerCase().replace(' ', '');
+
+            if (normalizedType === 'holiday') {
+                stats.publicHolidays += 0.5;
+                stats.monthOff += 0.5;
+            } else if (normalizedType === 'vacation' || normalizedType === 'sick') {
+                stats.daysOffTaken += 0.5;
+                stats.monthOff += 0.5;
+            } else if (normalizedType === 'weekend') {
+                stats.weekends += 0.5;
+                stats.monthOff += 0.5;
+            } else if (normalizedType === 'off' || normalizedType === 'offday') {
+                // Part-time off days count as weekends
+                stats.weekends += 0.5;
+                stats.monthOff += 0.5;
+            } else if (normalizedType === 'work' || normalizedType === 'workday') {
+                stats.workDays += 0.5;
+                stats.monthWork += 0.5;
+            } else if (isActualWeekend) {
+                stats.weekends += 0.5;
+                stats.monthOff += 0.5;
+            } else {
+                // Default to work
+                stats.workDays += 0.5;
+                stats.monthWork += 0.5;
+            }
+        }
+
         function calculateYearStats(year) {
             let workDays = 0;
             let publicHolidays = 0;
@@ -3156,26 +3833,21 @@
                 let monthOff = 0;
 
                 for (let day = 1; day <= daysInMonth; day++) {
-                    const dayType = getDayType(year, month, day);
+                    const schedule = getDaySchedule(year, month, day);
                     const weekend = isWeekend(year, month, day);
 
-                    // Count by category
-                    if (dayType === 'Public Holiday') {
-                        publicHolidays++;
-                        monthOff++;
-                    } else if (dayType === 'Vacation' || dayType === 'Sick Day') {
-                        daysOffTaken++;
-                        monthOff++;
-                    } else if (dayType === 'Weekend' || weekend) {
-                        weekends++;
-                        monthOff++;
-                    } else if (dayType === 'Off Day') {
-                        monthOff++;
-                    } else {
-                        // Work Day, Remote Day, etc.
-                        workDays++;
-                        monthWork++;
-                    }
+                    // Count AM and PM separately (each is 0.5 days)
+                    const stats = { workDays: 0, publicHolidays: 0, daysOffTaken: 0, weekends: 0, monthWork: 0, monthOff: 0 };
+
+                    countHalfDay(schedule.am, weekend, stats);
+                    countHalfDay(schedule.pm, weekend, stats);
+
+                    workDays += stats.workDays;
+                    publicHolidays += stats.publicHolidays;
+                    daysOffTaken += stats.daysOffTaken;
+                    weekends += stats.weekends;
+                    monthWork += stats.monthWork;
+                    monthOff += stats.monthOff;
                 }
 
                 monthlyStats.push({
@@ -3202,6 +3874,10 @@
 
         function renderYearView() {
             document.getElementById('yearTitle').textContent = currentYear;
+
+            // Render work schedule configuration toggles
+            renderWorkScheduleConfig();
+
             const stats = calculateYearStats(currentYear);
 
             // Render year stats summary with detailed KPIs
@@ -3243,12 +3919,16 @@
                     <span>Work Day</span>
                 </div>
                 <div class="year-legend-item">
-                    <div class="year-legend-color weekend"></div>
-                    <span>Weekend</span>
+                    <div class="year-legend-color weekend-off"></div>
+                    <span>Weekend/Off Day</span>
                 </div>
                 <div class="year-legend-item">
                     <div class="year-legend-color vacation"></div>
                     <span>Vacation</span>
+                </div>
+                <div class="year-legend-item">
+                    <div class="year-legend-color given-day"></div>
+                    <span>Given Day</span>
                 </div>
                 <div class="year-legend-item">
                     <div class="year-legend-color holiday"></div>
@@ -3257,10 +3937,6 @@
                 <div class="year-legend-item">
                     <div class="year-legend-color sick"></div>
                     <span>Sick Day</span>
-                </div>
-                <div class="year-legend-item">
-                    <div class="year-legend-color off-day"></div>
-                    <span>Off Day</span>
                 </div>
             `;
         }
@@ -3283,43 +3959,83 @@
                 html += `<div class="day-header ${isWeekendHeader ? 'weekend' : ''}">${name}</div>`;
             });
 
-            // Empty cells before first day
-            for (let i = 0; i < firstDay; i++) {
-                html += `<div class="day-cell empty"></div>`;
-            }
+            // Always render 6 rows (42 cells) for consistent grid
+            const totalCells = 42; // 6 rows x 7 days
+            let dayCount = 1;
 
-            // Day cells
-            for (let day = 1; day <= daysInMonth; day++) {
-                const dayType = getDayType(year, month, day);
-                const weekend = isWeekend(year, month, day);
-                const today = isToday(year, month, day);
-                const dateString = getDateString(year, month, day);
-                const hasOverride = state.dayOverrides && state.dayOverrides[dateString];
+            for (let cell = 0; cell < totalCells; cell++) {
+                const isBeforeFirstDay = cell < firstDay;
+                const isAfterLastDay = dayCount > daysInMonth;
 
-                // Determine CSS class based on day type
-                let dayClass = 'day-cell';
-                let displayType = '';
-
-                if (hasOverride) {
-                    // Use override type directly
-                    dayClass += ` ${yearDayTypes[dayType]?.class || 'work-day'}`;
-                    displayType = yearDayTypes[dayType]?.label || dayType;
-                } else if (weekend) {
-                    dayClass += ' weekend';
-                    displayType = 'Weekend';
-                } else if (dayType === 'Holiday') {
-                    dayClass += ' holiday';
-                    displayType = 'Public Holiday';
-                } else if (dayType === 'Off Day') {
-                    dayClass += ' off-day';
-                    displayType = 'Off Day';
+                if (isBeforeFirstDay || isAfterLastDay) {
+                    // Empty cell - transparent background
+                    html += `<div class="day-cell empty"></div>`;
                 } else {
-                    dayClass += ' work-day';
-                    displayType = dayType; // Work Day, Remote Day, etc.
-                }
-                if (today) dayClass += ' today';
+                    // Actual day cell
+                    const day = dayCount;
+                    const schedule = getDaySchedule(year, month, day);
+                    const weekend = isWeekend(year, month, day);
+                    const today = isToday(year, month, day);
+                    const dateString = getDateString(year, month, day);
 
-                html += `<div class="${dayClass}" onclick="openDaySelector('${dateString}')" title="${monthNames[month]} ${day}, ${year} - ${displayType}">${day}</div>`;
+                    // Determine CSS class and display based on AM/PM schedule
+                    let dayClass = 'day-cell';
+                    let displayType = '';
+
+                    // Helper to get class for a half-day type
+                    const getTypeClass = (type) => {
+                        const normalized = type.toLowerCase().replace(' ', '');
+                        if (normalized === 'holiday' || normalized === 'publicholiday') return 'holiday';
+                        if (normalized === 'vacation') return 'vacation';
+                        if (normalized === 'sick' || normalized === 'sickday') return 'sick';
+                        if (normalized === 'weekend') return 'weekend';
+                        if (normalized === 'given' || normalized === 'givenday') return 'given-day';
+                        if (normalized === 'off' || normalized === 'offday') return 'off-day';
+                        if (normalized === 'work' || normalized === 'workday') return 'work-day';
+                        return 'work-day';
+                    };
+
+                    const amClass = getTypeClass(schedule.am);
+                    const pmClass = getTypeClass(schedule.pm);
+
+                    if (amClass === pmClass) {
+                        // Same type for AM and PM
+                        dayClass += ` ${amClass}`;
+                        if (amClass === 'holiday') displayType = 'Public Holiday';
+                        else if (amClass === 'vacation') displayType = 'Vacation';
+                        else if (amClass === 'sick') displayType = 'Sick Day';
+                        else if (amClass === 'weekend') displayType = 'Weekend';
+                        else if (amClass === 'given-day') displayType = 'Given Day';
+                        else if (amClass === 'off-day') displayType = 'Off Day';
+                        else displayType = 'Work Day';
+                    } else {
+                        // Different types for AM and PM - show split
+                        dayClass += ' half-day';
+                        dayClass += ` am-${amClass} pm-${pmClass}`;
+                        const getLabel = (cls) => {
+                            if (cls === 'work-day') return 'Work';
+                            if (cls === 'given-day') return 'Given';
+                            if (cls === 'vacation') return 'Vacation';
+                            if (cls === 'sick') return 'Sick';
+                            if (cls === 'holiday') return 'Holiday';
+                            return 'Off';
+                        };
+                        const amLabel = getLabel(amClass);
+                        const pmLabel = getLabel(pmClass);
+                        displayType = `AM: ${amLabel}, PM: ${pmLabel}`;
+                    }
+
+                    // Weekend takes precedence for natural weekends without override
+                    if (weekend && schedule.source === 'weekday' && amClass === 'off-day' && pmClass === 'off-day') {
+                        dayClass = 'day-cell weekend';
+                        displayType = 'Weekend';
+                    }
+
+                    if (today) dayClass += ' today';
+
+                    html += `<div class="${dayClass}" onclick="openDaySelector('${dateString}')" title="${monthNames[month]} ${day}, ${year} - ${displayType}">${day}</div>`;
+                    dayCount++;
+                }
             }
 
             html += `</div></div>`;
@@ -3336,29 +4052,97 @@
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             document.getElementById('daySelectorDate').textContent = date.toLocaleDateString('en-US', options);
 
-            // Get current type for this day
-            const currentType = getDayType(year, month - 1, day);
-            const currentTypeKey = Object.keys(yearDayTypes).find(key =>
-                yearDayTypes[key].label === currentType
-            ) || 'work';
+            // Get current schedule for this day (V4 AM/PM format)
+            const schedule = getDaySchedule(year, month - 1, day);
 
-            // Build options HTML
-            let optionsHtml = '';
+            // Helper to normalize type to key
+            function typeToKey(type) {
+                const normalized = type.toLowerCase().replace(' ', '');
+                return Object.keys(yearDayTypes).find(key =>
+                    key === normalized || yearDayTypes[key].label === type
+                ) || 'work';
+            }
+
+            const amTypeKey = typeToKey(schedule.am);
+            const pmTypeKey = typeToKey(schedule.pm);
+
+            // Check if this is a half-day (AM != PM)
+            const isHalfDay = amTypeKey !== pmTypeKey;
+
+            // Build Full Day options HTML (for when AM and PM are the same)
+            let fullDayHtml = '';
+            const currentFullDayKey = isHalfDay ? null : amTypeKey;
             for (const [key, typeInfo] of Object.entries(yearDayTypes)) {
-                const isSelected = key === currentTypeKey;
-                optionsHtml += `
+                const isSelected = key === currentFullDayKey;
+                fullDayHtml += `
                     <div class="day-type-option ${isSelected ? 'selected' : ''}"
-                         onclick="setDayOverride('${dateString}', '${key}')"
+                         onclick="setDayOverrideFullDay('${dateString}', '${key}')"
                          style="background: ${typeInfo.color}">
                         <span class="day-type-label">${typeInfo.label}</span>
                         ${isSelected ? '<span class="day-type-check">&#10003;</span>' : ''}
                     </div>
                 `;
             }
-            document.getElementById('daySelectorOptions').innerHTML = optionsHtml;
+            document.getElementById('daySelectorOptionsFullDay').innerHTML = fullDayHtml;
+
+            // Build AM options HTML
+            let amOptionsHtml = '';
+            for (const [key, typeInfo] of Object.entries(yearDayTypes)) {
+                const isSelected = key === amTypeKey;
+                amOptionsHtml += `
+                    <div class="day-type-option ${isSelected ? 'selected' : ''}"
+                         onclick="setDayOverrideAMPM('${dateString}', 'am', '${key}')"
+                         style="background: ${typeInfo.color}">
+                        <span class="day-type-label">${typeInfo.label}</span>
+                        ${isSelected ? '<span class="day-type-check">&#10003;</span>' : ''}
+                    </div>
+                `;
+            }
+            document.getElementById('daySelectorOptionsAM').innerHTML = amOptionsHtml;
+
+            // Build PM options HTML
+            let pmOptionsHtml = '';
+            for (const [key, typeInfo] of Object.entries(yearDayTypes)) {
+                const isSelected = key === pmTypeKey;
+                pmOptionsHtml += `
+                    <div class="day-type-option ${isSelected ? 'selected' : ''}"
+                         onclick="setDayOverrideAMPM('${dateString}', 'pm', '${key}')"
+                         style="background: ${typeInfo.color}">
+                        <span class="day-type-label">${typeInfo.label}</span>
+                        ${isSelected ? '<span class="day-type-check">&#10003;</span>' : ''}
+                    </div>
+                `;
+            }
+            document.getElementById('daySelectorOptionsPM').innerHTML = pmOptionsHtml;
+
+            // Set half-day checkbox state and show/hide appropriate sections
+            const halfDayCheckbox = document.getElementById('halfDayCheckbox');
+            halfDayCheckbox.checked = isHalfDay;
+            document.getElementById('daySelectorFullDay').style.display = isHalfDay ? 'none' : 'block';
+            document.getElementById('daySelectorAMPM').style.display = isHalfDay ? 'flex' : 'none';
 
             // Show overlay
             document.getElementById('daySelectorOverlay').classList.add('active');
+        }
+
+        function toggleHalfDayMode() {
+            const isHalfDay = document.getElementById('halfDayCheckbox').checked;
+            document.getElementById('daySelectorFullDay').style.display = isHalfDay ? 'none' : 'block';
+            document.getElementById('daySelectorAMPM').style.display = isHalfDay ? 'flex' : 'none';
+        }
+
+        function setDayOverrideFullDay(dateString, typeKey) {
+            const typeInfo = yearDayTypes[typeKey];
+            if (!typeInfo) return;
+
+            // Set the override in V4 format (AM/PM both the same)
+            if (!state.dayOverrides) state.dayOverrides = {};
+            state.dayOverrides[dateString] = { am: typeInfo.label, pm: typeInfo.label };
+
+            // Save and re-render
+            saveToStorage();
+            renderYearView();
+            closeDaySelector();
         }
 
         function closeDaySelector(event) {
@@ -3368,12 +4152,58 @@
         }
 
         function setDayOverride(dateString, typeKey) {
+            // Legacy function - now sets both AM and PM to the same type
             const typeInfo = yearDayTypes[typeKey];
             if (!typeInfo) return;
 
-            // Set the override
+            // Set the override in V4 format (AM/PM object)
             if (!state.dayOverrides) state.dayOverrides = {};
-            state.dayOverrides[dateString] = typeInfo.label;
+            state.dayOverrides[dateString] = { am: typeInfo.label, pm: typeInfo.label };
+
+            // Save and re-render
+            saveToStorage();
+            renderYearView();
+            closeDaySelector();
+        }
+
+        function setDayOverrideAMPM(dateString, period, typeKey) {
+            const typeInfo = yearDayTypes[typeKey];
+            if (!typeInfo) return;
+
+            // Initialize or update the override
+            if (!state.dayOverrides) state.dayOverrides = {};
+
+            // Get current schedule for this day
+            const [year, month, day] = dateString.split('-').map(Number);
+            const currentSchedule = getDaySchedule(year, month - 1, day);
+
+            // Create or update the override
+            if (!state.dayOverrides[dateString] || typeof state.dayOverrides[dateString] === 'string') {
+                // Initialize from current schedule
+                state.dayOverrides[dateString] = {
+                    am: currentSchedule.am,
+                    pm: currentSchedule.pm
+                };
+            }
+
+            // Update the specific period
+            state.dayOverrides[dateString][period] = typeInfo.label;
+
+            // Save and re-render
+            saveToStorage();
+            renderYearView();
+
+            // Re-open the selector to show updated state
+            openDaySelector(dateString);
+        }
+
+        function clearDayOverrideV4() {
+            if (!selectedDayDate) return;
+
+            // Remove the override completely
+            if (state.dayOverrides && state.dayOverrides[selectedDayDate]) {
+                delete state.dayOverrides[selectedDayDate];
+            }
 
             // Save and re-render
             saveToStorage();
