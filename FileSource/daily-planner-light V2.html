@@ -3627,12 +3627,22 @@
             ).join('');
         }
 
+        function getActivitiesForWeekday(day) {
+            // Returns the actual activities for a weekday (custom or base template)
+            const hasCustom = state.weekdayTemplates?.[day]?.custom !== null;
+            if (hasCustom) {
+                return state.weekdayTemplates[day].custom;
+            }
+            const dayType = getWeekdayBaseType(day);
+            return state.templates[dayType] || [];
+        }
+
         function renderWeeklyStats() {
             const weeklyTotals = {};
             Object.keys(categories).forEach(cat => weeklyTotals[cat] = 0);
 
             weekDays.forEach(day => {
-                const activities = state.templates[getWeekdayBaseType(day)] || [];
+                const activities = getActivitiesForWeekday(day);
                 activities.forEach(activity => {
                     let duration = timeToMinutes(activity.endTime) - timeToMinutes(activity.startTime);
                     if (duration < 0) duration += 1440;
@@ -5142,8 +5152,7 @@
             Object.keys(categories).forEach(cat => data[cat] = []);
 
             weekDays.forEach(day => {
-                const dayType = getWeekdayBaseType(day);
-                const acts = state.templates[dayType] || [];
+                const acts = getActivitiesForWeekday(day);
                 const dayTotals = {};
                 Object.keys(categories).forEach(cat => dayTotals[cat] = 0);
 
@@ -5166,8 +5175,7 @@
             Object.keys(categories).forEach(cat => totals[cat] = 0);
 
             weekDays.forEach(day => {
-                const dayType = getWeekdayBaseType(day);
-                const acts = state.templates[dayType] || [];
+                const acts = getActivitiesForWeekday(day);
                 acts.forEach(activity => {
                     let duration = timeToMinutes(activity.endTime) - timeToMinutes(activity.startTime);
                     if (duration < 0) duration += 1440;
