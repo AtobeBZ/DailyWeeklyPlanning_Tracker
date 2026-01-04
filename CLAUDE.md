@@ -522,6 +522,142 @@ function isWorkLike(dayType) {
 }
 ```
 
+---
+
+## V3 Onboarding / Landing Page (NEXT)
+
+### Concept: Guided Time Planning
+
+A wizard-style onboarding that helps users understand their time allocation with minimal input.
+
+### User Flow
+
+```
+Step 1: Year View Intro
+┌────────────────────────────────────────────────────────────────┐
+│  "How is your year structured?"                                 │
+│                                                                 │
+│  Quick Setup:                                                   │
+│  - Work days per week: [5] (dropdown: 4, 5, 6)                 │
+│  - Which days are off? [Sat, Sun] (checkboxes)                 │
+│  - Public holidays: [Geneva] (dropdown by region)              │
+│                                                                 │
+│  → Auto-fills the Year calendar with work/off days             │
+└────────────────────────────────────────────────────────────────┘
+          │
+          ▼
+Step 2: Time Budget Calculator
+┌────────────────────────────────────────────────────────────────┐
+│  "Let's see what time you really have"                         │
+│                                                                 │
+│  On a typical WORK DAY:                                        │
+│  - Sleep: [8] hours                                            │
+│  - Work (including commute): [10] hours                        │
+│  - Meals: [1.5] hours                                          │
+│                                                                 │
+│  ─────────────────────────────────────────────                 │
+│  RESULT: You have [4.5] hours of FREE TIME per work day        │
+│  That's [22.5] hours per week for family, goals, yourself!     │
+│                                                                 │
+│  "What will you do with it?"                                   │
+└────────────────────────────────────────────────────────────────┘
+          │
+          ▼
+Step 3: Template Builder (Simple)
+┌────────────────────────────────────────────────────────────────┐
+│  "Design your ideal work day"                                  │
+│                                                                 │
+│  Pre-filled based on Step 2:                                   │
+│  [======SLEEP======][ROUTINE][====WORK====][LUNCH][==WORK==]  │
+│  22:00──────────06:30  07:30  08:30────12:00  13:00───17:30   │
+│                                                                 │
+│  Add your FREE TIME activities:                                │
+│  + Evening routine (Family, Dinner)                            │
+│  + Personal goals (Learning, Exercise)                         │
+│  + Wind-down                                                   │
+│                                                                 │
+│  Quick presets: [Gym evening] [Family dinner] [Side project]  │
+└────────────────────────────────────────────────────────────────┘
+          │
+          ▼
+Step 4: Results & Next Steps
+┌────────────────────────────────────────────────────────────────┐
+│  "Your Year at a Glance"                                       │
+│                                                                 │
+│  [Pie Chart: Time Distribution]  [Year Calendar Preview]       │
+│                                                                 │
+│  Summary:                                                      │
+│  - 260 Work Days × 8h work = 2,080 hours at work              │
+│  - 260 Work Days × 4.5h free = 1,170 hours for YOU            │
+│  - 105 Days Off = your weekends + holidays                     │
+│                                                                 │
+│  [Download PDF Report]     [Continue to Full Planner]          │
+│                            └─→ Opens V2-Alt4.html              │
+│                                with data pre-filled            │
+└────────────────────────────────────────────────────────────────┘
+```
+
+### Key Features
+
+1. **Minimal Input**: Only ask essential questions (sleep, work hours, days off)
+2. **Instant Insight**: "You only have X hours free per day"
+3. **Visual Feedback**: Show time breakdown with charts
+4. **Quick Templates**: Pre-built evening routines to choose from
+5. **Export Options**:
+   - PDF Report with charts and summary
+   - Continue to full app with data pre-loaded
+
+### Design Guidelines
+
+- Warm cinnamon color scheme (eye-friendly)
+- Large, readable text
+- Progress indicator (Step 1/4, Step 2/4, etc.)
+- Mobile-first responsive design
+- Single-page wizard with smooth transitions
+
+### Technical Implementation
+
+```javascript
+// Onboarding state (temporary, before saving to main app)
+const onboardingState = {
+  // Step 1
+  workDaysPerWeek: 5,
+  daysOff: ['Saturday', 'Sunday'],
+  region: 'Geneva',
+
+  // Step 2
+  sleepHours: 8,
+  workHours: 10,  // Including commute
+  mealsHours: 1.5,
+  freeTimeHours: 4.5,  // Calculated
+
+  // Step 3
+  workDayTemplate: [...],  // Built during wizard
+  offDayTemplate: [...],
+
+  // Step 4
+  exportFormat: 'pdf' | 'continue'
+};
+
+// Transfer to main app
+function continueToFullPlanner() {
+  const mainState = convertOnboardingToMainState(onboardingState);
+  localStorage.setItem('dailyPlannerStateLight', JSON.stringify(mainState));
+  window.location.href = 'daily-planner-light V2-Alt4.html';
+}
+```
+
+### File Structure
+
+```
+FileSource/
+├── onboarding.html           # New onboarding wizard
+├── daily-planner-light V2-Alt4.html  # Main app (destination)
+└── ...
+```
+
+---
+
 ### Geneva Public Holidays (Reference)
 
 Pre-loaded for years 2023-2027:
