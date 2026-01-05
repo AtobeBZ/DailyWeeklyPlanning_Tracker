@@ -4312,7 +4312,14 @@
             const weekday = getWeekdayName(date);
             const weekdayTemplate = state.weekdayTemplates?.[weekday];
             if (weekdayTemplate) {
-                return weekdayTemplate.baseType;
+                // Handle V4 format (am/pm) or V3 format (baseType)
+                if (weekdayTemplate.baseType) {
+                    return weekdayTemplate.baseType;
+                }
+                // V4 format: use am as primary (or pm if am is off-like)
+                if (weekdayTemplate.am) {
+                    return weekdayTemplate.am;
+                }
             }
 
             // Fallback for weekends
@@ -6754,10 +6761,10 @@
                         },
                         datalabels: {
                             display: function(context) {
-                                return context.dataset.data[context.dataIndex] >= 50;
+                                return context.dataset.data[context.dataIndex] >= 30;
                             },
                             color: '#000',
-                            font: { size: 8, weight: 'bold' },
+                            font: { size: 11, weight: 'bold' },
                             anchor: 'center',
                             align: 'center',
                             formatter: function(value) {
