@@ -1358,6 +1358,10 @@
             grid-template-columns: 1fr;
         }
 
+        .charts-row.side-by-side {
+            grid-template-columns: 1.5fr 1fr;
+        }
+
         .chart-card {
             background: var(--bg-tertiary);
             border-radius: 16px;
@@ -3499,7 +3503,7 @@
 
                 <!-- Year Charts Section -->
                 <div class="charts-section">
-                    <div class="charts-row">
+                    <div class="charts-row side-by-side">
                         <div class="chart-card">
                             <h3 class="chart-title">Monthly Time Distribution by Category</h3>
                             <div class="chart-container">
