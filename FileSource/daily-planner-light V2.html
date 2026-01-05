@@ -6384,30 +6384,28 @@
         function renderAreaChart() {
             const ctx = document.getElementById('areaChart');
             if (!ctx) return;
-            
+
             if (areaChart) areaChart.destroy();
-            
+
             const weeklyData = getWeeklyDataByDay();
             const datasets = Object.entries(categories)
                 .filter(([key]) => weeklyData[key].some(v => v > 0))
                 .map(([key, value]) => ({
                     label: value.label,
                     data: weeklyData[key],
-                    backgroundColor: value.color + '80',
-                    borderColor: value.color,
-                    borderWidth: 2,
-                    fill: true,
-                    tension: 0.4,
-                    pointRadius: 4,
-                    pointBackgroundColor: value.color
+                    backgroundColor: value.color,
+                    borderColor: '#000',
+                    borderWidth: { top: 1, right: 0, bottom: 0, left: 0 },
+                    borderRadius: 0
                 }));
 
             areaChart = new Chart(ctx, {
-                type: 'line',
+                type: 'bar',
                 data: {
                     labels: weekDays.map(d => d.substring(0, 3)),
                     datasets: datasets
                 },
+                plugins: [ChartDataLabels],
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
@@ -6428,11 +6426,24 @@
                                     return `${context.dataset.label}: ${context.raw.toFixed(1)}h`;
                                 }
                             }
+                        },
+                        datalabels: {
+                            display: function(context) {
+                                return context.dataset.data[context.dataIndex] > 0;
+                            },
+                            color: '#000',
+                            font: { size: 9, weight: 'bold' },
+                            anchor: 'center',
+                            align: 'center',
+                            formatter: function(value) {
+                                return value.toFixed(1) + 'h';
+                            }
                         }
                     },
                     scales: {
                         x: {
-                            grid: { color: 'rgba(139, 115, 85, 0.1)' }
+                            stacked: true,
+                            grid: { display: false }
                         },
                         y: {
                             stacked: true,
@@ -6442,11 +6453,8 @@
                             grid: { color: 'rgba(139, 115, 85, 0.1)' }
                         }
                     },
-                    interaction: {
-                        mode: 'nearest',
-                        axis: 'x',
-                        intersect: false
-                    }
+                    barPercentage: 1,
+                    categoryPercentage: 1
                 }
             });
         }
@@ -6464,7 +6472,8 @@
                     label: value.label,
                     value: totals[key] / 60,
                     color: value.color
-                }));
+                }))
+                .sort((a, b) => b.value - a.value);
 
             donutChart = new Chart(ctx, {
                 type: 'doughnut',
@@ -6478,11 +6487,26 @@
                         hoverOffset: 8
                     }]
                 },
+                plugins: [ChartDataLabels],
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     cutout: '55%',
                     plugins: {
+                        datalabels: {
+                            color: '#000',
+                            font: { size: 10, weight: 'bold' },
+                            anchor: 'center',
+                            align: 'center',
+                            formatter: function(value, context) {
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = Math.round((value / total) * 100);
+                                return value.toFixed(1) + 'h\n' + percentage + '%';
+                            },
+                            display: function(context) {
+                                return context.dataset.data[context.dataIndex] >= 3;
+                            }
+                        },
                         legend: {
                             position: 'bottom',
                             labels: {
