@@ -1,0 +1,4760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Clock Planner - V2 Alt1 (Compact Timeline)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #faf6f1;
+            --bg-secondary: #f5ede4;
+            --bg-tertiary: #efe5d8;
+            --text-primary: #5d4037;
+            --text-secondary: #8d6e63;
+            --accent: #d4a574;
+            --accent-hover: #c4956a;
+            --border: #000000;
+            
+            --cat-work: #e74c3c;
+            --cat-family: #27ae60;
+            --cat-admin: #f39c12;
+            --cat-myself: #16a085;
+            --cat-goal1: #9b59b6;
+            --cat-goal2: #e91e63;
+            --cat-goal3: #3498db;
+            --cat-else: #7f8c8d;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 0 10px;
+        }
+
+        header h1 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, var(--accent), #8b5a2b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 0;
+        }
+
+        header p {
+            display: none;
+        }
+
+        /* Main View Toggle */
+        .main-view-toggle {
+            display: flex;
+            justify-content: center;
+        }
+
+        .main-view-toggle .toggle-container {
+            display: flex;
+            gap: 2px;
+            background: var(--bg-secondary);
+            padding: 4px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(139, 115, 85, 0.1);
+        }
+
+        .main-view-btn {
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .main-view-btn.active {
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 2px 8px rgba(224, 123, 76, 0.3);
+        }
+
+        .main-view-btn:hover:not(.active) {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .main-view-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Daily View Styles */
+        .daily-view {
+            display: none;
+        }
+
+        .daily-view.active {
+            display: block;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 30px;
+        }
+
+        @media (max-width: 1200px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Control Bar */
+        .control-bar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .day-type-selector {
+            display: flex;
+            gap: 8px;
+            background: var(--bg-secondary);
+            padding: 6px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(139, 115, 85, 0.1);
+        }
+
+        .day-type-btn {
+            padding: 10px 20px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .day-type-btn.active {
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 2px 8px rgba(224, 123, 76, 0.3);
+        }
+
+        .day-type-btn:hover:not(.active) {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .weekday-edit-indicator {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, var(--accent), #c4956a);
+            color: white;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .weekday-back-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .weekday-back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 8px;
+            background: var(--bg-secondary);
+            padding: 6px;
+            border-radius: 12px;
+            margin-left: auto;
+            box-shadow: 0 2px 8px rgba(139, 115, 85, 0.1);
+        }
+
+        .view-btn {
+            padding: 10px 18px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .view-btn.active {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        /* Clock Section */
+        .clock-section {
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            padding: 30px;
+            border: 2px solid var(--border);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .clocks-container {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .clock-wrapper {
+            text-align: center;
+        }
+
+        .clock-label {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .clock {
+            position: relative;
+            width: 320px;
+            height: 320px;
+        }
+
+        .clock svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .clock-face {
+            fill: #f5ede4;
+            stroke: var(--border);
+            stroke-width: 2;
+        }
+
+        .clock-center {
+            fill: var(--bg-secondary);
+        }
+
+        .hour-marker {
+            stroke: #d4a574;
+            stroke-width: 2;
+        }
+
+        .hour-text {
+            fill: var(--text-secondary);
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .activity-arc {
+            cursor: pointer;
+            transition: opacity 0.2s, filter 0.2s;
+        }
+
+        .activity-arc:hover {
+            filter: brightness(1.1);
+        }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .legend-color {
+            width: 14px;
+            height: 14px;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        /* Summary Stats */
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 12px;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 12px;
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+
+        .stat-value {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        /* Side Panel */
+        .side-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .panel-card {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 20px;
+            border: 2px solid var(--border);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .panel-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-primary);
+        }
+
+        .panel-title svg {
+            width: 18px;
+            height: 18px;
+            stroke: var(--accent);
+        }
+
+        /* Quick Presets */
+        .quick-presets {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .preset-btn {
+            padding: 5px 10px;
+            font-size: 0.75rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .preset-btn:hover {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+            transform: translateY(-1px);
+        }
+
+        /* Activity Form */
+        .form-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+            align-items: flex-end;
+        }
+
+        .form-group {
+            margin-bottom: 0;
+        }
+
+        .form-group-grow {
+            flex: 1;
+        }
+
+        .form-group-actions {
+            display: flex;
+            gap: 8px;
+            padding-bottom: 1px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 9px 12px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .category-select-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0;
+        }
+
+        .category-color-preview {
+            width: 38px !important;
+            height: 38px;
+            padding: 3px !important;
+            border-radius: 8px 0 0 8px !important;
+            border-right: none !important;
+            cursor: pointer;
+        }
+
+        .category-select-wrapper select {
+            border-radius: 0 8px 8px 0;
+            min-width: 100px;
+        }
+
+        .time-inputs-compact {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .time-inputs-compact input[type="time"] {
+            width: 110px;
+        }
+
+        .time-separator {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .time-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 2px 8px rgba(224, 123, 76, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+
+        /* Activities List */
+        .activities-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .activities-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .activities-list::-webkit-scrollbar-track {
+            background: var(--bg-tertiary);
+            border-radius: 3px;
+        }
+
+        .activities-list::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            margin-bottom: 6px;
+            transition: all 0.2s;
+            border: 1px solid var(--border);
+            border-left: 4px solid transparent;
+            position: relative;
+        }
+
+        .activity-item:hover {
+            background: var(--bg-secondary);
+            transform: translateX(2px);
+        }
+
+        .activity-item:hover .activity-actions {
+            opacity: 1;
+        }
+
+        .activity-color {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .activity-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .activity-name {
+            font-weight: 500;
+            font-size: 0.88rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: var(--text-primary);
+        }
+
+        .activity-time {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            margin-top: 1px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .activity-time .duration {
+            background: var(--bg-secondary);
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+        }
+
+        .activity-actions {
+            display: flex;
+            gap: 4px;
+            opacity: 0.5;
+            transition: opacity 0.2s;
+        }
+
+        .activity-actions button {
+            width: 26px;
+            height: 26px;
+            border: none;
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .activity-actions button:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        .activity-actions button.delete:hover {
+            background: #e74c3c;
+        }
+
+        .activity-actions button.edit:hover {
+            background: var(--accent);
+        }
+
+        .activity-item.editing {
+            border-color: var(--accent);
+            background: linear-gradient(135deg, var(--bg-tertiary), #f5ede4);
+            box-shadow: 0 0 0 2px rgba(224, 123, 76, 0.2);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state svg {
+            width: 48px;
+            height: 48px;
+            stroke: var(--border);
+            margin-bottom: 12px;
+        }
+
+        /* Export/Import Buttons */
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: fixed;
+            background: white;
+            border: 1px solid var(--border);
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            pointer-events: none;
+            z-index: 1000;
+            box-shadow: 0 10px 30px rgba(139, 115, 85, 0.2);
+            max-width: 220px;
+        }
+
+        .tooltip-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--text-primary);
+        }
+
+        .tooltip-time {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        .tooltip-category {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-top: 6px;
+        }
+
+        .tooltip-day {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+            padding-top: 4px;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(74, 55, 40, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 25px;
+            width: 90%;
+            max-width: 400px;
+            transform: scale(0.9);
+            transition: transform 0.3s;
+            box-shadow: 0 20px 60px rgba(139, 115, 85, 0.3);
+        }
+
+        .modal-overlay.active .modal {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            background: var(--border);
+            color: var(--text-primary);
+        }
+
+        /* Day Type Management */
+        .day-type-list {
+            margin-bottom: 15px;
+        }
+
+        .day-type-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 12px;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .day-type-item span {
+            font-size: 0.9rem;
+        }
+
+        .new-day-type-input {
+            display: flex;
+            gap: 10px;
+        }
+
+        .new-day-type-input input {
+            flex: 1;
+        }
+
+        /* Color Input Wrapper */
+        .color-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .color-input-wrapper input[type="color"] {
+            width: 50px;
+            height: 38px;
+            padding: 2px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            background: var(--bg-tertiary);
+        }
+
+        .color-input-wrapper input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 2px;
+        }
+
+        .color-input-wrapper input[type="color"]::-webkit-color-swatch {
+            border-radius: 4px;
+            border: none;
+        }
+
+        .btn-reset-color {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-reset-color:hover {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        /* Category Colors Modal */
+        .category-colors-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .category-color-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+        }
+
+        .category-color-item input[type="color"] {
+            width: 40px;
+            height: 32px;
+            padding: 2px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            background: var(--bg-secondary);
+        }
+
+        .category-color-item input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 2px;
+        }
+
+        .category-color-item input[type="color"]::-webkit-color-swatch {
+            border-radius: 3px;
+            border: none;
+        }
+
+        .category-color-item span {
+            flex: 1;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+        }
+
+        /* ==================== WEEKLY VIEW STYLES ==================== */
+        .weekly-view {
+            display: none;
+        }
+
+        .weekly-view.active {
+            display: block;
+        }
+
+        .weekly-container {
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 4px 20px rgba(139, 115, 85, 0.1);
+            overflow-x: auto;
+        }
+
+        .weekly-grid {
+            display: grid;
+            grid-template-columns: 50px repeat(7, 1fr);
+            min-width: 900px;
+            gap: 0;
+        }
+
+        /* Time column */
+        .time-column {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .time-column-header {
+            height: 80px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 10px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .time-slot {
+            height: 40px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-end;
+            padding-right: 10px;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            transform: translateY(-8px);
+        }
+
+        /* Day columns */
+        .day-column {
+            border-left: 1px solid var(--border);
+            min-width: 120px;
+        }
+
+        .day-column-header {
+            height: 80px;
+            padding: 10px;
+            text-align: center;
+            border-bottom: 2px solid var(--border);
+            background: var(--bg-tertiary);
+        }
+
+        .day-column-header:first-of-type {
+            border-top-left-radius: 12px;
+        }
+
+        .day-column:last-child .day-column-header {
+            border-top-right-radius: 12px;
+        }
+
+        .day-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .day-type-select {
+            width: 100%;
+            padding: 6px 8px;
+            font-size: 0.75rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            cursor: pointer;
+        }
+
+        .day-type-select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .day-slots {
+            position: relative;
+            height: calc(24 * 40px);
+        }
+
+        .hour-line {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .half-hour-line {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--border);
+            opacity: 0.4;
+        }
+
+        .weekly-activity {
+            position: absolute;
+            left: 4px;
+            right: 4px;
+            border-radius: 6px;
+            padding: 4px 6px;
+            font-size: 0.7rem;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid #000000;
+            z-index: 1;
+        }
+
+        .weekly-activity:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 10;
+        }
+
+        .weekly-activity-name {
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .weekly-activity-time {
+            font-size: 0.65rem;
+            opacity: 0.9;
+            color: white;
+            margin-top: 2px;
+        }
+
+        /* Weekly Legend */
+        .weekly-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Weekly Stats */
+        .weekly-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .weekly-stat-item {
+            text-align: center;
+            padding: 15px;
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+        }
+
+        .weekly-stat-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .weekly-stat-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        /* Weekend styling */
+        .day-column.weekend .day-column-header {
+            background: linear-gradient(135deg, #fff1e6, #ffe8d6);
+        }
+
+        .day-column.weekend .day-name {
+            color: var(--accent);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(224, 123, 76, 0.4); }
+            70% { box-shadow: 0 0 0 8px rgba(224, 123, 76, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(224, 123, 76, 0); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-4px); }
+            75% { transform: translateX(4px); }
+        }
+
+        .activity-item {
+            animation: slideIn 0.3s ease;
+        }
+
+        .activity-item.just-added {
+            animation: slideIn 0.3s ease, pulse 0.6s ease;
+        }
+
+        .activity-item.deleting {
+            animation: fadeOut 0.3s ease forwards;
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(20px); }
+        }
+
+        .btn-primary.success {
+            background: #27ae60;
+            animation: pulse 0.4s ease;
+        }
+
+        .weekly-activity {
+            animation: fadeIn 0.2s ease;
+        }
+
+        /* Responsive */
+        @media (max-width: 1000px) {
+            .weekly-grid {
+                min-width: 800px;
+            }
+
+            .day-column {
+                min-width: 100px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 12px;
+            }
+
+            header {
+                flex-direction: column;
+                gap: 12px;
+                align-items: flex-start;
+            }
+
+            header h1 {
+                font-size: 1.2rem;
+            }
+
+            .control-bar {
+                gap: 8px;
+            }
+
+            .day-type-selector button {
+                padding: 8px 12px;
+                font-size: 0.8rem;
+            }
+
+            .btn-sm {
+                padding: 6px 10px;
+                font-size: 0.75rem;
+            }
+
+            .clocks-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .clock-wrapper {
+                max-width: 300px;
+            }
+
+            .form-row {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .form-group-actions {
+                width: 100%;
+            }
+
+            .form-group-actions .btn {
+                flex: 1;
+            }
+
+            .time-inputs-compact {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .summary-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .quick-presets {
+                justify-content: flex-start;
+            }
+
+            .preset-btn {
+                padding: 6px 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-view-toggle .toggle-container {
+                width: 100%;
+            }
+
+            .main-view-btn {
+                flex: 1;
+                justify-content: center;
+                padding: 10px 12px;
+            }
+
+            .activity-item {
+                padding: 8px 10px;
+            }
+
+            .activity-color {
+                width: 28px;
+                height: 28px;
+                font-size: 0.65rem;
+            }
+
+            .activity-name {
+                font-size: 0.82rem;
+            }
+
+            .activity-time {
+                font-size: 0.72rem;
+            }
+
+            .summary-stats {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+
+            .stat-item {
+                padding: 10px;
+            }
+
+            .stat-value {
+                font-size: 1rem;
+            }
+        }
+
+        /* Charts Section */
+        .charts-section {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border);
+        }
+
+        .charts-row {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .charts-row:last-child {
+            grid-template-columns: 1fr;
+        }
+
+        .chart-card {
+            background: var(--bg-tertiary);
+            border-radius: 16px;
+            padding: 20px;
+            border: 2px solid var(--border);
+        }
+
+        .chart-card.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .chart-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 280px;
+        }
+
+        .chart-container.donut-container {
+            height: 280px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chart-container.bar-container {
+            height: 320px;
+        }
+
+        @media (max-width: 900px) {
+            .charts-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ==================== YEAR VIEW STYLES ==================== */
+        .year-view {
+            display: none;
+        }
+
+        .year-view.active {
+            display: block;
+        }
+
+        .year-container {
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            padding: 25px;
+            border: 2px solid var(--border);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .year-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .year-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .year-nav-btn {
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--border);
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary);
+            transition: all 0.2s;
+        }
+
+        .year-nav-btn:hover {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .year-stats-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            border: 2px solid var(--border);
+        }
+
+        .year-stat-box {
+            text-align: center;
+            padding: 15px;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+
+        .year-stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .year-stat-value.work-days {
+            color: #27ae60;
+        }
+
+        .year-stat-value.holiday {
+            color: #f39c12;
+        }
+
+        .year-stat-value.vacation {
+            color: #3498db;
+        }
+
+        .year-stat-value.weekend {
+            color: #9b59b6;
+        }
+
+        .year-stat-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .year-stat-percent {
+            font-size: 0.9rem;
+            color: var(--accent);
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .year-calendar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        @media (max-width: 1200px) {
+            .year-calendar {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .year-calendar {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .year-calendar {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .month-card {
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 15px;
+            border: 2px solid var(--border);
+        }
+
+        .month-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .month-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .month-stats {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .month-stats .work-count {
+            color: #27ae60;
+            font-weight: 600;
+        }
+
+        .month-stats .off-count {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+
+        .month-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+        }
+
+        .day-header {
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-align: center;
+            padding: 4px 0;
+        }
+
+        .day-header.weekend {
+            color: var(--accent);
+        }
+
+        .day-cell {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+            border: 1px solid transparent;
+        }
+
+        .day-cell:hover {
+            transform: scale(1.15);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            z-index: 10;
+            position: relative;
+        }
+
+        .day-cell.empty {
+            background: transparent;
+            cursor: default;
+        }
+
+        .day-cell.empty:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .day-cell.work-day {
+            background: #d5f5e3;
+            color: #1e8449;
+            border-color: #27ae60;
+        }
+
+        .day-cell.off-day {
+            background: #fadbd8;
+            color: #943126;
+            border-color: #e74c3c;
+        }
+
+        .day-cell.holiday {
+            background: #fdebd0;
+            color: #b9770e;
+            border-color: #f39c12;
+        }
+
+        .day-cell.weekend {
+            background: #e8daef;
+            color: #6c3483;
+            border-color: #9b59b6;
+        }
+
+        .day-cell.today {
+            font-weight: 700;
+            box-shadow: 0 0 0 2px var(--accent);
+        }
+
+        .year-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .year-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .year-legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+        }
+
+        .year-legend-color.work-day {
+            background: #d5f5e3;
+            border-color: #27ae60;
+        }
+
+        .year-legend-color.off-day {
+            background: #fadbd8;
+            border-color: #e74c3c;
+        }
+
+        .year-legend-color.holiday {
+            background: #fdebd0;
+            border-color: #f39c12;
+        }
+
+        .year-legend-color.weekend {
+            background: #e8daef;
+            border-color: #9b59b6;
+        }
+
+        /* ==================== DAY SELECTOR POPUP ==================== */
+        .day-selector-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(74, 55, 40, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s;
+        }
+
+        .day-selector-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .day-selector {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 20px;
+            min-width: 280px;
+            border: 2px solid var(--border);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            transform: scale(0.9);
+            transition: transform 0.2s;
+        }
+
+        .day-selector-overlay.active .day-selector {
+            transform: scale(1);
+        }
+
+        .day-selector-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .day-selector-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .day-selector-date {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .day-selector-close {
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .day-selector-close:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        .day-selector-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .day-type-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            background: var(--bg-tertiary);
+            border: 2px solid transparent;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .day-type-option:hover {
+            border-color: var(--accent);
+            transform: translateX(4px);
+        }
+
+        .day-type-option.selected {
+            border-color: var(--accent);
+            background: var(--bg-secondary);
+        }
+
+        .day-type-option-color {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+
+        .day-type-option-label {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .day-type-label {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            flex: 1;
+        }
+
+        .day-type-check {
+            font-weight: bold;
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        .day-type-option-color.work { background: #d5f5e3; border-color: #27ae60; }
+        .day-type-option-color.off { background: #fadbd8; border-color: #e74c3c; }
+        .day-type-option-color.weekend { background: #e8daef; border-color: #9b59b6; }
+        .day-type-option-color.holiday { background: #fdebd0; border-color: #f39c12; }
+        .day-type-option-color.vacation { background: #d6eaf8; border-color: #3498db; }
+        .day-type-option-color.sick { background: #f5eef8; border-color: #8e44ad; }
+
+        .day-selector-actions {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        /* ==================== WEEKLY ACTIVITY EDIT MODAL ==================== */
+        .weekly-edit-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(74, 55, 40, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s;
+        }
+
+        .weekly-edit-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .weekly-edit-modal {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 24px;
+            min-width: 400px;
+            max-width: 500px;
+            border: 2px solid var(--border);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            transform: scale(0.9);
+            transition: transform 0.2s;
+        }
+
+        .weekly-edit-overlay.active .weekly-edit-modal {
+            transform: scale(1);
+        }
+
+        .weekly-edit-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .weekly-edit-activity-info {
+            flex: 1;
+        }
+
+        .weekly-edit-activity-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .weekly-edit-activity-time {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .weekly-edit-activity-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-top: 8px;
+        }
+
+        .weekly-edit-close {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-left: 15px;
+        }
+
+        .weekly-edit-close:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        .weekly-edit-section-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .weekly-edit-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .weekly-edit-option {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: var(--bg-tertiary);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .weekly-edit-option:hover {
+            border-color: var(--accent);
+            transform: translateX(4px);
+        }
+
+        .weekly-edit-option-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .weekly-edit-option-icon.weekday {
+            background: #d6eaf8;
+            color: #2980b9;
+        }
+
+        .weekly-edit-option-icon.template {
+            background: #d5f5e3;
+            color: #27ae60;
+        }
+
+        .weekly-edit-option-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .weekly-edit-option-content {
+            flex: 1;
+        }
+
+        .weekly-edit-option-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 3px;
+        }
+
+        .weekly-edit-option-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .weekly-edit-option-arrow {
+            color: var(--text-secondary);
+        }
+
+        .weekly-edit-option-arrow svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .weekly-edit-custom-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            background: #fef9e7;
+            border: 1px solid #f39c12;
+            color: #b7950b;
+            font-size: 0.7rem;
+            font-weight: 600;
+            border-radius: 10px;
+            margin-left: 8px;
+        }
+
+        .weekly-activity.has-custom {
+            box-shadow: inset 0 0 0 2px #f39c12;
+        }
+
+        .weekly-activity.clickable {
+            cursor: pointer;
+        }
+
+        .weekly-activity.clickable:hover {
+            filter: brightness(1.1);
+            transform: scale(1.02);
+        }
+
+        /* New day type colors */
+        .day-cell.vacation {
+            background: #d6eaf8;
+            color: #1a5276;
+            border-color: #3498db;
+        }
+
+        .day-cell.sick {
+            background: #f5eef8;
+            color: #6c3483;
+            border-color: #8e44ad;
+        }
+
+        .day-cell.public-holiday {
+            background: #fdebd0;
+            color: #b9770e;
+            border-color: #f39c12;
+        }
+
+        .year-legend-color.vacation {
+            background: #d6eaf8;
+            border-color: #3498db;
+        }
+
+        .year-legend-color.sick {
+            background: #f5eef8;
+            border-color: #8e44ad;
+        }
+
+        /* Alternative 1: Compact Timeline View for Weekday Editing */
+        .weekday-timeline-panel {
+            display: none;
+        }
+
+        .weekday-timeline-panel.active {
+            display: block;
+        }
+
+        .side-panel.weekday-editing .panel-card:not(.timeline-panel):not(.save-panel) {
+            display: none;
+        }
+
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .timeline-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .timeline-add-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .timeline-add-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        .compact-timeline {
+            max-height: 600px;
+            overflow-y: auto;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            background: white;
+        }
+
+        .timeline-hour-row {
+            display: flex;
+            min-height: 50px;
+            border-bottom: 1px solid #e0d5c8;
+            position: relative;
+        }
+
+        .timeline-hour-row:last-child {
+            border-bottom: none;
+        }
+
+        .timeline-hour-row:hover {
+            background: rgba(212, 165, 116, 0.05);
+        }
+
+        .timeline-time-label {
+            width: 60px;
+            padding: 8px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            background: var(--bg-secondary);
+            border-right: 1px solid #e0d5c8;
+            flex-shrink: 0;
+        }
+
+        .timeline-hour-content {
+            flex: 1;
+            padding: 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            cursor: pointer;
+            min-height: 50px;
+        }
+
+        .timeline-hour-content:hover {
+            background: rgba(212, 165, 116, 0.1);
+        }
+
+        .timeline-activity-block {
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+            border-left: 3px solid rgba(0,0,0,0.2);
+        }
+
+        .timeline-activity-block:hover {
+            transform: translateX(2px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .timeline-activity-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .timeline-activity-name {
+            font-weight: 600;
+        }
+
+        .timeline-activity-time {
+            font-size: 0.7rem;
+            opacity: 0.9;
+        }
+
+        .timeline-activity-actions {
+            display: flex;
+            gap: 4px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .timeline-activity-block:hover .timeline-activity-actions {
+            opacity: 1;
+        }
+
+        .timeline-action-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .timeline-action-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .timeline-action-btn.delete:hover {
+            background: rgba(220, 53, 69, 0.8);
+        }
+
+        .timeline-empty-slot {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            font-style: italic;
+            padding: 8px;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .timeline-hour-content:hover .timeline-empty-slot {
+            opacity: 1;
+        }
+
+        /* Add Activity Modal for Timeline */
+        .timeline-add-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1001;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .timeline-add-modal.active {
+            display: flex;
+        }
+
+        .timeline-add-modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .timeline-add-modal h3 {
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+
+        .timeline-add-modal .form-group {
+            margin-bottom: 15px;
+        }
+
+        .timeline-add-modal label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .timeline-add-modal input,
+        .timeline-add-modal select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.95rem;
+        }
+
+        .timeline-add-modal .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .timeline-add-modal .modal-actions button {
+            flex: 1;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<body>
+    <div class="container">
+        <header>
+            <h1>Daily Clock Planner</h1>
+            <div class="main-view-toggle">
+                <div class="toggle-container">
+                    <button class="main-view-btn active" data-mainview="daily" onclick="setMainView('daily')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M12 6v6l4 2"/>
+                        </svg>
+                        Daily
+                    </button>
+                    <button class="main-view-btn" data-mainview="weekly" onclick="setMainView('weekly')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                            <line x1="16" y1="2" x2="16" y2="6"/>
+                            <line x1="8" y1="2" x2="8" y2="6"/>
+                            <line x1="3" y1="10" x2="21" y2="10"/>
+                        </svg>
+                        Weekly
+                    </button>
+                    <button class="main-view-btn" data-mainview="year" onclick="setMainView('year')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                            <line x1="3" y1="10" x2="21" y2="10"/>
+                            <line x1="9" y1="4" x2="9" y2="22"/>
+                            <line x1="15" y1="4" x2="15" y2="22"/>
+                            <line x1="3" y1="16" x2="21" y2="16"/>
+                        </svg>
+                        Year
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- ==================== DAILY VIEW ==================== -->
+        <div class="daily-view active" id="dailyView">
+            <div class="control-bar">
+                <div class="day-type-selector" id="dayTypeSelector"></div>
+                <button class="btn btn-secondary btn-sm" onclick="openDayTypeModal()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 5v14M5 12h14"/>
+                    </svg>
+                    Manage Day Types
+                </button>
+                <button class="btn btn-secondary btn-sm" onclick="openCategoryColorsModal()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <circle cx="12" cy="12" r="4"/>
+                        <line x1="12" y1="2" x2="12" y2="6"/>
+                        <line x1="12" y1="18" x2="12" y2="22"/>
+                        <line x1="2" y1="12" x2="6" y2="12"/>
+                        <line x1="18" y1="12" x2="22" y2="12"/>
+                    </svg>
+                    Category Colors
+                </button>
+                <div class="view-toggle">
+                    <button class="view-btn active" data-view="activities" onclick="setView('activities')">Activities</button>
+                    <button class="view-btn" data-view="categories" onclick="setView('categories')">Categories</button>
+                </div>
+            </div>
+
+            <div class="main-layout">
+                <div class="clock-section">
+                    <div class="clocks-container">
+                        <div class="clock-wrapper">
+                            <div class="clock-label">AM (00:00 - 12:00)</div>
+                            <div class="clock" id="clockAM"></div>
+                        </div>
+                        <div class="clock-wrapper">
+                            <div class="clock-label">PM (12:00 - 24:00)</div>
+                            <div class="clock" id="clockPM"></div>
+                        </div>
+                    </div>
+                    <div class="legend" id="legend"></div>
+                    <div class="summary-stats" id="summaryStats"></div>
+                </div>
+
+                <div class="side-panel">
+                    <div class="panel-card">
+                        <h3 class="panel-title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"/>
+                                <path d="M12 6v6l4 2"/>
+                            </svg>
+                            Add Activity
+                        </h3>
+                        <div class="quick-presets">
+                            <button type="button" class="preset-btn" onclick="applyPreset('Sleep', '23:00', '07:00', 'sleep')">Sleep</button>
+                            <button type="button" class="preset-btn" onclick="applyPreset('Lunch', '12:00', '13:00', 'myself')">Lunch</button>
+                            <button type="button" class="preset-btn" onclick="applyPreset('Meeting', '14:00', '15:00', 'work')">Meeting</button>
+                            <button type="button" class="preset-btn" onclick="applyPreset('Exercise', '18:00', '19:00', 'goal1')">Exercise</button>
+                            <button type="button" class="preset-btn" onclick="applyPreset('Commute', '08:00', '08:45', 'else')">Commute</button>
+                        </div>
+                        <form id="activityForm" onsubmit="addActivity(event)">
+                            <div class="form-row">
+                                <div class="form-group form-group-grow">
+                                    <label for="activityName">Activity</label>
+                                    <input type="text" id="activityName" placeholder="What are you doing?" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="category">Category</label>
+                                    <div class="category-select-wrapper">
+                                        <input type="color" id="activityColor" value="#d4a574" class="category-color-preview" title="Click to customize color">
+                                        <select id="category" required onchange="updateColorFromCategory()">
+                                            <option value="work">Work</option>
+                                            <option value="family">Family</option>
+                                            <option value="admin">Admin</option>
+                                            <option value="myself">Myself</option>
+                                            <option value="goal1">Goal 1</option>
+                                            <option value="goal2">Goal 2</option>
+                                            <option value="goal3">Goal 3</option>
+                                            <option value="sleep">Sleep</option>
+                                            <option value="else">Else</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Time</label>
+                                    <div class="time-inputs-compact">
+                                        <input type="time" id="startTime" required>
+                                        <span class="time-separator">to</span>
+                                        <input type="time" id="endTime" required>
+                                    </div>
+                                </div>
+                                <div class="form-group form-group-actions">
+                                    <button type="submit" id="submitBtn" class="btn btn-primary">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M12 5v14M5 12h14"/>
+                                        </svg>
+                                        Add
+                                    </button>
+                                    <button type="button" id="cancelEditBtn" class="btn btn-secondary" style="display: none;" onclick="cancelEdit()">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="panel-card">
+                        <h3 class="panel-title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
+                                <rect x="9" y="3" width="6" height="4" rx="1"/>
+                            </svg>
+                            Activities
+                        </h3>
+                        <div class="activities-list" id="activitiesList"></div>
+                    </div>
+
+                    <!-- Alt1: Compact Timeline Panel (shown when editing weekday) -->
+                    <div class="panel-card timeline-panel weekday-timeline-panel" id="timelinePanel">
+                        <div class="timeline-header">
+                            <span class="timeline-title" id="timelineTitle">Monday Schedule</span>
+                            <button class="timeline-add-btn" onclick="openTimelineAddModal()">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 5v14M5 12h14"/>
+                                </svg>
+                                Add
+                            </button>
+                        </div>
+                        <div class="compact-timeline" id="compactTimeline"></div>
+                    </div>
+
+                    <div class="panel-card save-panel">
+                        <h3 class="panel-title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+                            </svg>
+                            Save & Export
+                        </h3>
+                        <div class="action-buttons">
+                            <button class="btn btn-secondary" onclick="saveToStorage()">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/>
+                                    <path d="M17 21v-8H7v8M7 3v5h8"/>
+                                </svg>
+                                Save
+                            </button>
+                            <button class="btn btn-secondary" onclick="exportData()">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                                </svg>
+                                Export
+                            </button>
+                        </div>
+                        <div class="action-buttons" style="margin-top: 10px;">
+                            <button class="btn btn-secondary" onclick="document.getElementById('importInput').click()">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+                                </svg>
+                                Import
+                            </button>
+                            <button class="btn btn-danger" onclick="clearCurrentDay()">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+                                </svg>
+                                Clear
+                            </button>
+                        </div>
+                        <div class="action-buttons" style="margin-top: 10px;">
+                            <button class="btn btn-secondary" onclick="loadExampleData()" style="grid-column: 1 / -1;">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                                    <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
+                                </svg>
+                                Load Example Week
+                            </button>
+                        </div>
+                        <input type="file" id="importInput" accept=".json" style="display: none;" onchange="importData(event)">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== WEEKLY VIEW ==================== -->
+        <div class="weekly-view" id="weeklyView">
+            <div class="weekly-container">
+                <div class="weekly-grid" id="weeklyGrid"></div>
+                <div class="weekly-legend" id="weeklyLegend"></div>
+                <div class="weekly-stats" id="weeklyStats"></div>
+                
+                <!-- Charts Section -->
+                <div class="charts-section">
+                    <div class="charts-row">
+                        <div class="chart-card">
+                            <h3 class="chart-title">Weekly Time Distribution by Category</h3>
+                            <div class="chart-container">
+                                <canvas id="areaChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="chart-card">
+                            <h3 class="chart-title">Weekly Summary</h3>
+                            <div class="chart-container donut-container">
+                                <canvas id="donutChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="charts-row">
+                        <div class="chart-card full-width">
+                            <h3 class="chart-title">Comparison by Day Type Template</h3>
+                            <div class="chart-container bar-container">
+                                <canvas id="barChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== YEAR VIEW ==================== -->
+        <div class="year-view" id="yearView">
+            <div class="year-container">
+                <div class="year-header">
+                    <button class="year-nav-btn" onclick="changeYear(-1)">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M15 18l-6-6 6-6"/>
+                        </svg>
+                    </button>
+                    <h2 class="year-title" id="yearTitle">2026</h2>
+                    <button class="year-nav-btn" onclick="changeYear(1)">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 18l6-6-6-6"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="year-stats-summary" id="yearStatsSummary"></div>
+                <div class="year-calendar" id="yearCalendar"></div>
+                <div class="year-legend" id="yearLegend"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tooltip -->
+    <div class="tooltip" id="tooltip" style="display: none;"></div>
+
+    <!-- Day Type Modal -->
+    <div class="modal-overlay" id="dayTypeModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Manage Day Types</h3>
+                <button class="modal-close" onclick="closeDayTypeModal()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 6L6 18M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="day-type-list" id="dayTypeList"></div>
+            <div class="new-day-type-input">
+                <input type="text" id="newDayTypeName" placeholder="New day type name...">
+                <button class="btn btn-primary" onclick="addDayType()">Add</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category Colors Modal -->
+    <div class="modal-overlay" id="categoryColorsModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Customize Category Colors</h3>
+                <button class="modal-close" onclick="closeCategoryColorsModal()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 6L6 18M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="category-colors-list" id="categoryColorsList"></div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="resetCategoryColors()">Reset to Defaults</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Day Selector Popup -->
+    <div class="day-selector-overlay" id="daySelectorOverlay" onclick="closeDaySelector(event)">
+        <div class="day-selector" onclick="event.stopPropagation()">
+            <div class="day-selector-header">
+                <div>
+                    <div class="day-selector-title">Change Day Type</div>
+                    <div class="day-selector-date" id="daySelectorDate">January 15, 2026</div>
+                </div>
+                <button class="day-selector-close" onclick="closeDaySelector()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 6L6 18M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="day-selector-options" id="daySelectorOptions"></div>
+            <div class="day-selector-actions">
+                <button class="btn btn-secondary btn-sm" onclick="clearDayOverride()">Reset to Default</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Weekly Activity Edit Modal -->
+    <div class="weekly-edit-overlay" id="weeklyEditOverlay" onclick="closeWeeklyEditModal(event)">
+        <div class="weekly-edit-modal" onclick="event.stopPropagation()">
+            <div class="weekly-edit-header">
+                <div class="weekly-edit-activity-info">
+                    <div class="weekly-edit-activity-name" id="weeklyEditActivityName">Activity Name</div>
+                    <div class="weekly-edit-activity-time" id="weeklyEditActivityTime">08:00 - 12:00</div>
+                    <span class="weekly-edit-activity-badge" id="weeklyEditActivityBadge">Work</span>
+                </div>
+                <button class="weekly-edit-close" onclick="closeWeeklyEditModal()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 6L6 18M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="weekly-edit-section-title">How would you like to edit this activity?</div>
+
+            <div class="weekly-edit-options">
+                <div class="weekly-edit-option" id="weeklyEditWeekdayOption" onclick="editForWeekday()">
+                    <div class="weekly-edit-option-icon weekday">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                    </div>
+                    <div class="weekly-edit-option-content">
+                        <div class="weekly-edit-option-title" id="weeklyEditWeekdayTitle">Edit for all Tuesdays</div>
+                        <div class="weekly-edit-option-desc">Changes will apply only to this weekday. Other days remain unchanged.</div>
+                    </div>
+                    <div class="weekly-edit-option-arrow">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 18l6-6-6-6"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="weekly-edit-option" onclick="editBaseTemplate()">
+                    <div class="weekly-edit-option-icon template">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="12" y1="18" x2="12" y2="12"></line>
+                            <line x1="9" y1="15" x2="15" y2="15"></line>
+                        </svg>
+                    </div>
+                    <div class="weekly-edit-option-content">
+                        <div class="weekly-edit-option-title" id="weeklyEditTemplateTitle">Edit Work Day template</div>
+                        <div class="weekly-edit-option-desc">Changes will apply to all weekdays using this template.</div>
+                    </div>
+                    <div class="weekly-edit-option-arrow">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 18l6-6-6-6"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div id="weeklyEditCustomInfo" style="display: none; padding: 10px; background: #fef9e7; border: 1px solid #f39c12; border-radius: 8px; margin-bottom: 15px;">
+                <div style="font-size: 0.85rem; color: #b7950b;">
+                    <strong>Note:</strong> <span id="weeklyEditCustomInfoText">Tuesday has custom activities.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alt1: Timeline Add Activity Modal -->
+    <div class="timeline-add-modal" id="timelineAddModal" onclick="closeTimelineAddModal(event)">
+        <div class="timeline-add-modal-content" onclick="event.stopPropagation()">
+            <h3>Add Activity</h3>
+            <form id="timelineAddForm" onsubmit="submitTimelineActivity(event)">
+                <div class="form-group">
+                    <label for="tlActivityName">Activity Name</label>
+                    <input type="text" id="tlActivityName" required placeholder="What are you doing?">
+                </div>
+                <div class="form-group">
+                    <label for="tlCategory">Category</label>
+                    <select id="tlCategory" required>
+                        <option value="work">Work</option>
+                        <option value="family">Family</option>
+                        <option value="admin">Admin</option>
+                        <option value="myself">Myself</option>
+                        <option value="goal1">Goal 1</option>
+                        <option value="goal2">Goal 2</option>
+                        <option value="goal3">Goal 3</option>
+                        <option value="sleep">Sleep</option>
+                        <option value="else">Else</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Time</label>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <input type="time" id="tlStartTime" required style="flex: 1;">
+                        <span>to</span>
+                        <input type="time" id="tlEndTime" required style="flex: 1;">
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeTimelineAddModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="tlSubmitBtn">Add Activity</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const defaultCategoryColors = {
+            work: '#e74c3c',
+            family: '#27ae60',
+            admin: '#f39c12',
+            myself: '#16a085',
+            goal1: '#9b59b6',
+            goal2: '#e91e63',
+            goal3: '#3498db',
+            sleep: '#7c9cb5',
+            else: '#7f8c8d'
+        };
+
+        const categoryLabels = {
+            work: 'Work',
+            family: 'Family',
+            admin: 'Admin',
+            myself: 'Myself',
+            goal1: 'Goal 1',
+            goal2: 'Goal 2',
+            goal3: 'Goal 3',
+            sleep: 'Sleep',
+            else: 'Else'
+        };
+
+        function getCategoryColor(cat) {
+            return (state.categoryColors && state.categoryColors[cat]) || defaultCategoryColors[cat];
+        }
+
+        function getCategories() {
+            const cats = {};
+            Object.keys(categoryLabels).forEach(key => {
+                cats[key] = {
+                    color: getCategoryColor(key),
+                    label: categoryLabels[key]
+                };
+            });
+            return cats;
+        }
+
+        let categories = null;
+
+        function updateCategories() {
+            categories = getCategories();
+        }
+
+        const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+        // Year view day types (for individual day overrides)
+        const yearDayTypes = {
+            'work': { label: 'Work Day', class: 'work-day', color: '#d5f5e3' },
+            'off': { label: 'Off Day', class: 'off-day', color: '#fadbd8' },
+            'weekend': { label: 'Weekend', class: 'weekend', color: '#e8daef' },
+            'holiday': { label: 'Public Holiday', class: 'holiday', color: '#fdebd0' },
+            'vacation': { label: 'Vacation', class: 'vacation', color: '#d6eaf8' },
+            'sick': { label: 'Sick Day', class: 'sick', color: '#f5eef8' }
+        };
+
+        // Geneva (Switzerland) Official Public Holidays 2023-2027
+        const genevaHolidays = {
+            2023: [
+                { date: '2023-01-01', name: 'Nouvel An' },
+                { date: '2023-04-07', name: 'Vendredi-Saint' },
+                { date: '2023-04-10', name: 'Lundi de Paques' },
+                { date: '2023-05-18', name: 'Jeudi de l\'Ascension' },
+                { date: '2023-05-29', name: 'Lundi de Pentecote' },
+                { date: '2023-08-01', name: 'Fete nationale' },
+                { date: '2023-09-07', name: 'Jeune genevois' },
+                { date: '2023-12-25', name: 'Noel' },
+                { date: '2023-12-31', name: 'Restauration de la Republique' }
+            ],
+            2024: [
+                { date: '2024-01-01', name: 'Nouvel An' },
+                { date: '2024-03-29', name: 'Vendredi-Saint' },
+                { date: '2024-04-01', name: 'Lundi de Paques' },
+                { date: '2024-05-09', name: 'Jeudi de l\'Ascension' },
+                { date: '2024-05-20', name: 'Lundi de Pentecote' },
+                { date: '2024-08-01', name: 'Fete nationale' },
+                { date: '2024-09-05', name: 'Jeune genevois' },
+                { date: '2024-12-25', name: 'Noel' },
+                { date: '2024-12-31', name: 'Restauration de la Republique' }
+            ],
+            2025: [
+                { date: '2025-01-01', name: 'Nouvel An' },
+                { date: '2025-04-18', name: 'Vendredi-Saint' },
+                { date: '2025-04-21', name: 'Lundi de Paques' },
+                { date: '2025-05-29', name: 'Jeudi de l\'Ascension' },
+                { date: '2025-06-09', name: 'Lundi de Pentecote' },
+                { date: '2025-08-01', name: 'Fete nationale' },
+                { date: '2025-09-11', name: 'Jeune genevois' },
+                { date: '2025-12-25', name: 'Noel' },
+                { date: '2025-12-31', name: 'Restauration de la Republique' }
+            ],
+            2026: [
+                { date: '2026-01-01', name: 'Nouvel An' },
+                { date: '2026-04-03', name: 'Vendredi-Saint' },
+                { date: '2026-04-06', name: 'Lundi de Paques' },
+                { date: '2026-05-14', name: 'Jeudi de l\'Ascension' },
+                { date: '2026-05-25', name: 'Lundi de Pentecote' },
+                { date: '2026-08-01', name: 'Fete nationale' },
+                { date: '2026-09-10', name: 'Jeune genevois' },
+                { date: '2026-12-25', name: 'Noel' },
+                { date: '2026-12-31', name: 'Restauration de la Republique' }
+            ],
+            2027: [
+                { date: '2027-01-01', name: 'Nouvel An' },
+                { date: '2027-03-26', name: 'Vendredi-Saint' },
+                { date: '2027-03-29', name: 'Lundi de Paques' },
+                { date: '2027-05-06', name: 'Jeudi de l\'Ascension' },
+                { date: '2027-05-17', name: 'Lundi de Pentecote' },
+                { date: '2027-08-01', name: 'Fete nationale' },
+                { date: '2027-09-09', name: 'Jeune genevois' },
+                { date: '2027-12-25', name: 'Noel' },
+                { date: '2027-12-31', name: 'Restauration de la Republique' }
+            ]
+        };
+
+        // Function to load Geneva holidays for a given year
+        function loadGenevaHolidays(year) {
+            const holidays = genevaHolidays[year];
+            if (!holidays) return;
+
+            holidays.forEach(h => {
+                if (!state.dayOverrides[h.date]) {
+                    state.dayOverrides[h.date] = 'Public Holiday';
+                }
+            });
+        }
+
+        // V3 Day Type Classification
+        const DAY_TYPE_CLASSIFICATION = {
+            'Work Day': 'work-like',
+            'Remote Day': 'work-like',
+            'Off Day': 'off-like',
+            'Weekend': 'off-like',
+            'Public Holiday': 'off-like',
+            'Vacation': 'off-like',
+            'Sick Day': 'off-like',
+            'Holiday': 'off-like'  // Legacy support
+        };
+
+        function isWorkLike(dayType) {
+            return DAY_TYPE_CLASSIFICATION[dayType] === 'work-like';
+        }
+
+        function isOffLike(dayType) {
+            return DAY_TYPE_CLASSIFICATION[dayType] === 'off-like';
+        }
+
+        // V3 State Migration: Convert V2 structure to V3
+        function migrateV2toV3(oldState) {
+            // Detect if already V3 (has templates property)
+            if (oldState.templates) {
+                return oldState;
+            }
+
+            // Convert V2 activities to V3 templates
+            const templates = {};
+            if (oldState.activities) {
+                Object.keys(oldState.activities).forEach(dayType => {
+                    templates[dayType] = oldState.activities[dayType] || [];
+                });
+            }
+            // Ensure Work Day and Off Day templates exist
+            if (!templates['Work Day']) templates['Work Day'] = [];
+            if (!templates['Off Day']) templates['Off Day'] = oldState.activities?.['Holiday'] || [];
+
+            // Build weekdayTemplates from old weekAssignments
+            const weekdayTemplates = {};
+            const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+            const oldAssignments = oldState.weekAssignments || {
+                'Monday': 'Work Day', 'Tuesday': 'Work Day', 'Wednesday': 'Work Day',
+                'Thursday': 'Work Day', 'Friday': 'Work Day', 'Saturday': 'Off Day', 'Sunday': 'Off Day'
+            };
+
+            weekDays.forEach(day => {
+                weekdayTemplates[day] = {
+                    baseType: oldAssignments[day] || 'Work Day',
+                    custom: null  // No weekday customizations in V2
+                };
+            });
+
+            return {
+                // V3 structure
+                version: 3,
+                templates: templates,
+                weekdayTemplates: weekdayTemplates,
+                dayOverrides: oldState.dayOverrides || {},
+
+                // Keep legacy properties for backward compatibility
+                dayTypes: oldState.dayTypes || ['Work Day', 'Off Day', 'Holiday'],
+                currentDayType: oldState.currentDayType || 'Work Day',
+                currentView: oldState.currentView || 'activities',
+                currentMainView: oldState.currentMainView || 'daily',
+                categoryColors: oldState.categoryColors || { ...defaultCategoryColors }
+            };
+        }
+
+        // V3 Activity Resolution: Get activities for a specific date
+        function getActivitiesForDate(date) {
+            const effectiveDayType = getEffectiveDayTypeForDate(date);
+            const weekday = getWeekdayName(date);
+
+            // Work-like days use weekday templates
+            if (isWorkLike(effectiveDayType)) {
+                const weekdayTemplate = state.weekdayTemplates?.[weekday];
+                if (weekdayTemplate && weekdayTemplate.custom) {
+                    return weekdayTemplate.custom;
+                }
+                // Fall back to base template
+                return state.templates?.['Work Day'] || [];
+            }
+
+            // Off-like days ignore weekday customizations
+            return state.templates?.['Off Day'] || [];
+        }
+
+        function getEffectiveDayTypeForDate(date) {
+            const year = date.getFullYear();
+            const month = date.getMonth();
+            const day = date.getDate();
+            const dateString = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+
+            // Priority 1: Explicit date override
+            if (state.dayOverrides && state.dayOverrides[dateString]) {
+                return state.dayOverrides[dateString];
+            }
+
+            // Priority 2: Default weekday assignment
+            const weekday = getWeekdayName(date);
+            const weekdayTemplate = state.weekdayTemplates?.[weekday];
+            if (weekdayTemplate) {
+                return weekdayTemplate.baseType;
+            }
+
+            // Fallback for weekends
+            const dayOfWeek = date.getDay();
+            if (dayOfWeek === 0 || dayOfWeek === 6) {
+                return 'Off Day';
+            }
+            return 'Work Day';
+        }
+
+        function getWeekdayName(date) {
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            return days[date.getDay()];
+        }
+
+        // Helper to get the base day type for a weekday (V3 compatible)
+        function getWeekdayBaseType(day) {
+            if (state.weekdayTemplates && state.weekdayTemplates[day]) {
+                return state.weekdayTemplates[day].baseType;
+            }
+            // Default
+            return (day === 'Saturday' || day === 'Sunday') ? 'Off Day' : 'Work Day';
+        }
+
+        // Helper to set the base day type for a weekday (V3 compatible)
+        function setWeekdayBaseType(day, dayType) {
+            if (!state.weekdayTemplates) {
+                state.weekdayTemplates = {};
+            }
+            if (!state.weekdayTemplates[day]) {
+                state.weekdayTemplates[day] = { baseType: dayType, custom: null };
+            } else {
+                state.weekdayTemplates[day].baseType = dayType;
+            }
+        }
+
+        let state = {
+            // V3 Data Model
+            version: 3,
+
+            // TIER 1: Day Type Templates (Base Patterns)
+            templates: { 'Work Day': [], 'Off Day': [], 'Holiday': [] },
+
+            // TIER 2: Weekday Templates (Per-Weekday Customizations)
+            weekdayTemplates: {
+                'Monday':    { baseType: 'Work Day', custom: null },
+                'Tuesday':   { baseType: 'Work Day', custom: null },
+                'Wednesday': { baseType: 'Work Day', custom: null },
+                'Thursday':  { baseType: 'Work Day', custom: null },
+                'Friday':    { baseType: 'Work Day', custom: null },
+                'Saturday':  { baseType: 'Off Day', custom: null },
+                'Sunday':    { baseType: 'Off Day', custom: null }
+            },
+
+            // TIER 3: Year View Overrides (Date-Specific)
+            dayOverrides: {},
+
+            // Legacy/UI properties
+            dayTypes: ['Work Day', 'Off Day', 'Holiday'],
+            currentDayType: 'Work Day',
+            currentView: 'activities',
+            currentMainView: 'daily',
+            categoryColors: { ...defaultCategoryColors }
+        };
+
+        function initExampleData() {
+            const saved = localStorage.getItem('dailyPlannerStateLight');
+            if (saved) {
+                let loadedState = JSON.parse(saved);
+
+                // Migrate V2 to V3 if needed
+                if (!loadedState.version || loadedState.version < 3) {
+                    console.log('Migrating state from V2 to V3...');
+                    loadedState = migrateV2toV3(loadedState);
+                    // Save migrated state
+                    localStorage.setItem('dailyPlannerStateLight', JSON.stringify(loadedState));
+                    console.log('Migration complete.');
+                }
+
+                state = loadedState;
+
+                // Ensure required properties exist
+                if (!state.templates) state.templates = { 'Work Day': [], 'Off Day': [], 'Holiday': [] };
+                if (!state.weekdayTemplates) {
+                    state.weekdayTemplates = {
+                        'Monday':    { baseType: 'Work Day', custom: null },
+                        'Tuesday':   { baseType: 'Work Day', custom: null },
+                        'Wednesday': { baseType: 'Work Day', custom: null },
+                        'Thursday':  { baseType: 'Work Day', custom: null },
+                        'Friday':    { baseType: 'Work Day', custom: null },
+                        'Saturday':  { baseType: 'Off Day', custom: null },
+                        'Sunday':    { baseType: 'Off Day', custom: null }
+                    };
+                }
+                if (!state.categoryColors) {
+                    state.categoryColors = { ...defaultCategoryColors };
+                }
+                if (!state.dayOverrides) {
+                    state.dayOverrides = {};
+                }
+
+                // Load Geneva holidays for current year view
+                loadGenevaHolidays(new Date().getFullYear());
+                updateCategories();
+                return;
+            }
+
+            // No saved data - load example data for new users with V3 structure
+            state.version = 3;
+            state.categoryColors = { ...defaultCategoryColors };
+            state.weekdayTemplates = {
+                'Monday':    { baseType: 'Work Day', custom: null },
+                'Tuesday':   { baseType: 'Work Day', custom: null },
+                'Wednesday': { baseType: 'Work Day', custom: null },
+                'Thursday':  { baseType: 'Work Day', custom: null },
+                'Friday':    { baseType: 'Work Day', custom: null },
+                'Saturday':  { baseType: 'Off Day', custom: null },
+                'Sunday':    { baseType: 'Off Day', custom: null }
+            };
+
+            // Example Work Day Template
+            state.templates['Work Day'] = [
+                { id: 1, name: 'Sleep', startTime: '22:30', endTime: '06:30', category: 'myself' },
+                { id: 2, name: 'Morning Routine', startTime: '06:30', endTime: '07:15', category: 'myself' },
+                { id: 3, name: 'Breakfast with Family', startTime: '07:15', endTime: '07:45', category: 'family' },
+                { id: 4, name: 'Commute', startTime: '07:45', endTime: '08:30', category: 'else' },
+                { id: 5, name: 'Deep Work Block', startTime: '08:30', endTime: '12:00', category: 'work' },
+                { id: 6, name: 'Lunch Break', startTime: '12:00', endTime: '13:00', category: 'myself' },
+                { id: 7, name: 'Meetings & Collaboration', startTime: '13:00', endTime: '15:00', category: 'work' },
+                { id: 8, name: 'Project Work', startTime: '15:00', endTime: '17:30', category: 'work' },
+                { id: 9, name: 'Commute Home', startTime: '17:30', endTime: '18:15', category: 'else' },
+                { id: 10, name: 'Family Time', startTime: '18:15', endTime: '19:30', category: 'family' },
+                { id: 11, name: 'Dinner', startTime: '19:30', endTime: '20:15', category: 'family' },
+                { id: 12, name: 'Learning (Goal 1)', startTime: '20:15', endTime: '21:00', category: 'goal1' },
+                { id: 13, name: 'Reading & Wind Down', startTime: '21:00', endTime: '22:30', category: 'myself' }
+            ];
+
+            // Example Off Day Template
+            state.templates['Off Day'] = [
+                { id: 101, name: 'Sleep In', startTime: '23:00', endTime: '08:00', category: 'myself' },
+                { id: 102, name: 'Lazy Morning', startTime: '08:00', endTime: '09:30', category: 'myself' },
+                { id: 103, name: 'Brunch', startTime: '09:30', endTime: '10:30', category: 'family' },
+                { id: 104, name: 'Household Admin', startTime: '10:30', endTime: '12:00', category: 'admin' },
+                { id: 105, name: 'Side Project (Goal 2)', startTime: '12:00', endTime: '14:00', category: 'goal2' },
+                { id: 106, name: 'Outdoor Activity', startTime: '14:00', endTime: '17:00', category: 'family' },
+                { id: 107, name: 'Relax & Hobbies', startTime: '17:00', endTime: '19:00', category: 'myself' },
+                { id: 108, name: 'Dinner Out', startTime: '19:00', endTime: '21:00', category: 'family' },
+                { id: 109, name: 'Movie Night', startTime: '21:00', endTime: '23:00', category: 'family' }
+            ];
+
+            // Example Holiday Template
+            state.templates['Holiday'] = [
+                { id: 201, name: 'Sleep', startTime: '00:00', endTime: '09:00', category: 'myself' },
+                { id: 202, name: 'Breakfast', startTime: '09:00', endTime: '10:00', category: 'family' },
+                { id: 203, name: 'Exploration', startTime: '10:00', endTime: '13:00', category: 'family' },
+                { id: 204, name: 'Lunch', startTime: '13:00', endTime: '14:30', category: 'family' },
+                { id: 205, name: 'Adventure Activity', startTime: '14:30', endTime: '18:00', category: 'family' },
+                { id: 206, name: 'Rest & Freshen Up', startTime: '18:00', endTime: '19:30', category: 'myself' },
+                { id: 207, name: 'Nice Dinner', startTime: '19:30', endTime: '22:00', category: 'family' },
+                { id: 208, name: 'Evening Walk', startTime: '22:00', endTime: '23:00', category: 'myself' },
+                { id: 209, name: 'Sleep', startTime: '23:00', endTime: '24:00', category: 'myself' }
+            ];
+
+            // Initialize dayOverrides and load Geneva holidays
+            state.dayOverrides = {};
+            loadGenevaHolidays(2026); // Load 2026 holidays for new users
+
+            updateCategories();
+        }
+
+        function init() {
+            initExampleData();
+            renderDayTypeSelector();
+            renderClocks();
+            renderActivitiesList();
+            renderLegend();
+            renderSummaryStats();
+            renderWeeklyView();
+        }
+
+        function timeToMinutes(time) {
+            const [hours, minutes] = time.split(':').map(Number);
+            return hours * 60 + minutes;
+        }
+
+        function minutesToAngle(minutes, isPM = false) {
+            const adjustedMinutes = isPM ? minutes - 720 : minutes;
+            return (adjustedMinutes / 720) * 360;
+        }
+
+        function formatDuration(minutes) {
+            const hours = Math.floor(minutes / 60);
+            const mins = minutes % 60;
+            if (hours === 0) return `${mins}m`;
+            if (mins === 0) return `${hours}h`;
+            return `${hours}h ${mins}m`;
+        }
+
+        function getActivityColor(activity, index) {
+            if (state.currentView === 'categories') {
+                return getCategoryColor(activity.category);
+            }
+            // Use custom color if set, otherwise use category color
+            if (activity.color) {
+                return activity.color;
+            }
+            return getCategoryColor(activity.category);
+        }
+
+        function createArcPath(startAngle, endAngle, innerRadius, outerRadius, cx, cy) {
+            const startAngleRad = (startAngle - 90) * Math.PI / 180;
+            const endAngleRad = (endAngle - 90) * Math.PI / 180;
+            const x1 = cx + outerRadius * Math.cos(startAngleRad);
+            const y1 = cy + outerRadius * Math.sin(startAngleRad);
+            const x2 = cx + outerRadius * Math.cos(endAngleRad);
+            const y2 = cy + outerRadius * Math.sin(endAngleRad);
+            const x3 = cx + innerRadius * Math.cos(endAngleRad);
+            const y3 = cy + innerRadius * Math.sin(endAngleRad);
+            const x4 = cx + innerRadius * Math.cos(startAngleRad);
+            const y4 = cy + innerRadius * Math.sin(startAngleRad);
+            const largeArc = endAngle - startAngle > 180 ? 1 : 0;
+            return `M ${x1} ${y1} A ${outerRadius} ${outerRadius} 0 ${largeArc} 1 ${x2} ${y2} L ${x3} ${y3} A ${innerRadius} ${innerRadius} 0 ${largeArc} 0 ${x4} ${y4} Z`;
+        }
+
+        function setMainView(view) {
+            state.currentMainView = view;
+            // Cancel any editing in progress
+            if (editingActivityId) cancelEdit();
+            document.querySelectorAll('.main-view-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.mainview === view);
+            });
+            document.getElementById('dailyView').classList.toggle('active', view === 'daily');
+            document.getElementById('weeklyView').classList.toggle('active', view === 'weekly');
+            document.getElementById('yearView').classList.toggle('active', view === 'year');
+            if (view === 'weekly') renderWeeklyView();
+            if (view === 'year') renderYearView();
+        }
+
+        function renderClocks() {
+            renderClock('clockAM', false);
+            renderClock('clockPM', true);
+        }
+
+        function isOvernightActivity(activity) {
+            const startMin = timeToMinutes(activity.startTime);
+            const endMin = timeToMinutes(activity.endTime);
+            return endMin < startMin || (endMin === startMin && activity.startTime !== activity.endTime);
+        }
+
+        function getActivitySegments(activity, isPM) {
+            const startMin = timeToMinutes(activity.startTime);
+            const endMin = timeToMinutes(activity.endTime);
+            const isOvernight = isOvernightActivity(activity);
+            const segments = [];
+            
+            if (isOvernight) {
+                if (isPM) {
+                    if (startMin >= 720) segments.push({ start: startMin, end: 1440 });
+                } else {
+                    if (endMin <= 720 && endMin > 0) segments.push({ start: 0, end: endMin });
+                    if (startMin < 720) segments.push({ start: startMin, end: 720 });
+                }
+            } else {
+                if (isPM) {
+                    if (startMin < 1440 && endMin > 720) {
+                        segments.push({ start: Math.max(startMin, 720), end: Math.min(endMin, 1440) });
+                    }
+                } else {
+                    if (startMin < 720 && endMin > 0) {
+                        segments.push({ start: Math.max(startMin, 0), end: Math.min(endMin, 720) });
+                    }
+                }
+            }
+            return segments.filter(s => s.start < s.end);
+        }
+
+        function renderClock(containerId, isPM) {
+            const container = document.getElementById(containerId);
+            const size = 320, cx = size / 2, cy = size / 2, outerRadius = 120, innerRadius = 45;
+            let svg = `<svg viewBox="0 0 ${size} ${size}">`;
+            
+            // 1. Draw clock face background
+            svg += `<circle cx="${cx}" cy="${cy}" r="${outerRadius}" class="clock-face"/>`;
+            
+            // 2. Draw activity arcs FIRST (so they're behind everything else)
+            // Get activities from weekday-specific template if editing, otherwise from base template
+            let activities;
+            if (editingWeekday && state.weekdayTemplates[editingWeekday]?.custom) {
+                activities = state.weekdayTemplates[editingWeekday].custom;
+            } else {
+                activities = state.templates[state.currentDayType] || [];
+            }
+            if (state.currentView === 'categories') {
+                const categorySegments = {};
+                activities.forEach(activity => {
+                    getActivitySegments(activity, isPM).forEach(segment => {
+                        if (!categorySegments[activity.category]) categorySegments[activity.category] = [];
+                        categorySegments[activity.category].push({ ...segment, activity });
+                    });
+                });
+                Object.entries(categorySegments).forEach(([cat, segments]) => {
+                    segments.forEach(({ start, end, activity }) => {
+                        const path = createArcPath(minutesToAngle(start, isPM), minutesToAngle(end, isPM), innerRadius, outerRadius, cx, cy);
+                        svg += `<path d="${path}" fill="${getCategoryColor(cat)}" class="activity-arc" data-activity='${JSON.stringify(activity)}' onmouseenter="showTooltip(event)" onmouseleave="hideTooltip()" onmousemove="moveTooltip(event)"/>`;
+                    });
+                });
+            } else {
+                activities.forEach((activity, index) => {
+                    const color = getActivityColor(activity, index);
+                    getActivitySegments(activity, isPM).forEach(segment => {
+                        const path = createArcPath(minutesToAngle(segment.start, isPM), minutesToAngle(segment.end, isPM), innerRadius, outerRadius, cx, cy);
+                        svg += `<path d="${path}" fill="${color}" class="activity-arc" data-activity='${JSON.stringify(activity)}' onmouseenter="showTooltip(event)" onmouseleave="hideTooltip()" onmousemove="moveTooltip(event)"/>`;
+                    });
+                });
+            }
+            
+            // 3. Draw center circle (on top of arcs)
+            svg += `<circle cx="${cx}" cy="${cy}" r="${innerRadius}" class="clock-center"/>`;
+
+            // 4. Draw hour markers and labels ON TOP of everything
+            for (let i = 0; i < 12; i++) {
+                const angle = (i * 30 - 90) * Math.PI / 180;
+                const isMajor = i % 3 === 0; // 0, 3, 6, 9 positions
+                
+                // Draw tick marks from edge inward
+                const markerOuter = outerRadius;
+                const markerInner = outerRadius - (isMajor ? 10 : 6);
+                const x1 = cx + markerOuter * Math.cos(angle);
+                const y1 = cy + markerOuter * Math.sin(angle);
+                const x2 = cx + markerInner * Math.cos(angle);
+                const y2 = cy + markerInner * Math.sin(angle);
+                svg += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${isMajor ? '#8d6e63' : '#d4a574'}" stroke-width="${isMajor ? 3 : 2}"/>`;
+                
+                // Only show labels for major hours - positioned OUTSIDE the clock
+                if (isMajor) {
+                    const labelRadius = outerRadius + 20;
+                    const lx = cx + labelRadius * Math.cos(angle);
+                    const ly = cy + labelRadius * Math.sin(angle);
+                    const hour = isPM ? i + 12 : i;
+                    svg += `<text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle" style="font-size: 15px; font-weight: 600; fill: #4a3728;">${hour}</text>`;
+                }
+            }
+
+            svg += '</svg>';
+            container.innerHTML = svg;
+        }
+
+        function renderWeeklyView() {
+            const grid = document.getElementById('weeklyGrid');
+            let html = '<div class="time-column"><div class="time-column-header">Time</div>';
+            for (let h = 0; h < 24; h++) html += `<div class="time-slot">${h.toString().padStart(2, '0')}:00</div>`;
+            html += '</div>';
+
+            weekDays.forEach((day, dayIndex) => {
+                const isWeekend = dayIndex >= 5;
+                const dayType = getWeekdayBaseType(day);
+                const hasCustom = state.weekdayTemplates?.[day]?.custom !== null;
+                const activities = hasCustom ? state.weekdayTemplates[day].custom : (state.templates[dayType] || []);
+
+                html += `<div class="day-column ${isWeekend ? 'weekend' : ''}">`;
+                html += `<div class="day-column-header"><div class="day-name">${day}${hasCustom ? '<span class="weekly-edit-custom-badge">Custom</span>' : ''}</div>`;
+                html += `<select class="day-type-select" onchange="setWeekDayType('${day}', this.value)">`;
+                state.dayTypes.forEach(type => html += `<option value="${type}" ${type === dayType ? 'selected' : ''}>${type}</option>`);
+                html += '</select></div><div class="day-slots">';
+
+                for (let h = 0; h < 24; h++) {
+                    html += `<div class="hour-line" style="top: ${h * 40}px;"></div>`;
+                    html += `<div class="half-hour-line" style="top: ${h * 40 + 20}px;"></div>`;
+                }
+
+                activities.forEach(activity => {
+                    getWeeklyActivitySegments(activity).forEach(segment => {
+                        const top = (segment.start / 60) * 40;
+                        const height = Math.max(((segment.end - segment.start) / 60) * 40, 20);
+                        const customClass = hasCustom ? ' has-custom' : '';
+                        html += `<div class="weekly-activity clickable${customClass}" style="top: ${top}px; height: ${height}px; background: ${getCategoryColor(activity.category)};" data-activity='${JSON.stringify(activity)}' data-day="${day}" data-daytype="${dayType}" onclick="openWeeklyEditModal(event)" onmouseenter="showWeeklyTooltip(event)" onmouseleave="hideTooltip()" onmousemove="moveTooltip(event)">`;
+                        html += `<div class="weekly-activity-name">${activity.name}</div>`;
+                        if (height > 25) html += `<div class="weekly-activity-time">${activity.startTime} - ${activity.endTime}</div>`;
+                        html += '</div>';
+                    });
+                });
+                html += '</div></div>';
+            });
+
+            grid.innerHTML = html;
+            renderWeeklyLegend();
+            renderWeeklyStats();
+        }
+
+        function getWeeklyActivitySegments(activity) {
+            const startMin = timeToMinutes(activity.startTime);
+            const endMin = timeToMinutes(activity.endTime);
+            if (isOvernightActivity(activity)) {
+                const segments = [{ start: startMin, end: 1440 }];
+                if (endMin > 0) segments.push({ start: 0, end: endMin });
+                return segments;
+            }
+            return [{ start: startMin, end: endMin }];
+        }
+
+        function setWeekDayType(day, dayType) {
+            setWeekdayBaseType(day, dayType);
+            renderWeeklyView();
+            saveToStorage();
+        }
+
+        function renderWeeklyLegend() {
+            document.getElementById('weeklyLegend').innerHTML = Object.entries(categories).map(([key, value]) =>
+                `<div class="legend-item"><div class="legend-color" style="background: ${value.color}"></div><span>${value.label}</span></div>`
+            ).join('');
+        }
+
+        function renderWeeklyStats() {
+            const weeklyTotals = {};
+            Object.keys(categories).forEach(cat => weeklyTotals[cat] = 0);
+
+            weekDays.forEach(day => {
+                const activities = state.templates[getWeekdayBaseType(day)] || [];
+                activities.forEach(activity => {
+                    let duration = timeToMinutes(activity.endTime) - timeToMinutes(activity.startTime);
+                    if (duration < 0) duration += 1440;
+                    weeklyTotals[activity.category] += duration;
+                });
+            });
+
+            const totalWeekly = Object.values(weeklyTotals).reduce((a, b) => a + b, 0);
+            const totalWeekHours = 7 * 24 * 60;
+
+            document.getElementById('weeklyStats').innerHTML = `
+                <div class="weekly-stat-item"><div class="weekly-stat-value">${formatDuration(totalWeekly)}</div><div class="weekly-stat-label">Total Planned</div></div>
+                <div class="weekly-stat-item"><div class="weekly-stat-value">${formatDuration(totalWeekHours - totalWeekly)}</div><div class="weekly-stat-label">Unplanned</div></div>
+                ${Object.entries(categories).filter(([key]) => weeklyTotals[key] > 0).map(([key, value]) =>
+                    `<div class="weekly-stat-item"><div class="weekly-stat-value" style="color: ${value.color}">${formatDuration(weeklyTotals[key])}</div><div class="weekly-stat-label">${value.label}</div></div>`
+                ).join('')}
+            `;
+        }
+
+        // ==================== YEAR VIEW FUNCTIONS ====================
+        let currentYear = new Date().getFullYear();
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                           'July', 'August', 'September', 'October', 'November', 'December'];
+        const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+        function changeYear(delta) {
+            currentYear += delta;
+            // Load Geneva holidays for the new year
+            loadGenevaHolidays(currentYear);
+            saveToStorage();
+            renderYearView();
+        }
+
+        function getDaysInMonth(year, month) {
+            return new Date(year, month + 1, 0).getDate();
+        }
+
+        function getFirstDayOfMonth(year, month) {
+            // Returns 0-6 where 0 = Monday (to match our Mon-Sun layout)
+            const day = new Date(year, month, 1).getDay();
+            return day === 0 ? 6 : day - 1;
+        }
+
+        function getDateString(year, month, day) {
+            return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        }
+
+        function getDayType(year, month, day) {
+            // Check for override first
+            const dateString = getDateString(year, month, day);
+            if (state.dayOverrides && state.dayOverrides[dateString]) {
+                return state.dayOverrides[dateString];
+            }
+            // Fall back to week pattern using V3 weekdayTemplates
+            const date = new Date(year, month, day);
+            const dayOfWeek = date.getDay();
+            const dayName = weekDays[dayOfWeek === 0 ? 6 : dayOfWeek - 1];
+            return getWeekdayBaseType(dayName);
+        }
+
+        function isWeekend(year, month, day) {
+            const date = new Date(year, month, day);
+            const dayOfWeek = date.getDay();
+            return dayOfWeek === 0 || dayOfWeek === 6;
+        }
+
+        function isToday(year, month, day) {
+            const today = new Date();
+            return today.getFullYear() === year &&
+                   today.getMonth() === month &&
+                   today.getDate() === day;
+        }
+
+        function calculateYearStats(year) {
+            let workDays = 0;
+            let publicHolidays = 0;
+            let daysOffTaken = 0; // Vacation + Sick
+            let weekends = 0;
+            const monthlyStats = [];
+
+            for (let month = 0; month < 12; month++) {
+                const daysInMonth = getDaysInMonth(year, month);
+                let monthWork = 0;
+                let monthOff = 0;
+
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dayType = getDayType(year, month, day);
+                    const weekend = isWeekend(year, month, day);
+
+                    // Count by category
+                    if (dayType === 'Public Holiday') {
+                        publicHolidays++;
+                        monthOff++;
+                    } else if (dayType === 'Vacation' || dayType === 'Sick Day') {
+                        daysOffTaken++;
+                        monthOff++;
+                    } else if (dayType === 'Weekend' || weekend) {
+                        weekends++;
+                        monthOff++;
+                    } else if (dayType === 'Off Day') {
+                        monthOff++;
+                    } else {
+                        // Work Day, Remote Day, etc.
+                        workDays++;
+                        monthWork++;
+                    }
+                }
+
+                monthlyStats.push({
+                    work: monthWork,
+                    off: monthOff,
+                    total: daysInMonth
+                });
+            }
+
+            const totalDays = 365 + (isLeapYear(year) ? 1 : 0);
+            return {
+                workDays,
+                publicHolidays,
+                daysOffTaken,
+                weekends,
+                totalDays,
+                monthlyStats
+            };
+        }
+
+        function isLeapYear(year) {
+            return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+        }
+
+        function renderYearView() {
+            document.getElementById('yearTitle').textContent = currentYear;
+            const stats = calculateYearStats(currentYear);
+
+            // Render year stats summary with detailed KPIs
+            document.getElementById('yearStatsSummary').innerHTML = `
+                <div class="year-stat-box">
+                    <div class="year-stat-value work-days">${stats.workDays}</div>
+                    <div class="year-stat-label">Work Days</div>
+                </div>
+                <div class="year-stat-box">
+                    <div class="year-stat-value holiday">${stats.publicHolidays}</div>
+                    <div class="year-stat-label">Public Holidays</div>
+                </div>
+                <div class="year-stat-box">
+                    <div class="year-stat-value vacation">${stats.daysOffTaken}</div>
+                    <div class="year-stat-label">Days Off Taken</div>
+                </div>
+                <div class="year-stat-box">
+                    <div class="year-stat-value weekend">${stats.weekends}</div>
+                    <div class="year-stat-label">Weekends</div>
+                </div>
+                <div class="year-stat-box">
+                    <div class="year-stat-value">${stats.totalDays}</div>
+                    <div class="year-stat-label">Total Days</div>
+                </div>
+            `;
+
+            // Render calendar months
+            let calendarHtml = '';
+            for (let month = 0; month < 12; month++) {
+                const monthStat = stats.monthlyStats[month];
+                calendarHtml += renderMonthCard(currentYear, month, monthStat);
+            }
+            document.getElementById('yearCalendar').innerHTML = calendarHtml;
+
+            // Render legend (all available day types)
+            document.getElementById('yearLegend').innerHTML = `
+                <div class="year-legend-item">
+                    <div class="year-legend-color work-day"></div>
+                    <span>Work Day</span>
+                </div>
+                <div class="year-legend-item">
+                    <div class="year-legend-color weekend"></div>
+                    <span>Weekend</span>
+                </div>
+                <div class="year-legend-item">
+                    <div class="year-legend-color vacation"></div>
+                    <span>Vacation</span>
+                </div>
+                <div class="year-legend-item">
+                    <div class="year-legend-color holiday"></div>
+                    <span>Public Holiday</span>
+                </div>
+                <div class="year-legend-item">
+                    <div class="year-legend-color sick"></div>
+                    <span>Sick Day</span>
+                </div>
+                <div class="year-legend-item">
+                    <div class="year-legend-color off-day"></div>
+                    <span>Off Day</span>
+                </div>
+            `;
+        }
+
+        function renderMonthCard(year, month, stats) {
+            const daysInMonth = getDaysInMonth(year, month);
+            const firstDay = getFirstDayOfMonth(year, month);
+
+            let html = `<div class="month-card">`;
+            html += `<div class="month-header">`;
+            html += `<span class="month-name">${monthNames[month]}</span>`;
+            html += `<span class="month-stats"><span class="work-count">${stats.work} work</span> / <span class="off-count">${stats.off} off</span></span>`;
+            html += `</div>`;
+
+            html += `<div class="month-grid">`;
+
+            // Day headers
+            dayNames.forEach((name, index) => {
+                const isWeekendHeader = index >= 5;
+                html += `<div class="day-header ${isWeekendHeader ? 'weekend' : ''}">${name}</div>`;
+            });
+
+            // Empty cells before first day
+            for (let i = 0; i < firstDay; i++) {
+                html += `<div class="day-cell empty"></div>`;
+            }
+
+            // Day cells
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayType = getDayType(year, month, day);
+                const weekend = isWeekend(year, month, day);
+                const today = isToday(year, month, day);
+                const dateString = getDateString(year, month, day);
+                const hasOverride = state.dayOverrides && state.dayOverrides[dateString];
+
+                // Determine CSS class based on day type
+                let dayClass = 'day-cell';
+                let displayType = '';
+
+                if (hasOverride) {
+                    // Use override type directly
+                    dayClass += ` ${yearDayTypes[dayType]?.class || 'work-day'}`;
+                    displayType = yearDayTypes[dayType]?.label || dayType;
+                } else if (weekend) {
+                    dayClass += ' weekend';
+                    displayType = 'Weekend';
+                } else if (dayType === 'Holiday') {
+                    dayClass += ' holiday';
+                    displayType = 'Public Holiday';
+                } else if (dayType === 'Off Day') {
+                    dayClass += ' off-day';
+                    displayType = 'Off Day';
+                } else {
+                    dayClass += ' work-day';
+                    displayType = dayType; // Work Day, Remote Day, etc.
+                }
+                if (today) dayClass += ' today';
+
+                html += `<div class="${dayClass}" onclick="openDaySelector('${dateString}')" title="${monthNames[month]} ${day}, ${year} - ${displayType}">${day}</div>`;
+            }
+
+            html += `</div></div>`;
+            return html;
+        }
+
+        // Day Selector Functions
+        let selectedDayDate = null;
+
+        function openDaySelector(dateString) {
+            selectedDayDate = dateString;
+            const [year, month, day] = dateString.split('-').map(Number);
+            const date = new Date(year, month - 1, day);
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('daySelectorDate').textContent = date.toLocaleDateString('en-US', options);
+
+            // Get current type for this day
+            const currentType = getDayType(year, month - 1, day);
+            const currentTypeKey = Object.keys(yearDayTypes).find(key =>
+                yearDayTypes[key].label === currentType
+            ) || 'work';
+
+            // Build options HTML
+            let optionsHtml = '';
+            for (const [key, typeInfo] of Object.entries(yearDayTypes)) {
+                const isSelected = key === currentTypeKey;
+                optionsHtml += `
+                    <div class="day-type-option ${isSelected ? 'selected' : ''}"
+                         onclick="setDayOverride('${dateString}', '${key}')"
+                         style="background: ${typeInfo.color}">
+                        <span class="day-type-label">${typeInfo.label}</span>
+                        ${isSelected ? '<span class="day-type-check">&#10003;</span>' : ''}
+                    </div>
+                `;
+            }
+            document.getElementById('daySelectorOptions').innerHTML = optionsHtml;
+
+            // Show overlay
+            document.getElementById('daySelectorOverlay').classList.add('active');
+        }
+
+        function closeDaySelector(event) {
+            if (event && event.target !== event.currentTarget) return;
+            document.getElementById('daySelectorOverlay').classList.remove('active');
+            selectedDayDate = null;
+        }
+
+        function setDayOverride(dateString, typeKey) {
+            const typeInfo = yearDayTypes[typeKey];
+            if (!typeInfo) return;
+
+            // Set the override
+            if (!state.dayOverrides) state.dayOverrides = {};
+            state.dayOverrides[dateString] = typeInfo.label;
+
+            // Save and re-render
+            saveToStorage();
+            renderYearView();
+            closeDaySelector();
+        }
+
+        function clearDayOverride() {
+            if (!selectedDayDate) return;
+
+            // Remove the override
+            if (state.dayOverrides && state.dayOverrides[selectedDayDate]) {
+                delete state.dayOverrides[selectedDayDate];
+            }
+
+            // Save and re-render
+            saveToStorage();
+            renderYearView();
+            closeDaySelector();
+        }
+
+        // ==================== WEEKLY EDIT MODAL ====================
+        let weeklyEditContext = null;  // { activity, day, dayType }
+
+        function openWeeklyEditModal(event) {
+            event.stopPropagation();
+            const el = event.target.closest('.weekly-activity');
+            if (!el) return;
+
+            const activity = JSON.parse(el.dataset.activity);
+            const day = el.dataset.day;
+            const dayType = el.dataset.daytype;
+            const hasCustom = state.weekdayTemplates?.[day]?.custom !== null;
+
+            // Store context for editing
+            weeklyEditContext = { activity, day, dayType };
+
+            // Update modal content
+            document.getElementById('weeklyEditActivityName').textContent = activity.name;
+            document.getElementById('weeklyEditActivityTime').textContent = `${activity.startTime} - ${activity.endTime}`;
+
+            const badge = document.getElementById('weeklyEditActivityBadge');
+            badge.textContent = categoryLabels[activity.category] || activity.category;
+            badge.style.background = getCategoryColor(activity.category) + '20';
+            badge.style.color = getCategoryColor(activity.category);
+
+            // Update option titles
+            document.getElementById('weeklyEditWeekdayTitle').textContent = `Edit for all ${day}s`;
+            document.getElementById('weeklyEditTemplateTitle').textContent = `Edit ${dayType} template`;
+
+            // Show custom info if applicable
+            const customInfo = document.getElementById('weeklyEditCustomInfo');
+            if (hasCustom) {
+                customInfo.style.display = 'block';
+                document.getElementById('weeklyEditCustomInfoText').textContent =
+                    `${day} has custom activities that differ from the base ${dayType} template.`;
+            } else {
+                customInfo.style.display = 'none';
+            }
+
+            // Show overlay
+            document.getElementById('weeklyEditOverlay').classList.add('active');
+        }
+
+        function closeWeeklyEditModal(event) {
+            if (event && event.target !== event.currentTarget) return;
+            document.getElementById('weeklyEditOverlay').classList.remove('active');
+            weeklyEditContext = null;
+        }
+
+        function editForWeekday() {
+            if (!weeklyEditContext) return;
+            const { activity, day, dayType } = weeklyEditContext;
+
+            // If no custom template for this weekday yet, create one by copying base template
+            if (!state.weekdayTemplates[day].custom) {
+                state.weekdayTemplates[day].custom = JSON.parse(JSON.stringify(state.templates[dayType] || []));
+            }
+
+            // Set editing mode
+            state.currentDayType = dayType;
+            editingWeekday = day;
+            closeWeeklyEditModal();
+            setMainView('daily');
+
+            // Alt1: Show timeline view instead of form
+            document.querySelector('.side-panel').classList.add('weekday-editing');
+            document.getElementById('timelinePanel').classList.add('active');
+            document.getElementById('timelineTitle').textContent = `${day} Schedule`;
+
+            // Render views with weekday-specific data
+            renderDayTypeSelector();
+            renderClocks();
+            renderCompactTimeline();
+            renderSummaryStats();
+            renderLegend();
+
+            saveToStorage();
+            renderWeeklyView();
+        }
+
+        // Alt1: Render compact timeline
+        function renderCompactTimeline() {
+            if (!editingWeekday) return;
+
+            const activities = state.weekdayTemplates[editingWeekday]?.custom || [];
+            const container = document.getElementById('compactTimeline');
+
+            // Create hour rows from 0 to 23
+            let html = '';
+            for (let hour = 0; hour < 24; hour++) {
+                const hourStr = hour.toString().padStart(2, '0') + ':00';
+                const activitiesInHour = getActivitiesStartingInHour(activities, hour);
+
+                html += `
+                    <div class="timeline-hour-row" data-hour="${hour}">
+                        <div class="timeline-time-label">${hourStr}</div>
+                        <div class="timeline-hour-content" onclick="openTimelineAddModal(${hour})">
+                            ${activitiesInHour.length > 0 ?
+                                activitiesInHour.map(a => renderTimelineActivityBlock(a)).join('') :
+                                '<div class="timeline-empty-slot">+ Click to add</div>'
+                            }
+                        </div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+        }
+
+        function getActivitiesStartingInHour(activities, hour) {
+            return activities.filter(a => {
+                const startHour = parseInt(a.startTime.split(':')[0]);
+                return startHour === hour;
+            });
+        }
+
+        function renderTimelineActivityBlock(activity) {
+            const color = getCategoryColor(activity.category);
+            const duration = getActivityDuration(activity);
+            return `
+                <div class="timeline-activity-block" style="background: ${color};" onclick="event.stopPropagation(); editTimelineActivity(${activity.id})">
+                    <div class="timeline-activity-info">
+                        <div class="timeline-activity-name">${activity.name}</div>
+                        <div class="timeline-activity-time">${activity.startTime} - ${activity.endTime} (${duration})</div>
+                    </div>
+                    <div class="timeline-activity-actions">
+                        <button class="timeline-action-btn delete" onclick="event.stopPropagation(); deleteTimelineActivity(${activity.id})" title="Delete">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M18 6L6 18M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Timeline modal functions
+        let timelineEditingId = null;
+        let timelineDefaultHour = null;
+
+        function openTimelineAddModal(hour = null) {
+            timelineEditingId = null;
+            timelineDefaultHour = hour;
+            document.getElementById('timelineAddForm').reset();
+            document.getElementById('tlSubmitBtn').textContent = 'Add Activity';
+            document.querySelector('#timelineAddModal h3').textContent = 'Add Activity';
+
+            if (hour !== null) {
+                document.getElementById('tlStartTime').value = hour.toString().padStart(2, '0') + ':00';
+                document.getElementById('tlEndTime').value = (hour + 1).toString().padStart(2, '0') + ':00';
+            }
+
+            document.getElementById('timelineAddModal').classList.add('active');
+        }
+
+        function closeTimelineAddModal(event) {
+            if (event && event.target !== event.currentTarget) return;
+            document.getElementById('timelineAddModal').classList.remove('active');
+            timelineEditingId = null;
+            timelineDefaultHour = null;
+        }
+
+        function editTimelineActivity(id) {
+            if (!editingWeekday) return;
+            const activities = state.weekdayTemplates[editingWeekday]?.custom || [];
+            const activity = activities.find(a => a.id === id);
+            if (!activity) return;
+
+            timelineEditingId = id;
+            document.getElementById('tlActivityName').value = activity.name;
+            document.getElementById('tlCategory').value = activity.category;
+            document.getElementById('tlStartTime').value = activity.startTime;
+            document.getElementById('tlEndTime').value = activity.endTime;
+            document.getElementById('tlSubmitBtn').textContent = 'Update Activity';
+            document.querySelector('#timelineAddModal h3').textContent = 'Edit Activity';
+
+            document.getElementById('timelineAddModal').classList.add('active');
+        }
+
+        function submitTimelineActivity(event) {
+            event.preventDefault();
+            if (!editingWeekday) return;
+
+            const name = document.getElementById('tlActivityName').value;
+            const category = document.getElementById('tlCategory').value;
+            const startTime = document.getElementById('tlStartTime').value;
+            const endTime = document.getElementById('tlEndTime').value;
+
+            const activities = state.weekdayTemplates[editingWeekday].custom;
+
+            if (timelineEditingId) {
+                // Update existing
+                const idx = activities.findIndex(a => a.id === timelineEditingId);
+                if (idx !== -1) {
+                    activities[idx] = { ...activities[idx], name, category, startTime, endTime };
+                }
+            } else {
+                // Add new
+                activities.push({
+                    id: Date.now(),
+                    name,
+                    category,
+                    startTime,
+                    endTime,
+                    color: null
+                });
+            }
+
+            activities.sort((a, b) => timeToMinutes(a.startTime) - timeToMinutes(b.startTime));
+            closeTimelineAddModal();
+            renderCompactTimeline();
+            renderClocks();
+            renderSummaryStats();
+            renderLegend();
+            renderWeeklyView();
+            saveToStorage();
+        }
+
+        function deleteTimelineActivity(id) {
+            if (!editingWeekday) return;
+            if (!confirm('Delete this activity?')) return;
+
+            state.weekdayTemplates[editingWeekday].custom =
+                state.weekdayTemplates[editingWeekday].custom.filter(a => a.id !== id);
+
+            renderCompactTimeline();
+            renderClocks();
+            renderSummaryStats();
+            renderLegend();
+            renderWeeklyView();
+            saveToStorage();
+        }
+
+        function editBaseTemplate() {
+            if (!weeklyEditContext) return;
+            const { activity, dayType } = weeklyEditContext;
+
+            // Switch to daily view with base template
+            state.currentDayType = dayType;
+            closeWeeklyEditModal();
+            setMainView('daily');
+
+            // Find activity in base template
+            const templateActivities = state.templates[dayType] || [];
+            const activityToEdit = templateActivities.find(a => a.id === activity.id);
+
+            if (activityToEdit) {
+                // Populate form with activity data
+                document.getElementById('activityName').value = activityToEdit.name;
+                document.getElementById('startTime').value = activityToEdit.startTime;
+                document.getElementById('endTime').value = activityToEdit.endTime;
+                document.getElementById('category').value = activityToEdit.category;
+                document.getElementById('activityColor').value = activityToEdit.color || getCategoryColor(activityToEdit.category);
+
+                // Set editing mode - base template editing
+                editingActivityId = activityToEdit.id;
+                editingWeekday = null;  // Not editing a specific weekday
+                document.querySelector('.btn-primary').innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Update Template`;
+            }
+
+            renderDayTypeSelector();
+            renderClocks();
+            renderActivitiesList();
+            renderLegend();
+            renderSummaryStats();
+        }
+
+        // Variable to track weekday-specific editing
+        let editingWeekday = null;
+
+        function showWeeklyTooltip(event) {
+            const el = event.target.closest('.weekly-activity');
+            const activity = JSON.parse(el.dataset.activity);
+            const day = el.dataset.day;
+            let duration = timeToMinutes(activity.endTime) - timeToMinutes(activity.startTime);
+            if (duration < 0) duration += 1440;
+            document.getElementById('tooltip').innerHTML = `
+                <div class="tooltip-name">${activity.name}</div>
+                <div class="tooltip-time">${activity.startTime} - ${activity.endTime} (${formatDuration(duration)})</div>
+                <span class="tooltip-category" style="background: ${getCategoryColor(activity.category)}20; color: ${getCategoryColor(activity.category)}">${categoryLabels[activity.category]}</span>
+                <div class="tooltip-day">${day} • ${getWeekdayBaseType(day)}</div>
+            `;
+            document.getElementById('tooltip').style.display = 'block';
+            moveTooltip(event);
+        }
+
+        function showTooltip(event) {
+            const activity = JSON.parse(event.target.dataset.activity);
+            let duration = timeToMinutes(activity.endTime) - timeToMinutes(activity.startTime);
+            if (duration < 0) duration += 1440;
+            document.getElementById('tooltip').innerHTML = `
+                <div class="tooltip-name">${activity.name}</div>
+                <div class="tooltip-time">${activity.startTime} - ${activity.endTime} (${formatDuration(duration)})</div>
+                <span class="tooltip-category" style="background: ${getCategoryColor(activity.category)}20; color: ${getCategoryColor(activity.category)}">${categoryLabels[activity.category]}</span>
+            `;
+            document.getElementById('tooltip').style.display = 'block';
+            moveTooltip(event);
+        }
+
+        function moveTooltip(event) {
+            const tooltip = document.getElementById('tooltip');
+            tooltip.style.left = event.pageX + 15 + 'px';
+            tooltip.style.top = event.pageY + 15 + 'px';
+        }
+
+        function hideTooltip() { document.getElementById('tooltip').style.display = 'none'; }
+
+        function renderDayTypeSelector() {
+            // Show weekday-specific editing indicator or normal day type selector
+            if (editingWeekday) {
+                document.getElementById('dayTypeSelector').innerHTML = `
+                    <span class="weekday-edit-indicator">
+                        Editing: ${editingWeekday} (Custom)
+                        <button class="btn btn-sm weekday-back-btn" onclick="exitWeekdayEditing()">Back to Weekly</button>
+                    </span>
+                `;
+            } else {
+                document.getElementById('dayTypeSelector').innerHTML = state.dayTypes.map(type =>
+                    `<button class="day-type-btn ${type === state.currentDayType ? 'active' : ''}" onclick="selectDayType('${type}')">${type}</button>`
+                ).join('');
+            }
+        }
+
+        function exitWeekdayEditing() {
+            editingWeekday = null;
+            if (editingActivityId) cancelEdit();
+            // Alt1: Hide timeline panel
+            document.querySelector('.side-panel').classList.remove('weekday-editing');
+            document.getElementById('timelinePanel').classList.remove('active');
+            setMainView('weekly');
+            renderDayTypeSelector();
+        }
+
+        function selectDayType(type) {
+            state.currentDayType = type;
+            // Cancel any editing in progress
+            if (editingActivityId) cancelEdit();
+            editingWeekday = null; // Clear weekday editing when switching day types
+            // Alt1: Hide timeline panel
+            document.querySelector('.side-panel').classList.remove('weekday-editing');
+            document.getElementById('timelinePanel').classList.remove('active');
+            renderDayTypeSelector();
+            renderClocks();
+            renderActivitiesList();
+            renderSummaryStats();
+        }
+
+        function setView(view) {
+            state.currentView = view;
+            document.querySelectorAll('.view-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.view === view));
+            renderClocks();
+            renderLegend();
+        }
+
+        let editingActivityId = null;
+
+        function getActivityDuration(activity) {
+            let start = timeToMinutes(activity.startTime);
+            let end = timeToMinutes(activity.endTime);
+            if (end <= start) end += 1440;
+            const mins = end - start;
+            const h = Math.floor(mins / 60);
+            const m = mins % 60;
+            if (h === 0) return `${m}m`;
+            if (m === 0) return `${h}h`;
+            return `${h}h${m}m`;
+        }
+
+        function renderActivitiesList() {
+            // Get activities from weekday-specific template if editing, otherwise from base template
+            let activities;
+            if (editingWeekday && state.weekdayTemplates[editingWeekday]?.custom) {
+                activities = state.weekdayTemplates[editingWeekday].custom;
+            } else {
+                activities = state.templates[state.currentDayType] || [];
+            }
+            if (activities.length === 0) {
+                document.getElementById('activitiesList').innerHTML = `<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><p>No activities yet. Add your first one above!</p></div>`;
+                return;
+            }
+            document.getElementById('activitiesList').innerHTML = activities.map((activity, index) => `
+                <div class="activity-item ${editingActivityId === activity.id ? 'editing' : ''}" style="border-left-color: ${state.currentView === 'categories' ? getCategoryColor(activity.category) : getActivityColor(activity, index)}">
+                    <div class="activity-color" style="background: ${state.currentView === 'categories' ? getCategoryColor(activity.category) : getActivityColor(activity, index)}">${activity.startTime.split(':')[0]}</div>
+                    <div class="activity-info">
+                        <div class="activity-name">${activity.name}</div>
+                        <div class="activity-time">${activity.startTime} - ${activity.endTime} <span class="duration">${getActivityDuration(activity)}</span></div>
+                    </div>
+                    <div class="activity-actions">
+                        <button class="edit" onclick="editActivity(${activity.id})" title="Edit">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        </button>
+                        <button class="delete" onclick="deleteActivity(${activity.id})" title="Delete">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function editActivity(id) {
+            const activity = state.templates[state.currentDayType].find(a => a.id === id);
+            if (!activity) return;
+            
+            editingActivityId = id;
+            
+            // Populate form with activity data
+            document.getElementById('activityName').value = activity.name;
+            document.getElementById('startTime').value = activity.startTime;
+            document.getElementById('endTime').value = activity.endTime;
+            document.getElementById('category').value = activity.category;
+            
+            // Set color (custom or category default)
+            document.getElementById('activityColor').value = activity.color || getCategoryColor(activity.category);
+            
+            // Update button text and show cancel button
+            document.getElementById('submitBtn').innerHTML = `
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/>
+                    <path d="M17 21v-8H7v8M7 3v5h8"/>
+                </svg>
+                Update Activity
+            `;
+            document.getElementById('cancelEditBtn').style.display = 'block';
+            
+            // Highlight the editing item
+            renderActivitiesList();
+            
+            // Scroll form into view
+            document.getElementById('activityForm').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function cancelEdit() {
+            editingActivityId = null;
+            editingWeekday = null;
+            document.getElementById('activityForm').reset();
+            document.getElementById('activityColor').value = getCategoryColor('work');
+            document.getElementById('submitBtn').innerHTML = `
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 5v14M5 12h14"/>
+                </svg>
+                Add Activity
+            `;
+            document.getElementById('cancelEditBtn').style.display = 'none';
+            renderActivitiesList();
+        }
+
+        function addActivity(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('activityName').value;
+            const startTime = document.getElementById('startTime').value;
+            const endTime = document.getElementById('endTime').value;
+            const category = document.getElementById('category').value;
+            const selectedColor = document.getElementById('activityColor').value;
+            const categoryColor = getCategoryColor(category);
+            // Auto-detect: if color differs from category color, it's custom
+            const customColor = (selectedColor.toLowerCase() !== categoryColor.toLowerCase()) ? selectedColor : null;
+
+            // Determine target array based on whether we're editing weekday-specific or base template
+            let targetArray;
+            if (editingWeekday && state.weekdayTemplates[editingWeekday]?.custom) {
+                targetArray = state.weekdayTemplates[editingWeekday].custom;
+            } else {
+                if (!state.templates[state.currentDayType]) state.templates[state.currentDayType] = [];
+                targetArray = state.templates[state.currentDayType];
+            }
+
+            if (editingActivityId) {
+                // Update existing activity
+                const activityIndex = targetArray.findIndex(a => a.id === editingActivityId);
+                if (activityIndex !== -1) {
+                    targetArray[activityIndex] = {
+                        id: editingActivityId,
+                        name,
+                        startTime,
+                        endTime,
+                        category,
+                        color: customColor
+                    };
+                }
+
+                // Store if this was a weekday edit before clearing
+                const wasWeekdayEdit = editingWeekday !== null;
+
+                editingActivityId = null;
+                editingWeekday = null;  // Clear weekday editing flag
+                document.getElementById('submitBtn').innerHTML = `
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 5v14M5 12h14"/>
+                    </svg>
+                    Add Activity
+                `;
+                document.getElementById('cancelEditBtn').style.display = 'none';
+
+                // If this was a weekday edit, switch back to weekly view
+                if (wasWeekdayEdit) {
+                    targetArray.sort((a, b) => timeToMinutes(a.startTime) - timeToMinutes(b.startTime));
+                    document.getElementById('activityForm').reset();
+                    document.getElementById('activityColor').value = getCategoryColor('work');
+                    renderDayTypeSelector();
+                    setMainView('weekly');
+                    saveToStorage();
+                    return;
+                }
+            } else {
+                // Add new activity
+                targetArray.push({
+                    id: Date.now(),
+                    name,
+                    startTime,
+                    endTime,
+                    category,
+                    color: customColor
+                });
+            }
+
+            targetArray.sort((a, b) => timeToMinutes(a.startTime) - timeToMinutes(b.startTime));
+            document.getElementById('activityForm').reset();
+            document.getElementById('activityColor').value = getCategoryColor('work');
+            renderClocks(); renderActivitiesList(); renderSummaryStats(); renderLegend(); renderWeeklyView(); saveToStorage();
+        }
+
+        function deleteActivity(id) {
+            // Find and animate the item before removing
+            const items = document.querySelectorAll('.activity-item');
+            items.forEach(item => {
+                if (item.querySelector(`button[onclick="deleteActivity(${id})"]`)) {
+                    item.classList.add('deleting');
+                }
+            });
+
+            // Wait for animation then remove
+            setTimeout(() => {
+                // Determine target array based on whether we're editing weekday-specific or base template
+                if (editingWeekday && state.weekdayTemplates[editingWeekday]?.custom) {
+                    state.weekdayTemplates[editingWeekday].custom = state.weekdayTemplates[editingWeekday].custom.filter(a => a.id !== id);
+                } else {
+                    state.templates[state.currentDayType] = state.templates[state.currentDayType].filter(a => a.id !== id);
+                }
+                renderClocks(); renderActivitiesList(); renderSummaryStats(); renderLegend(); renderWeeklyView(); saveToStorage();
+            }, 250);
+        }
+
+
+        function renderLegend() {
+            if (state.currentView === 'categories') {
+                document.getElementById('legend').innerHTML = Object.entries(categories).map(([key, value]) =>
+                    `<div class="legend-item"><div class="legend-color" style="background: ${value.color}"></div><span>${value.label}</span></div>`
+                ).join('');
+            } else {
+                // Get activities from weekday-specific template if editing, otherwise from base template
+                let activities;
+                if (editingWeekday && state.weekdayTemplates[editingWeekday]?.custom) {
+                    activities = state.weekdayTemplates[editingWeekday].custom;
+                } else {
+                    activities = state.templates[state.currentDayType] || [];
+                }
+                document.getElementById('legend').innerHTML = activities.map((activity, index) =>
+                    `<div class="legend-item"><div class="legend-color" style="background: ${getActivityColor(activity, index)}"></div><span>${activity.name}</span></div>`
+                ).join('');
+            }
+        }
+
+        function renderSummaryStats() {
+            // Get activities from weekday-specific template if editing, otherwise from base template
+            let activities;
+            if (editingWeekday && state.weekdayTemplates[editingWeekday]?.custom) {
+                activities = state.weekdayTemplates[editingWeekday].custom;
+            } else {
+                activities = state.templates[state.currentDayType] || [];
+            }
+            const categoryMinutes = {};
+            Object.keys(categories).forEach(cat => categoryMinutes[cat] = 0);
+            activities.forEach(activity => {
+                let duration = timeToMinutes(activity.endTime) - timeToMinutes(activity.startTime);
+                if (duration < 0) duration += 1440;
+                categoryMinutes[activity.category] += duration;
+            });
+            const totalPlanned = Object.values(categoryMinutes).reduce((a, b) => a + b, 0);
+            document.getElementById('summaryStats').innerHTML = `
+                <div class="stat-item"><div class="stat-value">${formatDuration(totalPlanned)}</div><div class="stat-label">Planned</div></div>
+                <div class="stat-item"><div class="stat-value">${formatDuration(Math.max(0, 1440 - totalPlanned))}</div><div class="stat-label">Unplanned</div></div>
+                ${Object.entries(categories).filter(([key]) => categoryMinutes[key] > 0).map(([key, value]) =>
+                    `<div class="stat-item"><div class="stat-value" style="color: ${value.color}">${formatDuration(categoryMinutes[key])}</div><div class="stat-label">${value.label}</div></div>`
+                ).join('')}
+            `;
+        }
+
+        function openDayTypeModal() { document.getElementById('dayTypeModal').classList.add('active'); renderDayTypeList(); }
+        function closeDayTypeModal() { document.getElementById('dayTypeModal').classList.remove('active'); }
+
+        function openCategoryColorsModal() { 
+            document.getElementById('categoryColorsModal').classList.add('active'); 
+            renderCategoryColorsList(); 
+        }
+        function closeCategoryColorsModal() { 
+            document.getElementById('categoryColorsModal').classList.remove('active'); 
+        }
+
+        function renderCategoryColorsList() {
+            const container = document.getElementById('categoryColorsList');
+            container.innerHTML = Object.keys(categoryLabels).map(key => `
+                <div class="category-color-item">
+                    <input type="color" value="${getCategoryColor(key)}" onchange="updateCategoryColor('${key}', this.value)">
+                    <span>${categoryLabels[key]}</span>
+                </div>
+            `).join('');
+        }
+
+        function updateCategoryColor(category, color) {
+            state.categoryColors[category] = color;
+            updateCategories();
+            saveToStorage();
+            renderClocks();
+            renderActivitiesList();
+            renderLegend();
+            renderSummaryStats();
+            if (state.currentMainView === 'weekly') renderWeeklyView();
+        }
+
+        function resetCategoryColors() {
+            state.categoryColors = { ...defaultCategoryColors };
+            updateCategories();
+            renderCategoryColorsList();
+            saveToStorage();
+            renderClocks();
+            renderActivitiesList();
+            renderLegend();
+            renderSummaryStats();
+            if (state.currentMainView === 'weekly') renderWeeklyView();
+        }
+
+        function updateColorFromCategory() {
+            const category = document.getElementById('category').value;
+            document.getElementById('activityColor').value = getCategoryColor(category);
+        }
+
+        function resetToCategory() {
+            const category = document.getElementById('category').value;
+            document.getElementById('activityColor').value = getCategoryColor(category);
+        }
+
+        function applyPreset(name, startTime, endTime, category) {
+            document.getElementById('activityName').value = name;
+            document.getElementById('startTime').value = startTime;
+            document.getElementById('endTime').value = endTime;
+            document.getElementById('category').value = category;
+            document.getElementById('activityColor').value = getCategoryColor(category);
+            document.getElementById('activityName').focus();
+        }
+
+        function renderDayTypeList() {
+            document.getElementById('dayTypeList').innerHTML = state.dayTypes.map(type => `
+                <div class="day-type-item"><span>${type}</span>
+                    ${state.dayTypes.length > 1 ? `<button class="btn btn-danger btn-sm" onclick="removeDayType('${type}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>` : ''}
+                </div>
+            `).join('');
+        }
+
+        function addDayType() {
+            const name = document.getElementById('newDayTypeName').value.trim();
+            if (name && !state.dayTypes.includes(name)) {
+                state.dayTypes.push(name);
+                state.templates[name] = [];
+                document.getElementById('newDayTypeName').value = '';
+                renderDayTypeList(); renderDayTypeSelector(); renderWeeklyView(); saveToStorage();
+            }
+        }
+
+        function removeDayType(type) {
+            if (state.dayTypes.length > 1) {
+                state.dayTypes = state.dayTypes.filter(t => t !== type);
+                delete state.templates[type];
+                weekDays.forEach(day => { if (getWeekdayBaseType(day) === type) setWeekdayBaseType(day, state.dayTypes[0]); });
+                if (state.currentDayType === type) state.currentDayType = state.dayTypes[0];
+                renderDayTypeList(); renderDayTypeSelector(); renderClocks(); renderActivitiesList(); renderSummaryStats(); renderWeeklyView(); saveToStorage();
+            }
+        }
+
+        function saveToStorage() { localStorage.setItem('dailyPlannerStateLight', JSON.stringify(state)); }
+
+        function exportData() {
+            const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `daily-planner-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        let imported = JSON.parse(e.target.result);
+                        // Migrate imported data to V3 if needed
+                        if (!imported.version || imported.version < 3) {
+                            imported = migrateV2toV3(imported);
+                        }
+                        state = imported;
+                        saveToStorage(); init();
+                    } catch (err) { alert('Invalid file format'); }
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        function clearCurrentDay() {
+            if (confirm(`Clear all activities for "${state.currentDayType}"?`)) {
+                state.templates[state.currentDayType] = [];
+                renderClocks(); renderActivitiesList(); renderSummaryStats(); renderWeeklyView(); saveToStorage();
+            }
+        }
+
+        function loadExampleData() {
+            if (!confirm('This will replace all current data with example data. Continue?')) return;
+
+            // Reset state with V3 structure
+            state.version = 3;
+            state.dayTypes = ['Work Day', 'Off Day', 'Holiday'];
+            state.currentDayType = 'Work Day';
+            state.categoryColors = { ...defaultCategoryColors };
+            state.weekdayTemplates = {
+                'Monday':    { baseType: 'Work Day', custom: null },
+                'Tuesday':   { baseType: 'Work Day', custom: null },
+                'Wednesday': { baseType: 'Work Day', custom: null },
+                'Thursday':  { baseType: 'Work Day', custom: null },
+                'Friday':    { baseType: 'Work Day', custom: null },
+                'Saturday':  { baseType: 'Off Day', custom: null },
+                'Sunday':    { baseType: 'Off Day', custom: null }
+            };
+            state.dayOverrides = {};
+            loadGenevaHolidays(2026);
+
+            // Example Work Day
+            state.templates['Work Day'] = [
+                { id: 1, name: 'Sleep', startTime: '22:30', endTime: '06:30', category: 'myself' },
+                { id: 2, name: 'Morning Routine', startTime: '06:30', endTime: '07:15', category: 'myself' },
+                { id: 3, name: 'Breakfast with Family', startTime: '07:15', endTime: '07:45', category: 'family' },
+                { id: 4, name: 'Commute', startTime: '07:45', endTime: '08:30', category: 'else' },
+                { id: 5, name: 'Deep Work Block', startTime: '08:30', endTime: '12:00', category: 'work' },
+                { id: 6, name: 'Lunch Break', startTime: '12:00', endTime: '13:00', category: 'myself' },
+                { id: 7, name: 'Meetings & Collaboration', startTime: '13:00', endTime: '15:00', category: 'work' },
+                { id: 8, name: 'Project Work', startTime: '15:00', endTime: '17:30', category: 'work' },
+                { id: 9, name: 'Commute Home', startTime: '17:30', endTime: '18:15', category: 'else' },
+                { id: 10, name: 'Family Time', startTime: '18:15', endTime: '19:30', category: 'family' },
+                { id: 11, name: 'Dinner', startTime: '19:30', endTime: '20:15', category: 'family' },
+                { id: 12, name: 'Learning (Goal 1)', startTime: '20:15', endTime: '21:00', category: 'goal1' },
+                { id: 13, name: 'Reading & Wind Down', startTime: '21:00', endTime: '22:30', category: 'myself' }
+            ];
+
+            // Example Off Day
+            state.templates['Off Day'] = [
+                { id: 101, name: 'Sleep In', startTime: '23:00', endTime: '08:00', category: 'myself' },
+                { id: 102, name: 'Lazy Morning', startTime: '08:00', endTime: '09:30', category: 'myself' },
+                { id: 103, name: 'Brunch', startTime: '09:30', endTime: '10:30', category: 'family' },
+                { id: 104, name: 'Household Admin', startTime: '10:30', endTime: '12:00', category: 'admin' },
+                { id: 105, name: 'Side Project (Goal 2)', startTime: '12:00', endTime: '14:00', category: 'goal2' },
+                { id: 106, name: 'Outdoor Activity', startTime: '14:00', endTime: '17:00', category: 'family' },
+                { id: 107, name: 'Relax & Hobbies', startTime: '17:00', endTime: '19:00', category: 'myself' },
+                { id: 108, name: 'Dinner Out', startTime: '19:00', endTime: '21:00', category: 'family' },
+                { id: 109, name: 'Movie Night', startTime: '21:00', endTime: '23:00', category: 'family' }
+            ];
+
+            // Example Holiday
+            state.templates['Holiday'] = [
+                { id: 201, name: 'Sleep', startTime: '00:00', endTime: '09:00', category: 'myself' },
+                { id: 202, name: 'Breakfast', startTime: '09:00', endTime: '10:00', category: 'family' },
+                { id: 203, name: 'Exploration', startTime: '10:00', endTime: '13:00', category: 'family' },
+                { id: 204, name: 'Lunch', startTime: '13:00', endTime: '14:30', category: 'family' },
+                { id: 205, name: 'Adventure Activity', startTime: '14:30', endTime: '18:00', category: 'family' },
+                { id: 206, name: 'Rest & Freshen Up', startTime: '18:00', endTime: '19:30', category: 'myself' },
+                { id: 207, name: 'Nice Dinner', startTime: '19:30', endTime: '22:00', category: 'family' },
+                { id: 208, name: 'Evening Walk', startTime: '22:00', endTime: '23:00', category: 'myself' },
+                { id: 209, name: 'Sleep', startTime: '23:00', endTime: '24:00', category: 'myself' }
+            ];
+
+            updateCategories();
+            saveToStorage();
+            renderDayTypeSelector();
+            renderClocks();
+            renderActivitiesList();
+            renderLegend();
+            renderSummaryStats();
+            renderWeeklyView();
+        }
+
+        init();
+        document.getElementById('dayTypeModal').addEventListener('click', (e) => { if (e.target.classList.contains('modal-overlay')) closeDayTypeModal(); });
+        document.getElementById('categoryColorsModal').addEventListener('click', (e) => { if (e.target.classList.contains('modal-overlay')) closeCategoryColorsModal(); });
+
+        // ==================== CHARTS ====================
+        let areaChart = null;
+        let donutChart = null;
+        let barChart = null;
+
+        function renderCharts() {
+            renderAreaChart();
+            renderDonutChart();
+            renderBarChart();
+        }
+
+        function getWeeklyDataByDay() {
+            const data = {};
+            Object.keys(categories).forEach(cat => data[cat] = []);
+
+            weekDays.forEach(day => {
+                const dayType = getWeekdayBaseType(day);
+                const acts = state.templates[dayType] || [];
+                const dayTotals = {};
+                Object.keys(categories).forEach(cat => dayTotals[cat] = 0);
+
+                acts.forEach(activity => {
+                    let duration = timeToMinutes(activity.endTime) - timeToMinutes(activity.startTime);
+                    if (duration < 0) duration += 1440;
+                    dayTotals[activity.category] += duration;
+                });
+
+                Object.keys(categories).forEach(cat => {
+                    data[cat].push(dayTotals[cat] / 60); // Convert to hours
+                });
+            });
+
+            return data;
+        }
+
+        function getWeeklyTotals() {
+            const totals = {};
+            Object.keys(categories).forEach(cat => totals[cat] = 0);
+
+            weekDays.forEach(day => {
+                const dayType = getWeekdayBaseType(day);
+                const acts = state.templates[dayType] || [];
+                acts.forEach(activity => {
+                    let duration = timeToMinutes(activity.endTime) - timeToMinutes(activity.startTime);
+                    if (duration < 0) duration += 1440;
+                    totals[activity.category] += duration;
+                });
+            });
+
+            return totals;
+        }
+
+        function getDayTypeTotals() {
+            const result = {};
+            state.dayTypes.forEach(dayType => {
+                result[dayType] = {};
+                Object.keys(categories).forEach(cat => result[dayType][cat] = 0);
+                
+                const acts = state.templates[dayType] || [];
+                acts.forEach(activity => {
+                    let duration = timeToMinutes(activity.endTime) - timeToMinutes(activity.startTime);
+                    if (duration < 0) duration += 1440;
+                    result[dayType][activity.category] += duration;
+                });
+            });
+            return result;
+        }
+
+        function renderAreaChart() {
+            const ctx = document.getElementById('areaChart');
+            if (!ctx) return;
+            
+            if (areaChart) areaChart.destroy();
+            
+            const weeklyData = getWeeklyDataByDay();
+            const datasets = Object.entries(categories)
+                .filter(([key]) => weeklyData[key].some(v => v > 0))
+                .map(([key, value]) => ({
+                    label: value.label,
+                    data: weeklyData[key],
+                    backgroundColor: value.color + '80',
+                    borderColor: value.color,
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 4,
+                    pointBackgroundColor: value.color
+                }));
+
+            areaChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: weekDays.map(d => d.substring(0, 3)),
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 15,
+                                font: { size: 11 }
+                            }
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.raw.toFixed(1)}h`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: 'rgba(139, 115, 85, 0.1)' }
+                        },
+                        y: {
+                            stacked: true,
+                            beginAtZero: true,
+                            max: 24,
+                            title: { display: true, text: 'Hours', font: { size: 11 } },
+                            grid: { color: 'rgba(139, 115, 85, 0.1)' }
+                        }
+                    },
+                    interaction: {
+                        mode: 'nearest',
+                        axis: 'x',
+                        intersect: false
+                    }
+                }
+            });
+        }
+
+        function renderDonutChart() {
+            const ctx = document.getElementById('donutChart');
+            if (!ctx) return;
+            
+            if (donutChart) donutChart.destroy();
+            
+            const totals = getWeeklyTotals();
+            const filteredData = Object.entries(categories)
+                .filter(([key]) => totals[key] > 0)
+                .map(([key, value]) => ({
+                    label: value.label,
+                    value: totals[key] / 60,
+                    color: value.color
+                }));
+
+            donutChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: filteredData.map(d => d.label),
+                    datasets: [{
+                        data: filteredData.map(d => d.value),
+                        backgroundColor: filteredData.map(d => d.color),
+                        borderColor: '#fff8f0',
+                        borderWidth: 3,
+                        hoverOffset: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '55%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 12,
+                                font: { size: 10 },
+                                generateLabels: function(chart) {
+                                    const data = chart.data;
+                                    return data.labels.map((label, i) => ({
+                                        text: `${label}: ${data.datasets[0].data[i].toFixed(1)}h`,
+                                        fillStyle: data.datasets[0].backgroundColor[i],
+                                        strokeStyle: data.datasets[0].backgroundColor[i],
+                                        pointStyle: 'circle',
+                                        index: i
+                                    }));
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = ((context.raw / total) * 100).toFixed(1);
+                                    return `${context.label}: ${context.raw.toFixed(1)}h (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderBarChart() {
+            const ctx = document.getElementById('barChart');
+            if (!ctx) return;
+            
+            if (barChart) barChart.destroy();
+            
+            const dayTypeTotals = getDayTypeTotals();
+            const dayTypeLabels = state.dayTypes;
+            
+            const datasets = Object.entries(categories)
+                .filter(([key]) => {
+                    return dayTypeLabels.some(dt => dayTypeTotals[dt][key] > 0);
+                })
+                .map(([key, value]) => ({
+                    label: value.label,
+                    data: dayTypeLabels.map(dt => dayTypeTotals[dt][key] / 60),
+                    backgroundColor: value.color + 'CC',
+                    borderColor: value.color,
+                    borderWidth: 1,
+                    borderRadius: 4
+                }));
+
+            barChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: dayTypeLabels,
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 15,
+                                font: { size: 11 }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.raw.toFixed(1)}h`;
+                                },
+                                footer: function(tooltipItems) {
+                                    const total = tooltipItems.reduce((sum, item) => sum + item.raw, 0);
+                                    return `Total: ${total.toFixed(1)}h`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            stacked: true,
+                            grid: { display: false }
+                        },
+                        y: {
+                            stacked: true,
+                            beginAtZero: true,
+                            max: 24,
+                            title: { display: true, text: 'Hours per Day', font: { size: 11 } },
+                            grid: { color: 'rgba(139, 115, 85, 0.1)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update renderWeeklyView to also render charts
+        const originalRenderWeeklyView = renderWeeklyView;
+        renderWeeklyView = function() {
+            originalRenderWeeklyView();
+            setTimeout(renderCharts, 100);
+        };
+    </script>
+</body>
+</html>
