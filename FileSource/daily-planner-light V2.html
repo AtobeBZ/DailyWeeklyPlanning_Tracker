@@ -4800,7 +4800,7 @@
                         const customClass = hasCustom ? ' has-custom' : '';
                         html += `<div class="weekly-activity clickable${customClass}" style="top: ${top}px; height: ${height}px; background: ${getCategoryColor(activity.category)};" data-activity='${JSON.stringify(activity)}' data-day="${day}" data-daytype="${dayType}" onclick="openWeeklyEditModal(event)" onmouseenter="showWeeklyTooltip(event)" onmouseleave="hideTooltip()" onmousemove="moveTooltip(event)">`;
                         html += `<div class="weekly-activity-name">${activity.name}</div>`;
-                        if (height > 25) html += `<div class="weekly-activity-time">${activity.startTime} - ${activity.endTime}</div>`;
+                        if (height > 25) html += `<div class="weekly-activity-time">${activity.startTime} - ${activity.endTime} (${getActivityDuration(activity)})</div>`;
                         html += '</div>';
                     });
                 });
